@@ -50,9 +50,9 @@ Ví dụ: "Research agent: tìm tin theo từ khóa / theo tài khoản, đọc 
 
 ## 3. Giải pháp
 
-> Tóm tắt các thay đổi chính trong `starter_v0/artifacts/system_prompt.md` và `starter_v0/artifacts/tools.yaml`, và tool mới nhóm viết (tên, làm gì, khi nào agent nên gọi).
-
--
+- **`system_prompt.md` (v1):** bỏ 3 chỉ dẫn xấu của starter (đoán thay vì hỏi, gửi ngay, ép một bước). Thêm rule: thiếu handle/URL thì gọi `clarify`; xin xác nhận `yes_no` trước khi `send`; câu ngoài phạm vi thì từ chối bằng text, không gọi tool.
+- **`tools.yaml` (v2):** viết lại `description` của 10 tool gốc theo mẫu làm gì / khi nào dùng / khi nào không dùng. Quy ước tham số: `query` của `lookup` là từ khóa ngắn (không thêm "tin tức", "hôm nay"), `topic=news`, bảng `timeframe`, handle không có `@`, `search_type` Top/Latest, gọi một lần mỗi yêu cầu, `send` chỉ khi đã xác nhận.
+- **Tool mới (CP3):** `citations` (tạo danh sách tham khảo đánh số từ title + URL), `source_domains` (lấy hostname duy nhất từ danh sách URL), `word_count` (đếm từ/ký tự). Cả ba chạy local, lỗi trả error dict. Agent gọi khi đã có dữ liệu nguồn hoặc văn bản cần đếm.
 
 ## 4. Kết quả — PHẦN B: Chi tiết và bằng chứng
 
@@ -64,7 +64,7 @@ Lấy từ `starter_v0/artifacts/version_log.csv` và `starter_v0/runs/*.json`. 
 |---|---|---|---:|---:|---|
 | v0 | baseline | Đo hành vi chưa tối ưu trước khi sửa | – | 0.45 (case_accuracy; routing 0.60, args 0.45, multiturn 0.67) | `starter_v0/runs/v0_B_base_deepseek_20261110T174313805995.json` |
 | v1 | `system_prompt.md` | Prompt gốc khuyến khích đoán và làm vội; thay bằng rule hỏi lại (`clarify`), xác nhận trước `send`, từ chối ngoài phạm vi | 0.45 | 0.65 (routing 0.80, args 0.65, multiturn 0.67); pass 9→13/20; sửa R08, R10, R11, R14 | `starter_v0/runs/v1_B_base_deepseek_20261110T182742199017.json` |
-| v2 |  |  |  |  |  |
+| v2 | `tools.yaml` (kèm 3 tool CP3 đã merge) | Mô tả tool một dòng nên model mở rộng `query`, gọi thừa `social_search`; viết lại description + quy ước tham số | 0.65 | 0.95 (routing 1.00, args 0.95, multiturn 1.00); pass 13→19/20; sửa R02, R03, R06, R13, M02, M06; còn R12 (`clarify` dùng `text` thay vì `yes_no`) | `starter_v0/runs/v2_B_base_deepseek_20261110T184518723180.json` |
 | v3 |  |  |  |  |  |
 
 ### B2. Failure Analysis
@@ -158,9 +158,9 @@ Lỗi đặc thù của model nhỏ (đếm từ run JSON):
 
 ## 5. Khó khăn và cách xử lý
 
-> Khó khăn chính và cách nhóm xử lý. Nếu gặp lỗi kỹ thuật (provider lỗi, hết quota API, tool không chạy), mô tả lỗi và dẫn bằng chứng: run JSON, log, ảnh chụp.
-
--
+- Dùng DeepSeek thay OpenRouter: starter không có provider này nên nhóm thêm `providers/deepseek_provider.py` (kế thừa `OpenAIProvider`) và đăng ký ở `run_eval.py`, `chat.py`, `scripts/preflight_provider.py`. Lần đầu preflight báo `Missing API key env var: DEEPSEEK_API_KEY` vì `.env` chưa có key; thêm key rồi chạy lại.
+- `pytest` ban đầu báo thiếu module `requests` do chưa cài dependency trong `.venv`; chạy `pip install -r requirements.txt` rồi xanh (86 passed).
+- Case R12 (xin xác nhận trước khi đăng) vẫn fail ở v2: model gọi đúng `clarify` nhưng dùng `response_type=text` thay vì `yes_no` vì chưa có nội dung bản tin để đăng. Run: `starter_v0/runs/v2_B_base_deepseek_20261110T184518723180.json`.
 
 ## 6. Tổng hợp đóng góp
 

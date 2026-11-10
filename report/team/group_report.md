@@ -1,39 +1,36 @@
-# Day 03 Lab v2 Report — Research Agent
+# Báo cáo nhóm — Day 03 Research Agent Tool Eval
 
-> File này gồm 2 phần, deadline khác nhau:
-> - **PHẦN A — Giới thiệu agent**: ngắn gọn 1 trang để team khác hiểu nhanh agent có tool gì, làm được gì, thử bằng câu hỏi nào. **Xong trước 16:30** để làm tài liệu phụ trợ khi demo. Có thể làm thành poster HTML/SVG (`artifacts/poster.html` / `poster.svg`) để show cho team cùng zone.
-> - **PHẦN B — Chi tiết / Bằng chứng**: bảng đầy đủ (v0–v3, failure, eval, chat) dựa trên log thật. **Có thể hoàn thiện sau buổi debate để nộp bài.**
+> Báo cáo gồm 2 phần có hạn khác nhau:
+> - **Phần A (mục 2)** — giới thiệu agent, ngắn gọn 1 trang. **Xong trước Team showdown (16:30)** để team khác hiểu nhanh agent có tool gì, làm được gì. Có thể làm thêm poster `report/team/poster.html` hoặc `poster.svg`.
+> - **Phần B (mục 3–7)** — chi tiết và bằng chứng, dựa trên log thật. Hoàn thiện trước deadline nộp bài.
+>
+> Mỗi bảng phải trỏ được tới file thật: run JSON, transcript, commit. Cách chấm xem [RUBRIC.md](../../RUBRIC.md).
 
-## Team
+## 1. Thông tin nhóm
 
 - Tên nhóm:
-- Lớp: L3A / L3B
-- Tên repo: `K5-L3A-DAY03-TenNhom-ResearchAgentToolEval` hoặc `K5-L3B-DAY03-TenNhom-ResearchAgentToolEval`
-- URL repo, nhánh nộp, commit chốt:
-- Provider/model:
-- AI/công cụ đã dùng khi làm bài (theo [RULES.md](../../RULES.md)):
+- Thành viên và phân công: xem [TEAM.md](../../TEAM.md)
+- Provider/model dùng cho v0–v3:
 
-| Họ và tên | MSSV | GitHub | Vai trò và công việc | File/commit chính |
-|---|---|---|---|---|
-|  |  |  |  |  |
+## 2. Mục tiêu và cách tiếp cận — PHẦN A: Giới thiệu agent
 
----
-
-# PHẦN A — Giới thiệu agent
-
-## A1. Agent này làm được gì
+### A1. Agent này làm được gì
 
 > 1–2 câu mô tả agent dùng để làm gì (cho team khác hiểu nhanh).
 
 Ví dụ: "Research agent: tìm tin theo từ khóa / theo tài khoản, đọc URL, tổng hợp thành digest, và gửi lên Telegram khi được xác nhận."
 
+**Cách chạy UI:**
+
+> Lệnh chạy UI (ví dụ `streamlit run app.py`) và dependency đã thêm vào `starter_v0/requirements.txt`.
+
 **Link dùng thử (deploy):**
 
 > Dán link public để team khác mở thử ngay. Cách deploy nhanh bằng Cloudflare Tunnel xem README. Nếu deploy Vercel/Streamlit Cloud thì dán link đó.
 >
-> URL: 
+> URL:
 
-## A2. Tool agent có
+### A2. Tool agent có
 
 > Liệt kê các tool agent đang dùng (gồm tool mới nhóm tự thêm). Mỗi tool 1 dòng: tên + làm được gì.
 
@@ -43,7 +40,7 @@ Ví dụ: "Research agent: tìm tin theo từ khóa / theo tài khoản, đọc 
 |  |  |  |
 |  |  |  |
 
-## A3. Câu hỏi mẫu để thử
+### A3. Câu hỏi mẫu để thử
 
 > 3–5 câu hỏi/yêu cầu mẫu để team khác tự thử agent ngay.
 
@@ -51,13 +48,17 @@ Ví dụ: "Research agent: tìm tin theo từ khóa / theo tài khoản, đọc 
 2.
 3.
 
----
+## 3. Giải pháp
 
-# PHẦN B — Chi tiết / Bằng chứng
+> Tóm tắt các thay đổi chính trong `starter_v0/artifacts/system_prompt.md` và `starter_v0/artifacts/tools.yaml`, và tool mới nhóm viết (tên, làm gì, khi nào agent nên gọi).
 
-## B1. Version Evidence
+-
 
-Fill from `artifacts/version_log.csv` and `runs/*.json`.
+## 4. Kết quả — PHẦN B: Chi tiết và bằng chứng
+
+### B1. Version Evidence
+
+Lấy từ `starter_v0/artifacts/version_log.csv` và `starter_v0/runs/*.json`. Chỉ dùng run có `provider_error_cases == 0` và `measured_cases == total_cases`.
 
 | Version | Changed Artifact | Hypothesis | Metric Before | Metric After | Run File |
 |---|---|---|---:|---:|---|
@@ -66,33 +67,31 @@ Fill from `artifacts/version_log.csv` and `runs/*.json`.
 | v2 |  |  |  |  |  |
 | v3 |  |  |  |  |  |
 
-## B2. Failure Analysis
+### B2. Failure Analysis
 
-Use actual failures from `results[*].result.failures`.
+Lấy từ `results[*].result.failures` trong run JSON.
 
 | Case ID | Failure Type | Actual Tool Calls | What Failed | Fix |
 |---|---|---|---|---|
 |  |  |  |  |  |
 
-## B3. Team Eval Cases
+### B3. Team Eval Cases
 
-List the 10 cases added to `data/eval_group.json` (5 single turn + 5 multi turn).
+Liệt kê đúng 10 case trong `starter_v0/data/eval_group.json` (5 single turn + 5 multi turn).
 
 | Case ID | What It Tests | Expected Tool/Behavior | Result |
 |---|---|---|---|
 |  |  |  |  |
 
-## B4. Live Chat Evidence
+### B4. Live Chat Evidence
 
-Use `transcripts/*.transcript.json`.
+Lấy từ `starter_v0/transcripts/*.transcript.json`.
 
 | Turn | User Request | Tool Calls | Version Evidence | Outcome |
 |---|---|---|---|---|
 |  |  |  |  |  |
 
-## B5a. Required Evidence — Tool mới, unit test, UI
-
-Phần bắt buộc, xem [RUBRIC.md](../../RUBRIC.md).
+### B5a. Required Evidence — Tool mới, unit test, UI
 
 | Item | Evidence File | What Worked | Risk / Guardrail |
 |---|---|---|---|
@@ -102,9 +101,9 @@ Phần bắt buộc, xem [RUBRIC.md](../../RUBRIC.md).
 
 Tool unit tests: số test đã viết, và một ví dụ lỗi mà unit test bắt được nhưng eval không bắt được.
 
-## B5. Bonus Evidence
+### B5. Bonus Evidence
 
-Only fill if your team did bonus (tối đa 10 điểm, xem [RUBRIC.md](../../RUBRIC.md)). Tool có sẵn (`send`, `policy`, `papers`, `paper_text`) không tự được bonus.
+Chỉ điền nếu nhóm làm bonus (ghi riêng, tối đa 10 điểm). Tool có sẵn (`send`, `policy`, `papers`, `paper_text`) không tự được bonus.
 
 | Bonus | Evidence File | What Worked | Risk / Guardrail |
 |---|---|---|---|
@@ -115,22 +114,15 @@ Only fill if your team did bonus (tối đa 10 điểm, xem [RUBRIC.md](../../RU
 
 Test challenge: số bug tìm được trong tool có sẵn (nếu có), cách sửa, và test regression tương ứng.
 
-## B6. Reflection
+### B7. Small Local Model Challenge (bonus)
 
-- Which fixes belonged in `system_prompt.md`?
-- Which fixes belonged in `tools.yaml`?
-- Which failure needed manual review instead of automatic grading?
-- What would you improve next?
-
-## B7. Small Local Model Challenge (bonus)
-
-Only fill if your team did the local model challenge.
+Chỉ điền nếu nhóm làm bonus này.
 
 | Version | Model (provider) | Prompt/Tools | case_accuracy | tool_routing | argument | multiturn | Run File |
 |---|---|---|---|---|---|---|---|
 | v3 | (cloud) | v3 |  |  |  |  |  |
-| v3-... | (ollama) | v3 |  |  |  |  |  |
-| v3-... | (ollama) | v3 |  |  |  |  |  |
+| v3-<model> | (ollama) | v3 |  |  |  |  |  |
+| v3-<model> | (ollama) | v3 |  |  |  |  |  |
 | v4-local |  |  |  |  |  |  |  |
 | v5-local |  |  |  |  |  |  |  |
 
@@ -147,3 +139,24 @@ Lỗi đặc thù của model nhỏ (đếm từ run JSON):
 - Cái gì giúp model nhỏ gọi tool đúng hơn nhất? Bằng chứng?
 - Bản prompt tối ưu cho local chạy trên model cloud thì sao?
 - Khi nào nhóm sẽ chọn model local thay vì cloud cho agent này?
+
+## 5. Khó khăn và cách xử lý
+
+> Khó khăn chính và cách nhóm xử lý. Nếu gặp lỗi kỹ thuật (provider lỗi, hết quota API, tool không chạy), mô tả lỗi và dẫn bằng chứng: run JSON, log, ảnh chụp.
+
+-
+
+## 6. Tổng hợp đóng góp
+
+Chi tiết đóng góp của từng thành viên nằm trong [TEAM.md](../../TEAM.md) và các báo cáo cá nhân `report/team/MSSV_HoTen.md`.
+
+## 7. Hạn chế và hướng cải thiện — B6. Reflection
+
+- Fix nào thuộc `system_prompt.md`?
+- Fix nào thuộc `tools.yaml`?
+- Failure nào cần review thủ công thay vì chấm tự động?
+- Nếu có thêm một vòng, nhóm sẽ thử giả thuyết nào?
+
+## 8. Tài liệu tham khảo
+
+-

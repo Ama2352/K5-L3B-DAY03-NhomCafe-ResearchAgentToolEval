@@ -1,19 +1,24 @@
-# Nộp bài Day 03
+# Submission
 
-**Làm nhóm. Nhóm push bài lên GitHub; mỗi thành viên tự nộp cùng URL repo nhóm trên LMS.**
+## Loại bài
 
-## Tên repo
+**Nhóm.** Nhóm push bài lên GitHub; mỗi thành viên tự nộp cùng link repo nhóm trên LMS bằng tài khoản cá nhân.
 
-Đặt theo lớp bạn học:
+## Tên repo và biến tên
+
+- `Kn`: số khóa. Khóa này dùng `K5`.
+- Level/lớp: `L3A` hoặc `L3B`, theo lớp bạn học.
+
+### Repo bài nộp nhóm
 
 ```text
 K5-L3A-DAY03-TenNhom-ResearchAgentToolEval
 K5-L3B-DAY03-TenNhom-ResearchAgentToolEval
 ```
 
-`TenNhom` viết không dấu, không khoảng trắng. Ghi đủ thành viên trong mục `## Team` của [starter_v0/artifacts/REPORT.md](starter_v0/artifacts/REPORT.md).
+`TenNhom` viết không dấu, không khoảng trắng.
 
-## Tạo repo nhóm
+### Tạo repo nhóm
 
 Khi repo đề bài cho phép Fork, nhóm trưởng Fork rồi đổi tên theo mẫu trên. Nếu không Fork được, clone repo đề bài, đổi `origin` sang repo nhóm rỗng và push `main`:
 
@@ -25,9 +30,16 @@ git remote add origin <URL_REPO_NHOM>
 git push -u origin main
 ```
 
-## Bản nộp hoàn chỉnh
+## Cấu trúc và deliverable phải nộp (đặt tên và cấu trúc)
 
-Giữ toàn bộ source trong `starter_v0/` và commit evidence thật của nhóm:
+### Báo cáo và thông tin nhóm
+
+- `TEAM.md` (root): điền đầy đủ thông tin nhóm, thành viên và phân công.
+- Báo cáo nhóm: `report/team/group_report.md` (Phần A + Phần B).
+- Mỗi thành viên nộp một báo cáo cá nhân: `report/team/MSSV_HoTen.md` (ví dụ: `report/team/20241234_NguyenVanAn.md`), copy từ file mẫu `report/team/MSSV_HoTen.md`.
+- Poster Phần A (tùy chọn): `report/team/poster.html` hoặc `report/team/poster.svg`.
+
+### Code và evidence trong `starter_v0/`
 
 | Phần | File |
 |---|---|
@@ -36,8 +48,7 @@ Giữ toàn bộ source trong `starter_v0/` và commit evidence thật của nh�
 | Tool mới | `tools/<tên>/tool.py` + `TOOL.md`, đăng ký trong `tools/__init__.py` và `tools.yaml` |
 | Unit test | `tests/` (≥ 3 test cho mỗi tool mới, `pytest` 0 failed) |
 | Eval nhóm | `data/eval_group.json` đúng **10 case: 5 single turn + 5 multi turn**, kèm run `--suite group` |
-| UI và transcript | Code UI, dependency UI đã thêm vào `requirements.txt`, lệnh chạy UI ghi trong REPORT Phần A; `transcripts/*.transcript.json` |
-| Report | `artifacts/REPORT.md` Phần A + Phần B; poster `artifacts/poster.html`/`.svg` nếu có |
+| UI và transcript | Code UI, dependency UI trong `requirements.txt`, lệnh chạy UI ghi ở mục A1 của group report; `transcripts/*.transcript.json` |
 | Phân tích (tùy chọn) | `analysis/*.csv` nếu parse run log |
 | Bonus (nếu làm) | Run JSON của model local, prompt/tools riêng cho local; transcript gửi Telegram |
 
@@ -45,17 +56,21 @@ Run dùng làm bằng chứng phải có `provider_error_cases == 0` và `measur
 
 Không commit `.env`, API key, token Telegram, `.venv`, cache hay `arxiv_papers/`.
 
-## Hạn và cách nộp
+## Deadline (GMT+7)
 
-Hạn mặc định: **23:59 ngày học, Asia/Ho_Chi_Minh (GMT+7)**. Keycoach có thể thông báo hạn khác trong 48 giờ sau buổi lab; đây không phải gia hạn tự động. Các mốc trong [CHECKPOINTS.md](CHECKPOINTS.md) chỉ là checkpoint tại lớp.
+- Deadline theo thông báo của coach.
+- Các mốc trong [CHECKPOINTS.md](CHECKPOINTS.md) chỉ là checkpoint tại lớp, không phải deadline.
+- Sửa sau deadline phải tạo commit hoặc branch mới; xem [RULES.md](RULES.md).
 
-Push toàn bộ bài lên GitHub trước deadline. Sau đó mỗi thành viên mở đúng bài Day 03 trên LMS, nộp URL trang gốc của repo nhóm và mở lại để kiểm tra URL đã lưu. Ghi commit chốt trong mục `## Team` của REPORT. Sửa sau deadline phải tạo commit/branch mới; xem [RULES.md](RULES.md).
+## Checklist
 
-## Kiểm tra trước khi nộp
-
-- [ ] Tên repo đúng mẫu theo lớp (L3A/L3B); bảng Team trong REPORT đủ họ tên, MSSV, GitHub, vai trò.
+- [ ] Đổi tên repo theo đúng quy ước `K5-L3A-…` hoặc `K5-L3B-…`.
+- [ ] Điền thông tin vào `TEAM.md` ở root, ghi commit chốt.
+- [ ] Mỗi thành viên có file báo cáo đã đổi tên đúng định dạng `report/team/MSSV_HoTen.md`.
+- [ ] `report/team/group_report.md` điền đủ Phần A và Phần B.
 - [ ] Mỗi thành viên có commit kỹ thuật trong lịch sử branch nộp bài.
 - [ ] `cd starter_v0 && pytest` báo 0 failed.
-- [ ] Có đủ run v0–v3, run group, transcript, UI chạy được và REPORT Phần A + B.
-- [ ] Không sửa nội dung case trong `data/eval_base.json`; không có `.env` hay key.
-- [ ] Đã push lên GitHub; repo mở được cho người chấm; mọi thành viên đã nộp cùng URL trên LMS.
+- [ ] Có đủ run v0–v3, run group, transcript và UI chạy được.
+- [ ] Không sửa nội dung case trong `data/eval_base.json`; không commit secret, password, file `.env`.
+- [ ] Đã push lên GitHub; repo mở được cho người chấm.
+- [ ] Mọi thành viên đã nộp cùng link repo trên LMS trước deadline.

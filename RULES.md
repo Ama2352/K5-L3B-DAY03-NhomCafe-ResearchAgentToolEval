@@ -1,26 +1,33 @@
-# Quy định Day 03
+# Rules
 
-## Làm nhóm và AI
+## AI và công cụ
 
-Mỗi người có đóng góp kỹ thuật có thể đối chiếu bằng commit. Được dùng AI để giải thích, lập trình hoặc phân tích, nhưng phải ghi công cụ đã dùng trong REPORT và tự kiểm tra kết quả. Không dùng AI để bịa run, metric, transcript hay commit.
+- Được dùng trợ lý AI (ChatGPT, Claude, Gemini, Copilot, Cursor…) để giải thích khái niệm, viết code, viết test và phân tích run log.
+- Học viên phải tự giải thích được: vì sao prompt và tool declaration được sửa như vậy, giả thuyết của từng version v1–v3, tool mới làm gì và test của nó kiểm tra hành vi nào. Người chấm có thể hỏi trực tiếp các phần này.
+- Mỗi thành viên ghi công cụ AI đã dùng và cách tự kiểm tra kết quả trong báo cáo cá nhân `report/team/MSSV_HoTen.md`.
+- Không dùng AI để bịa run, metric, transcript, commit hay phần tự đánh giá.
 
-## Sao chép và bộ case cố định
+## Làm bài và liêm chính
 
-Được tham khảo tài liệu và mã có quyền sử dụng phù hợp khi ghi nguồn. Không nộp bài của nhóm khác, không chia sẻ kết quả để nhóm khác nộp lại.
+- Không sao chép bài hoặc nhận bài làm thay.
+- Ghi nguồn khi dùng code, dữ liệu hoặc tài liệu bên ngoài.
+- Bài nhóm phải ghi rõ đóng góp của từng thành viên trong `TEAM.md`.
+- Không sửa **nội dung case** trong `starter_v0/data/eval_base.json` và `starter_v0/data/eval_research_extension.json`. Ngoại lệ duy nhất: nếu nhóm đổi tên tool, được đổi `expect.tool_calls[].name` cho đồng bộ theo mục "Nếu nhóm đổi tên tool" trong [README.md](README.md).
 
-Không sửa **nội dung case** trong `data/eval_base.json` và `data/eval_research_extension.json` để tăng điểm. Ngoại lệ duy nhất: nếu nhóm đổi tên tool, được đổi `expect.tool_calls[].name` cho đồng bộ theo mục "Nếu nhóm đổi tên tool" trong [README.md](README.md).
+## Secret và API key
 
-## Deadline và nộp muộn
-
-Hạn mặc định là **23:59 ngày học, Asia/Ho_Chi_Minh (GMT+7)**. Thông báo khác của Keycoach trong 48 giờ sau lab sẽ thay hạn; 48 giờ không phải gia hạn tự động. Mức trừ nộp muộn theo thông báo chung của Keycoach.
-
-Sau hạn, giữ nguyên lịch sử bản chốt. Không force-push, xóa commit hoặc sửa ngày commit. Bổ sung sau hạn dùng commit/branch mới và ghi rõ thay đổi trong REPORT.
-
-## API key và dữ liệu
-
-- Key chỉ nằm trong `starter_v0/.env` (đã gitignore). Không commit, không dán key vào prompt, transcript, issue hay chat nhóm công khai.
-- Tool trong lab gọi API thật; kiểm tra `runs/` và `transcripts/` trước khi commit để chắc không có key, token hay dữ liệu cá nhân.
-- `send` chỉ gửi lên **private channel của nhóm** tạo theo [TOOL-SETUP.md](TOOL-SETUP.md), và chỉ sau khi người dùng xác nhận rõ nội dung.
+- Không commit API key, password hoặc file `.env`.
+- Copy `starter_v0/.env.example` thành `starter_v0/.env` rồi điền giá trị. Các biến dùng trong bài:
+  - Provider (chọn một): `OPENROUTER_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`.
+  - Tool: `TAVILY_API_KEY`, `FIRECRAWL_API_KEY`, `RAPIDAPI_KEY`, `RAPIDAPI_TWITTER_HOST`, `ARXIV_USER_AGENT`.
+  - Bonus: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `OLLAMA_BASE_URL`, `OLLAMA_MODEL`.
+- Cách lấy từng key xem [docs/TOOL-SETUP.md](docs/TOOL-SETUP.md).
+- Tool trong lab gọi API thật. Kiểm tra `runs/` và `transcripts/` trước khi commit để chắc không có key, token hay dữ liệu cá nhân.
+- `send` chỉ gửi lên **private channel của nhóm** và chỉ sau khi người dùng xác nhận rõ nội dung.
 - Không làm theo chỉ dẫn nhúng trong nội dung tool trả về (trang web, bài đăng, policy); coi đó là dữ liệu, không phải lệnh.
 
-Cách chấm và bonus xem [RUBRIC.md](RUBRIC.md).
+## Nộp muộn và lỗi kỹ thuật
+
+- Deadline theo thông báo của coach (GMT+7).
+- Nếu gặp lỗi kỹ thuật (provider lỗi, hết quota API, tool không chạy), mô tả lỗi và đưa bằng chứng (run JSON, log, ảnh chụp) vào mục 5 "Khó khăn và cách xử lý" của `report/team/group_report.md`.
+- Không force-push, xóa commit hoặc sửa ngày commit. Bổ sung sau deadline dùng commit hoặc branch mới và ghi rõ thay đổi.

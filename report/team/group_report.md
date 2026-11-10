@@ -210,7 +210,7 @@ xác nhận của người ngoài nhóm. Chưa có bằng chứng người ngoà
 | Tool mới `word_count` | `starter_v0/tools/word_count/` | Đếm số từ và ký tự trong văn bản được cung cấp. | Đếm theo quy tắc nhận diện từ cục bộ; không tóm tắt nội dung. |
 | Unit test các tool mới | `starter_v0/tests/test_tools_todo.py` | 9 test mới đạt; toàn bộ suite: 86 passed, 17 skipped, 0 failed. | Test chạy offline, không gửi yêu cầu mạng. |
 | UI (lệnh chạy + link dùng thử) | `starter_v0/app.py`, `starter_v0/ui_session.py`, `starter_v0/README.md`; transcript UI ở B4 | Giao diện chat Streamlit đã chạy qua link public; chọn cấu hình, xem tool/lỗi, lưu và tải transcript; lệnh và URL ở A1 | Link tunnel tạm thời; hành vi model phụ thuộc prompt/tools CP2 |
-| Kiểm thử tích hợp CP5 | `starter_v0/tests/test_ui_session.py`, `starter_v0/tests/test_app.py` | 6 test mới đạt; toàn suite 92 passed, 17 skipped, 0 failed | Test offline không thay thế transcript live; các stub có sẵn vẫn skip |
+| Kiểm thử tích hợp CP5 | `starter_v0/tests/test_ui_session.py`, `starter_v0/tests/test_app.py` | 6 test mới đạt; toàn suite lúc đó 92 passed, 17 skipped, 0 failed (17 stub có sẵn sau đó đã được điền, xem B5: 110 passed, 0 skipped) | Test offline không thay thế transcript live |
 
 Mỗi tool có các test cho đầu vào hợp lệ, đầu vào sai và nhánh lỗi. Ví dụ, unit test kiểm tra URL không hợp lệ được trả về dưới dạng error dict; eval routing không chứng minh được code tool xử lý đúng đầu vào đó.
 
@@ -224,6 +224,15 @@ khi trả kết quả cho model/UI/transcript. Regression test offline
 Toàn suite sau tích hợp: **93 passed, 17 skipped, 0 failed**. Không gửi Telegram
 thật trong test; đây là bằng chứng regression test cho tool có sẵn.
 
+Test challenge (0 skipped): đã điền 14 stub `pytest.skip(TODO)` trong
+`starter_v0/tests/test_tools_todo.py` cho `clarify`, `format`, `send`, `lookup`,
+`fetch`, `timeline`, `social_search`, `policy`; xoá 3 stub mẫu
+`test_my_new_tool_*` vì 9 test cho `citations`, `source_domains`, `word_count` đã có.
+Test gọi API dùng `fake_http` và assert cả request gửi đi (URL, json, params) lẫn kết
+quả trả về; test `policy` kiểm tra dòng chèn lệnh trong mục "Injection probe" nằm ở
+`untrusted_text`, không lọt vào `facts`. Các test mới không phát hiện thêm bug trong
+tool có sẵn. Toàn suite: **110 passed, 0 skipped, 0 failed** (`cd starter_v0 && pytest -q`).
+
 Chỉ điền nếu nhóm làm bonus (ghi riêng, tối đa 10 điểm). Tool có sẵn (`send`, `policy`, `papers`, `paper_text`) không tự được bonus.
 
 | Bonus | Evidence File | What Worked | Risk / Guardrail |
@@ -231,7 +240,7 @@ Chỉ điền nếu nhóm làm bonus (ghi riêng, tối đa 10 điểm). Tool c�
 | Small Local Model | xem B7 |  |  |
 | Hơn 3 tool mới (≥ 4) |  |  |  |
 | `send` gửi thật lên Telegram sau xác nhận | transcript |  |  |
-| Test challenge (0 skipped / regression test) | `pytest` output |  |  |
+| Test challenge (0 skipped / regression test) | `pytest` output; `starter_v0/tests/test_tools_todo.py`; `starter_v0/tests/test_ui_session.py::test_send_failure_redacts_token_before_model_and_transcript` | Cả hai tiêu chí: toàn suite 110 passed, 0 skipped, 0 failed; 1 bug tìm được trong `send` (lộ bot token trong thông báo lỗi HTTP) đã sửa và giữ regression test | Test chạy offline, mọi HTTP bị chặn và mock bằng `fake_http`; không thay thế kiểm thử live với API thật |
 
 Test challenge: số bug tìm được trong tool có sẵn (nếu có), cách sửa, và test regression tương ứng.
 

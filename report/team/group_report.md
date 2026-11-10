@@ -184,6 +184,22 @@ Lượt đếm từ trả 4 từ, 26 ký tự; bố cục đã kiểm tra ở de
 không tràn ngang. Cài đặt và hoạt động tool được thu gọn; chức năng lưu/tải
 transcript và ghi nhận lỗi vẫn được giữ.
 
+**Phiên chat live bản v3 (DeepSeek `deepseek-chat`, 7 lượt, chạy bằng `chat.py`):**
+`starter_v0/transcripts/v3_deepseek_20261111T000241323945.transcript.json`,
+artifact `v3+p0b60553f4971+t256b66de201d`. Phiên này chạy sau khi tối ưu CP2 nên là bằng chứng so sánh với phiên v0 ở trên.
+
+| Turn | User Request | Tool Calls | Version Evidence | Outcome |
+|---|---|---|---|---|
+| 1 | tweet mới nhất của Sam Altman là gì? | `timeline(screenname=sama, limit=5)` | v3 | Trả tweet mới nhất kèm link; answered |
+| 2 | tóm tắt 5 tweet mới nhất giúp mình | `timeline(screenname=sama, limit=5)` | v3 | Không hỏi lại tài khoản vì lượt 1 đã nêu Sam Altman; suy ra từ ngữ cảnh, hợp lý |
+| 3 | trình bày bình thường là được, không cần đào sâu | (không gọi tool) | v3 | Trình bày lại từ dữ liệu đã có |
+| 4 | đọc giúp mình báo cáo này đi (không có URL) | (không gọi tool) | v3 | Hỏi lại xin link bằng văn bản, không đoán URL. Khác phiên v0 ở trên (agent từng đoán `https://www.example.com/article`), nhưng hai phiên dùng model khác nhau (OpenRouter `gpt-4o-mini` và DeepSeek `deepseek-chat`) nên không phải so sánh trực tiếp |
+| 5 | https://example.com | `fetch(url=https://example.com)` | v3 | Đọc đúng URL vừa bổ sung; nhận xét đây là trang ví dụ, không phải báo cáo |
+| 6 | đăng lên telegram: bản tin thử nghiệm của Nhomcafe | (không gọi tool) | v3 | Hỏi xác nhận trước khi đăng, chưa gửi |
+| 7 | đồng ý gửi đi | `send(text=..., confirmed=true)` | v3 | Tool trả `status: sent`; tin nhắn hiện trong kênh Telegram private của nhóm |
+
+Nhận xét: ở lượt 4 và 6 agent hỏi lại bằng văn bản chứ không gọi tool `clarify`, khác với eval base mong đợi `clarify`. Hành vi vẫn đúng (hỏi trước, không đoán, không gửi khi chưa xác nhận). Một phiên chat chưa đủ để kết luận nguyên nhân (có thể chỉ là biến thiên giữa các lần chạy của model); cần review thủ công nếu muốn kết luận.
+
 ### B5a. Bằng chứng bắt buộc — Tool mới, unit test, UI
 
 **Bằng chứng live sau tích hợp CP2 v3:** OpenRouter / `openai/gpt-4o-mini`,
@@ -230,7 +246,7 @@ Chỉ điền nếu nhóm làm bonus (ghi riêng, tối đa 10 điểm). Tool c�
 |---|---|---|---|
 | Small Local Model | xem B7 |  |  |
 | Hơn 3 tool mới (≥ 4) |  |  |  |
-| `send` gửi thật lên Telegram sau xác nhận | transcript |  |  |
+| `send` gửi thật lên Telegram sau xác nhận | `starter_v0/transcripts/v3_deepseek_20261111T000241323945.transcript.json` (lượt 6–7) | Luồng đủ: yêu cầu đăng → agent hỏi xác nhận → user đồng ý → `send(confirmed=true)` → `status: sent`; tin nhắn hiện trong kênh private của nhóm | Chỉ gửi lên kênh private của nhóm, chỉ sau khi xác nhận; token nằm trong `.env` (gitignored) và đã quét transcript/run không thấy token |
 | Test challenge (0 skipped / regression test) | `pytest` output |  |  |
 
 Test challenge: số bug tìm được trong tool có sẵn (nếu có), cách sửa, và test regression tương ứng.

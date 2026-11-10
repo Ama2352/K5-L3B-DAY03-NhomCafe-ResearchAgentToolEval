@@ -120,3 +120,58 @@ def test_my_new_tool_bad_input_from_model() -> None:
 
 def test_my_new_tool_failure_returns_error_dict() -> None:
     pytest.skip(TODO)
+
+# CP3: citations tool
+
+def test_citations_formats_sources_in_order():
+    from tools.citations.tool import citations
+    result = citations([{"title": "Paper A", "url": "https://example.com/a"}, {"title": "Paper B", "url": "https://example.org/b"}])
+    assert result["references"] == "[1] Paper A — https://example.com/a\n[2] Paper B — https://example.org/b"
+    assert result["count"] == 2
+
+
+def test_citations_rejects_invalid_items():
+    from tools.citations.tool import citations
+    for items in ([], "not a list", [None], [{"title": "", "url": "https://example.com"}]):
+        assert "error" in citations(items)
+
+
+def test_citations_returns_error_for_invalid_url():
+    from tools.citations.tool import citations
+    assert "error" in citations([{"title": "Source", "url": "javascript:alert(1)"}])
+    assert "error" in citations([{"title": "Source", "url": "http://[invalid"}])
+
+
+def test_source_domains_deduplicates_hosts():
+    from tools.source_domains.tool import source_domains
+    assert source_domains(["https://EXAMPLE.com/a", "https://example.com/b", "http://other.org"]) == {"tool": "source_domains", "domains": ["example.com", "other.org"], "count": 2}
+
+
+def test_source_domains_rejects_bad_input():
+    from tools.source_domains.tool import source_domains
+    for value in ([], "https://example.com", [None]):
+        assert "error" in source_domains(value)
+
+
+def test_source_domains_reports_invalid_url():
+    from tools.source_domains.tool import source_domains
+    for value in ("file:///etc/passwd", "https://[broken"):
+        assert "error" in source_domains([value])
+
+
+def test_word_count_counts_unicode_text():
+    from tools.word_count.tool import word_count
+    result = word_count("Hello world!")
+    assert result["word_count"] == 2
+    assert result["character_count"] == 12
+
+
+def test_word_count_rejects_invalid_input():
+    from tools.word_count.tool import word_count
+    for value in (None, "", "   ", 3):
+        assert "error" in word_count(value)
+
+
+def test_word_count_reports_no_words():
+    from tools.word_count.tool import word_count
+    assert "error" in word_count("!!!")

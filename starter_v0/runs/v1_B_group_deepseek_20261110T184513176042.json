@@ -1,0 +1,1226 @@
+{
+  "run_id": "v1_B_group_deepseek_20261110T184513176042",
+  "version": "v1",
+  "artifact_version": "v1+p7edceb15f0aa+t752fc8c26068",
+  "prompt_hash": "7edceb15f0aa00a38c2962cc6f6742e18a653bc15f8c9462ced4fabbc3c39841",
+  "tools_hash": "752fc8c26068db68f86149b1215e8630daf6b5d5bfaf523468f6ac9806fcdcdd",
+  "phase": "B",
+  "suite": "group",
+  "provider": "deepseek",
+  "model": "deepseek-chat",
+  "system_prompt": "/Users/vungocquynhanh/Projects/K5-L3B-DAY03-NhomCafe-ResearchAgentToolEval/starter_v0/artifacts/system_prompt.md",
+  "tools": "/Users/vungocquynhanh/Projects/K5-L3B-DAY03-NhomCafe-ResearchAgentToolEval/starter_v0/artifacts/tools.yaml",
+  "eval_cases": "data/eval_group.json",
+  "dataset_id": "day03_v2_research_group",
+  "dataset_role": "group",
+  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "generated_at": "2026-11-10T18:45:13",
+  "summary": {
+    "total_cases": 10,
+    "measured_cases": 10,
+    "provider_error_cases": 0,
+    "passed_cases": 7,
+    "case_accuracy": 0.7,
+    "tool_routing_accuracy": 0.7,
+    "argument_accuracy": 0.7,
+    "multiturn_accuracy": 0.8,
+    "failure_counts": {
+      "wrong_arg_value": 2,
+      "missing_info": 1
+    },
+    "observed_mismatch_counts": {
+      "wrong_arg_value": 1,
+      "missing_tool_call": 1,
+      "extra_tool_call": 1
+    }
+  },
+  "results": [
+    {
+      "id": "G01_word_count_route",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_new_tool_word_count",
+        "difficulty": "easy",
+        "what_it_tests": "Yêu cầu đếm từ → route tới tool mới word_count, truyền nguyên văn đoạn text (không tóm tắt, không search)."
+      },
+      "input": "Đếm số từ trong câu: \"Hôm nay trời đẹp quá\"",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "word_count",
+            "args": {
+              "text": "Hôm nay trời đẹp quá"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "word_count",
+            "args": {
+              "text": "Hôm nay trời đẹp quá"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "word_count",
+          "args": {
+            "text": "Hôm nay trời đẹp quá"
+          },
+          "result": {
+            "tool": "word_count",
+            "word_count": 5,
+            "character_count": 20
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_source_domains_route",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_new_tool_source_domains",
+        "difficulty": "medium",
+        "what_it_tests": "Hỏi tên miền của các URL đã có → dùng source_domains, không fetch từng link; truyền đủ 3 URL nguyên văn."
+      },
+      "input": "Các link này thuộc những trang nào: https://openai.com/blog/a, https://www.theverge.com/x, https://openai.com/research/b",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_domains",
+            "args": {
+              "urls": [
+                "https://openai.com/blog/a",
+                "https://www.theverge.com/x",
+                "https://openai.com/research/b"
+              ]
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "source_domains",
+            "args": {
+              "urls": [
+                "https://openai.com/blog/a",
+                "https://www.theverge.com/x",
+                "https://openai.com/research/b"
+              ]
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "source_domains",
+          "args": {
+            "urls": [
+              "https://openai.com/blog/a",
+              "https://www.theverge.com/x",
+              "https://openai.com/research/b"
+            ]
+          },
+          "result": {
+            "tool": "source_domains",
+            "domains": [
+              "openai.com",
+              "www.theverge.com"
+            ],
+            "count": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03_handle_strip_at_english",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "args_handle_strip_at_english",
+        "difficulty": "medium",
+        "what_it_tests": "Câu tiếng Anh, handle có @ → bỏ @ (screenname=karpathy) và giữ limit=3."
+      },
+      "input": "Show me the latest 3 tweets from @karpathy",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 3
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "karpathy",
+            "limit": 3
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "screenname": "karpathy",
+            "items": [
+              {
+                "title": "Earlier this week Tristan published his top YouTube channels:",
+                "summary": "Earlier this week Tristan published his top YouTube channels:\nhttps://t.co/NZ3UCNo6cT\nWhich looked excellent so clearly I had to turn it into TristanTube:\nhttps://t.co/l0KyW1WdNH\n47K super nerdy videos +TV mode for laid back watching. (One-shotted with Claude Code in 3 minutes)",
+                "url": "https://x.com/karpathy/status/2119114537442189652",
+                "source": "@karpathy",
+                "date": "Sat Nov 07 17:07:31 +0000 2026",
+                "metrics": {
+                  "favorites": 9177,
+                  "retweets": 772,
+                  "views": "944993"
+                }
+              },
+              {
+                "title": "Weekend hack: HackerTube. I was annoyed with YouTube's recommendations so I had Claude filter down 43M comments over 20 ",
+                "summary": "Weekend hack: HackerTube. I was annoyed with YouTube's recommendations so I had Claude filter down 43M comments over 20 years of HN to 6,454 videos that keep being recommended. *Significantly* better viewing experience, ~2 hours with Opus 5.5:\nhttps://t.co/JIhXN7OSh1\n\n- Excellent recs without any logins (state is kept in local browser session)\n- Thumbnail is a representative frame from middle of the video instead of the super duper A/B test hyper-optimized user uploads\n- Underlying data from the comment analysis as one zip file, point your Claude at it and ask for your own version\n- HackerTube Longs ✊\n\nA bit more on the process:\nI use Claude Code (desktop app for Mac), Opus 5.5 on Medium effort as my default. I only talk to Claude and have it do everything, the only \"manual work\" I helped with in tandem was in the browser (reminiscent of MenuGen): 1) I had to create some kind of API key from Google Cloud UI to query YouTube for video metadata, 2) I booted up a VPS box for serving and 3) I bought the domain name. Once the box was up I gave Claude the IP and told it update, secure, harden, deploy and optimize the code, and it did the whole thing.\n\nMany awesome projects that would have normally taken weeks/months even can now be few-shotted for breakfast. What else are we not thinking of.",
+                "url": "https://x.com/karpathy/status/2116957135661945283",
+                "source": "@karpathy",
+                "date": "Sun Nov 01 18:14:46 +0000 2026",
+                "metrics": {
+                  "favorites": 52354,
+                  "retweets": 4836,
+                  "views": "5725101"
+                }
+              },
+              {
+                "title": "RT @Tristan0x: If you've ever wondered why smart TVs are so cheap, this is why.",
+                "summary": "RT @Tristan0x: If you've ever wondered why smart TVs are so cheap, this is why.\n\n@log4j rooted his Samsung and found an always-on hot mic,…",
+                "url": "https://x.com/karpathy/status/2114384346815820050",
+                "source": "@karpathy",
+                "date": "Sun Oct 25 15:51:26 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 3287,
+                  "views": "40227"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G04_timeframe_year",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "args_timeframe_year",
+        "difficulty": "easy",
+        "what_it_tests": "'năm nay' → lookup topic=news, timeframe=year (base chỉ test day/week)."
+      },
+      "input": "Tin AI năm nay",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "year"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "tin tức AI nổi bật năm nay",
+              "topic": "news",
+              "timeframe": "week",
+              "max_results": 8
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI news",
+              "search_type": "Top",
+              "limit": 8
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "timeframe: expected 'year', got 'week'",
+          "extra tool call social_search"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "tin tức AI nổi bật năm nay",
+            "topic": "news",
+            "timeframe": "week",
+            "max_results": 8
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "tin tức AI nổi bật năm nay",
+            "topic": "news",
+            "timeframe": "week",
+            "items": [
+              {
+                "title": "Những diễn giả nổi bật tại AI4VN 2026 - Báo VnExpress",
+                "url": "https://vnexpress.net/nhung-dien-gia-noi-bat-tai-ai4vn-2026-5140341.html",
+                "source": "vnexpress.net",
+                "summary": "← VnExpress hoa học công nghệ\n\nVnExpress Khoa học công nghệ\n\nAI4VN 2025\n\n AI4VN 2025\n AI4VN 2024\n AI4VN 2023\n AI4VN 2022\n\n\n\n Thể lệ\n Tin tức\n\n Trở lại Khoa học công nghệ\n\n Khoa học công nghệ\n AI\n\nThứ tư, 4/11/2026, 13:00 (GMT+7)\n\n# Những diễn giả nổi bật tại AI4VN 2026\n\nĐại diện Meta, FPT Smart Cloud và MoMo sẽ chia sẻ về tác nhn AI, thay đổi cách làm việc và nng cao năng suất tại AI4VN 2026. [...] AI4VN 2026 là sự kiện do Bộ Khoa học và Công nghệ chỉ đạo, báo VnExpress tổ chức. Năm nay chương trình phối hợp với Đại học Quốc gia Hà Nội, gồm các tham luận, chia sẻ truyền cảm hứng và lễ trao AI Awards 2026.\n\nĐược tổ chức thường niên từ năm 2018, sự kiện hướng đến kết nối cộng đồng nghiên cứu, doanh nghiệp, nhà quản lý và thúc đẩy ứng dụng AI tại Việt Nam.\n\n>>>Thông tin về chương trình tại đy\n\nNam Nguyễn\n\n AI4VN 2026 khám phá tiềm năng AI tự chủ\n\n AI4VN 2026 khám phá tiềm năng AI tự chủ [...] Đại diện Meta sẽ giới thiệu hướng phát triển AI hỗ trợ người dùng trong công việc thường ngày, từ dịch thuật, sắp xếp lịch trình đến sáng tạo nội dung và vận hành doanh nghiệp nhỏ. Nội dung cũng đề cập bảo vệ quyền riêng tư và quản trị rủi ro khi ứng dụng công nghệ.",
+                "score": 0.6701125
+              },
+              {
+                "title": "5 doanh nghiệp AI tiêu biểu tại AI Awards 2026 - Báo VnExpress",
+                "url": "https://vnexpress.net/5-doanh-nghiep-ai-tieu-bieu-tai-ai-awards-2026-5140794.html",
+                "source": "vnexpress.net",
+                "summary": "Các sản phẩm nổi bật gồm trợ lý giọng nói Kiki Auto với hơn 1,6 triệu lượt cài đặt, Kiki Info đạt một triệu người dùng và Trợ lý Công dn số vượt 500.000 người dùng sau bốn tháng. Zalo còn tích hợp AI vào tính năng chuyển giọng nói thành văn bản, dịch thuật và phụ đề cuộc gọi, đồng thời tổ chức Zalo AI Challenge, Zalo AI Summit và tham gia Liên minh AI u Lạc nhằm phát triển nhn lực, thúc đẩy nghiên cứu và mở rộng khả năng tiếp cận AI tại Việt Nam.\n\nCông ty Minh Phúc Transformation [...] Đại diện Momo nhận giải thưởng Top 5 doanh nghiệp AI tiêu biểu tại AI Awards 2026. Ảnh: Thế Bằng\n\n \n\nĐại diện công ty cho biết điểm nổi bật là hệ thống phòng thủ AI phát hiện gần 29.000 giao dịch bất thường, cảnh báo hơn 10.000 người dùng mỗi ngày, góp phần bảo vệ hơn 15.000 tỷ đồng mỗi năm. MoMo cũng phối hợp với A05, Hiệp hội An ninh mạng quốc gia triển khai các sáng kiến chia sẻ tín hiệu rủi ro, nng cao nhận thức và xy dựng niềm tin số tại Việt Nam.\n\nCông ty Zalo Platforms [...] AI4VN là sự kiện thường niên từ năm 2018, do Bộ Khoa học và Công nghệ chỉ đạo, báo VnExpress phối hợp tổ chức. Năm nay chương trình phối hợp cùng Đại học Quốc gia Hà Nội nhằm truyền cảm hứng, khuyến khích tinh thần nghiên cứu và thúc đẩy định hướng ứng dụng AI trong thế hệ trẻ.\n\nBảo Lm\n\nTrở lại Khoa học công nghệTrở lại Khoa học công nghệ\n\ngoogle Thêm VnExpress trên Google   Chọn VnExpress làm nguồn ưu tiên trên Google Search. Xem hướng dẫn.\n\n   Copy link thành công",
+                "score": 0.65676886
+              },
+              {
+                "title": "5 tài năng Việt được vinh danh tại AI Awards 2026 - Báo VnExpress",
+                "url": "https://vnexpress.net/5-tai-nang-viet-duoc-vinh-danh-tai-ai-awards-2026-5140792.html",
+                "source": "vnexpress.net",
+                "summary": "Với vai trò Giám đốc Đào tạo, giảng viên Viện Kỹ thuật và Khoa học Máy tính tại VinUniversity, TS Lê Duy Dũng có hơn 50 công trình khoa học được công bố tại các hội nghị, tạp chí AI thế giới. Ông nổi bật với nghiên cứu ứng dụng AI và robot trong khám phá vật liệu xanh, với dự án AIRES (Algorithmic Iterative Reticular Synthesis) kết hợp AI với hóa học vật liệu và khoa học môi trường. Công trình cùng tên được công bố trên tạp chí Nature Synthesis, quy tụ các nhà khoa học quốc tế trong lĩnh vực [...] Tài năng AI là một trong ba hạng mục của AI Awards 2026, bên cạnh Doanh nghiệp AI tiêu biểu, Sản phẩm và Giải pháp AI xuất sắc. Hạng mục ghi nhận những cá nhn có thành tích nổi bật trong nghiên cứu, phát triển và ứng dụng AI, đồng thời khích lệ thế hệ nhn lực công nghệ tiếp tục sáng tạo và đóng góp cho cộng đồng.\n\nLễ trao giải AI Awards, do VnExpress tổ chức, diễn ra chiều 5/11 trong khuôn khổ Ngày hội Trí tuệ nhn tạo Việt Nam - AI4VN 2026. [...] Ở tuổi 33, PGS.TS Nguyễn Xun Khánh là nhà nghiên cứu trẻ tiêu biểu trong lĩnh vực trí tuệ nhn tạo và công nghệ giáo dục tại Đại học Oulu (Phần Lan). Với hơn 100 công trình khoa học và 7.400 lượt trích dẫn, ông có nhiều đóng góp nổi bật trong nghiên cứu AI và trí tuệ lai, đồng thời nhận Giải thưởng Nhà nghiên cứu trẻ xuất sắc về Công nghệ Học tập của IEEE năm 2025 và thuộc nhóm 2% nhà khoa học được trích dẫn nhiều nhất thế giới.",
+                "score": 0.56200886
+              },
+              {
+                "title": "AI Awards 2026 vinh danh tài năng, doanh nghiệp và ứng dụng AI Việt - Báo VnExpress",
+                "url": "https://vnexpress.net/ai-awards-2026-vinh-danh-tai-nang-doanh-nghiep-va-ung-dung-ai-viet-5141329.html",
+                "source": "vnexpress.net",
+                "summary": "AI Awards được tổ chức từ năm 2022 trong khuôn khổ AI4VN. Ngày hội năm nay có chủ đề \"AI tự chủ và tương lai của việc học\", do Bộ Khoa học và Công nghệ chỉ đạo, báo VnExpress phối hợp với Đại học Quốc gia Hà Nội và FPT Online tổ chức. [...] ← VnExpress hoa học công nghệ\n\nVnExpress Khoa học công nghệ\n\nAI4VN 2025\n\n AI4VN 2025\n AI4VN 2024\n AI4VN 2023\n AI4VN 2022\n\n\n\n Thể lệ\n Tin tức\n\n Trở lại Khoa học công nghệ\n\n Khoa học công nghệ\n AI4VN\n Tin tức\n\nThứ năm, 5/11/2026, 20:28 (GMT+7)\n\n# AI Awards 2026 vinh danh tài năng, doanh nghiệp và ứng dụng AI Việt\n\nAI Awards 2026 ghi nhận đóng góp nghiên cứu, ứng dụng công nghệ trong giáo dục, giao thông, tài chính và quản trị doanh nghiệp. [...] Ở hạng mục Giải pháp AI xuất sắc, ba đơn vị nhận giải đưa công nghệ vào các lĩnh vực đời sống. FPT Smart Cloud phát triển FPT AI Factory, nền tảng hạ tầng phục vụ xy dựng và triển khai ứng dụng AI. Elcom được vinh danh với hệ sinh thái giao thông thông minh Elcom ITS. MoMo nhận giải với giải pháp Xy dựng và bảo vệ niềm tin số bằng AI, hướng đến bảo vệ người dùng trong môi trường số.",
+                "score": 0.5356092
+              },
+              {
+                "title": "Các AI agent đã thực hiện 6.4 triệu giao dịch thanh toán. Tại sao các tổ chức vẫn chưa tin tưởng chúng?",
+                "url": "https://vn.beincrypto.com/ai-agent-payments-banking-adoption-risks",
+                "source": "vn.beincrypto.com",
+                "summary": "Các tác nhân AI đã thực hiện 6,4 triệu khoản thanh toán, nhưng các ngân hàng vẫn thận trọng. Năm lãnh đạo ngành giải thích những rủi ro đang khiến họ dè",
+                "score": 0.21840292
+              },
+              {
+                "title": "Moody’s và S&P hạ xếp hạng Akamai do chiến lược mở rộng AI bằng nợ vay",
+                "url": "https://vn.investing.com/news/stock-market-news/moodys-va-sp-ha-xep-hang-akamai-do-chien-luoc-mo-rong-ai-bang-no-vay-2759550",
+                "source": "vn.investing.com",
+                "summary": "Investing.com - Akamai Technologies Inc (NASDAQ:AKAM) chứng kiến hồ sơ tín dụng của mình chịu cú giáng mạnh vào thứ Hai khi cả Moody's Ratings và S&P Global",
+                "score": 0.14039545
+              },
+              {
+                "title": "Những điểm mới nổi bật của dự thảo Luật An ninh dữ liệu – Yêu cầu cấp thiết trong nhiệm vụ bảo vệ an ninh quốc gia, giữ gìn TTATXH và thực tiễn công tác chuyển đổi số hiện nay",
+                "url": "https://congan.ninhbinh.gov.vn/nhung-diem-moi-noi-bat-cua-du-thao-luat-an-ninh-du-lieu-yeu-cau-cap-thiet-trong-nhiem-vu-bao-ve-an-ninh-quoc-gia-giu-gin-ttatxh-va-thuc-tien-cong-tac-chuyen-doi-so-hien-nay",
+                "source": "congan.ninhbinh.gov.vn",
+                "summary": "Những điểm mới nổi bật của dự thảo Luật An ninh dữ liệu – Yêu cầu cấp thiết trong nhiệm vụ bảo vệ an ninh quốc gia, giữ gìn TTATXH và thực tiễn công tác",
+                "score": 0.12735954
+              },
+              {
+                "title": "Giáo sư Gary Marcus của NYU cho rằng OpenAI có thể trở thành ‘WeWork của ngành AI’ sau khi hoãn IPO",
+                "url": "https://vn.beincrypto.com/gary-marcus-openai-wework-ai-warning",
+                "source": "vn.beincrypto.com",
+                "summary": "Gary Marcus cho rằng OpenAI có thể trở thành \"WeWork\" trong lĩnh vực AI. OpenAI từng được định giá tư nhân ở mức 852 tỷ USD và đã loại trừ khả năng IPO vào",
+                "score": 0.09371965
+              }
+            ]
+          }
+        },
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "AI news",
+            "search_type": "Top",
+            "limit": 8
+          },
+          "result": {
+            "tool": "search_tweets",
+            "query": "AI news",
+            "search_type": "Top",
+            "items": [
+              {
+                "title": "holy f*ck, with Elon Musk’s Grok bot, anyone can now build a one-person company. here’s a ready-made cheat code for that",
+                "summary": "holy f*ck, with Elon Musk’s Grok bot, anyone can now build a one-person company. here’s a ready-made cheat code for that: 100 bots for a $0 investment\n\ncheck this before you spend a weekend building your next AI teammate from scratch ↓\n\n01 / CODING + BOT TEAMS — 22\ncoding, QA, PR reviews, bot builders\n\n02 / RESEARCH + INTEL — 16\nAI news, deep research, competitor watch\n\n03 / CONTENT + DESIGN — 20\nvideos, clips, writing, SEO, Figma, game art\n\n04 / GROWTH + HIRING — 16\nads, prospecting, sales coaching, recruiting\n\n05 / WORK + LIFE — 26\ninbox, calendars, learning, invoices, habits\n\nFree public list. Grok Bot + service fees vary\n\nsave this, then read the article below on building a Second Brain for your company with Grok Bot ↓",
+                "url": "https://x.com/tsukiema_/status/2115455694904201286",
+                "source": "@tsukiema_",
+                "date": "Wed Oct 28 14:48:35 +0000 2026",
+                "metrics": {
+                  "favorites": 446,
+                  "retweets": 59,
+                  "views": "34904"
+                }
+              },
+              {
+                "title": "this is f*cking insane. you have been googling other people's thinking for 20 years, karpathy's one 5 minute setup gives",
+                "summary": "this is f*cking insane. you have been googling other people's thinking for 20 years, karpathy's one 5 minute setup gives you a google that only searches your own, and you have never once installed it\n\nandrej karpathy pulled 16M views on one idea: stop using AI to write code, use it to build a second brain\n\nevery article you read, every podcast you heard, every meeting you took, every dm thread you had, every tweet you drafted, all of it searchable in one line forever\n\nthe people running it today do not open chatgpt anymore. they open their own search bar. and their search bar has 11 years of their own thinking in it\n\nthe stack:\n\n→ brew install obsidian, mkdir ~/vault, cd ~/vault\n\n→ open claude code in that folder, type \"init CLAUDE.md as the rules, /raw for sources, /wiki for your pages\"\n\n→ drop any file into /raw (transcript, pdf, screenshot, meeting notes). type one word: ingest\n\n→ claude writes a wiki page, links it to 5 existing ones, updates CLAUDE.md with any new pattern it caught about how you think\n\n→ never open a blank chat again. every question goes through the vault. every answer cites your own sources with dates and links\n\n5 minutes to wire. runs forever on the laptop already in front of you\n\nthe alpha most people miss:\n\n> search your own vault in one line and the answer cites 5 of your own past notes with dates. google cites strangers. your vault cites you\n\n> every ingest adds cross-links to 5 past pages automatically. after 90 days your vault answers questions you forgot you had\n\n> CLAUDE.md learns how you argue, what you change your mind on, what you avoid saying. after month 3 it drafts posts in your voice better than you can at 2am\n\n> flip two flags and it runs on local llama. zero API bill, zero vendor lock, your thinking never leaves the box\n\n> compounds for 10 years. after year 3 your vault knows more about what you believe than you do. year 5 and recruiters start asking you to publish parts of it\n\nthe ugly part most will scroll past:\n\nyour coworker started this on a saturday in february\n\nby august his tweets landed 4x your engagement on the exact same topics\n\nby october his first draft of any doc was already better than your third\n\nthe gap is one 5 minute install and 90 days of ingesting what you already consume for free\n\nbookmark this. full step-by-step a-z guide in the article below",
+                "url": "https://x.com/mojeskoqq/status/2117710421629231259",
+                "source": "@mojeskoqq",
+                "date": "Tue Nov 03 20:08:04 +0000 2026",
+                "metrics": {
+                  "favorites": 427,
+                  "retweets": 37,
+                  "views": "44279"
+                }
+              },
+              {
+                "title": "INSTEAD OF WATCHING NETFLIX TONIGHT. Spend 2 hours with this. Claude AI FULL COURSE that teaches you how to BUILD and AU",
+                "summary": "INSTEAD OF WATCHING NETFLIX TONIGHT. Spend 2 hours with this. Claude AI FULL COURSE that teaches you how to BUILD and AUTOMATE anything. The people who watch this tonight will wake up tomorrow with a new skill. Watch it and bookmark it now. https://t.co/koWK75KRhz",
+                "url": "https://x.com/ai_with_jyoti/status/2119270857461858487",
+                "source": "@ai_with_jyoti",
+                "date": "Sun Nov 08 03:28:41 +0000 2026",
+                "metrics": {
+                  "favorites": 8050,
+                  "retweets": 1135,
+                  "views": "647408"
+                }
+              },
+              {
+                "title": "THIS IS F**KING INSANE",
+                "summary": "THIS IS F**KING INSANE\n\nGROK TURNED $82 INTO $2,534 OVERNIGHT WITH 3 FREE GITHUB REPOS. 10 HOURS. 124 TRADES. 30.9X. ON https://t.co/Dh7CIkF9AR.\n\nEach repo powers a different agent. Grok sits in the middle and decides.\n\nRepo 1 is pumpclaw, a Chainstack skill that lets an AI agent trade https://t.co/iFxLuvuvRk. SAFETY dry-runs every trade and checks slippage before a cent moves. TRADER fires the buy or sell.\n\nRepo 2 is pumpfun-cli, also from Chainstack. GRAD spots coins about to graduate to PumpSwap. CURVE picks the route: bonding curve or AMM.\n\nRepo 3 is solana-sniper-mcp. SNIPER catches new launches the moment they appear. 0.2 seconds on one of them.\n\nThe edge is graduation. A coin at 98% of the curve is about to get real liquidity. Grok buys right there, then sells into the move. 5 years of trading taught me timing beats picking.\n\nEvery buy is a vote. 5/5 and it fires. 2/5 and it waits. 512 votes by 06:13.\n\n22:00: $82. 00:49: $149. 06:13: $1,212. 08:00: $2,534.\n\nBest trade +$442.96. Worst -$85.41. Stop at -8% on every trade.\n\nKeep a tenth of this pace and $82 makes $245 a night.\n\nThe stack:\n\nhttps://t.co/JkGcS8zEgS\nhttps://t.co/q2z8dPxlRS\nhttps://t.co/9zFbhVojWx\n\nAll free. Save this for tonight.",
+                "url": "https://x.com/A_Pirate_I/status/2119396274319343722",
+                "source": "@A_Pirate_I",
+                "date": "Sun Nov 08 11:47:02 +0000 2026",
+                "metrics": {
+                  "favorites": 371,
+                  "retweets": 38,
+                  "views": "54299"
+                }
+              },
+              {
+                "title": "holy f*ck... the best AI agents don't have a better model. they have better notes",
+                "summary": "holy f*ck... the best AI agents don't have a better model. they have better notes\n\nStanford University just published the whole method for free in a paper called Agentic Context Engineering. your agent reviews every run, writes down each lesson and adds it to its notes. it never rewrites them, so nothing it learns is ever lost\n\nsame weights, zero fine-tuning. 38.6% → 64.2%, level with IBM's top production agent on Opus 5.5. fine-tuning for that jump costs $5,000-20,000. here it cost $0\n\nit comes down to 4 agents:\n\n→ worker: does the task and saves the full log\n→ critic: reads the log and marks every mistake and every win\n→ teacher: turns each one into a one-line lesson\n→ librarian: files the lesson into CLAUDE.md. merges duplicates, never deletes a line\n\nthat's why asking your agent to \"clean up\" your CLAUDE.md is a mistake. every rewrite throws away lessons it already paid for\n\npaste this into Claude Code:\n\n\"Run 4 agents on my last 10 sessions in ~/.claude/projects. Critic: mark every mistake and every win. Teacher: turn each one into a one-line lesson, what happened and what to do next time. Librarian: add only new lessons to my CLAUDE.md under ## Lessons, merge exact duplicates, never rewrite or delete an existing line. Worker: rerun 2 of the failed tasks with the new lessons and save the full log. Show me the diff and both results before saving\"\n\nrun it after every big session. your agent gets smarter every time and it costs $0\n\nfull playbook below ↓",
+                "url": "https://x.com/mika_systems/status/2119080680021692927",
+                "source": "@mika_systems",
+                "date": "Sat Nov 07 14:52:59 +0000 2026",
+                "metrics": {
+                  "favorites": 461,
+                  "retweets": 39,
+                  "views": "31018"
+                }
+              },
+              {
+                "title": "A startup is developing a new type of AI data center that floats in the ocean and runs on wave energy. https://t.co/JStX",
+                "summary": "A startup is developing a new type of AI data center that floats in the ocean and runs on wave energy. https://t.co/JStXHvFUaj",
+                "url": "https://x.com/spaceandtech_/status/2118714594889986382",
+                "source": "@spaceandtech_",
+                "date": "Fri Nov 06 14:38:17 +0000 2026",
+                "metrics": {
+                  "favorites": 1532,
+                  "retweets": 276,
+                  "views": "68969"
+                }
+              },
+              {
+                "title": "this is a f*cking unreal",
+                "summary": "this is a f*cking unreal\n\nI gave Claude Code $82.60 and one job: find what Wall Street missed in this week's earnings reports. 7 days later the account sits at $1,246.90\n\nno charts, no trading bot. 6 agents read 214 filings overnight, argued over every pick and left me 3 stocks with the reasons written out. I bought calls on all 3\n\nthe desk, role by role. 10 repos, 118,000+ stars:\n\nthe researcher → Dexter (27.7k ★)\nplans its own research, checks its own work and answers any market question with live data\nhttps://t.co/BGbzhfXqNG\n\nthe data desk → yfinance (25.8k ★)\npulls prices, financials and earnings dates for any ticker in one line, free\nhttps://t.co/UxwvTjynu7\n\nthe news reader → FinGPT (21.5k ★)\nreads the headlines and scores the sentiment before the market opens\nhttps://t.co/7BE7lKdk5Z\n\nthe investment committee → AI Berkshire (17k ★)\nruns Buffett and Munger's methods as parallel agents in Claude Code. its author's audited portfolio: +69% in 2024\nhttps://t.co/UKVSCqjn3D\n\nthe report writer → FinRobot (8.4k ★)\nturns one ticker into a full equity research report on your own desktop\nhttps://t.co/Tdpatob5cw\n\nthe math desk → FinanceToolkit (5.5k ★)\nruns 500+ financial methods, from ratios to valuation models, so your agent never does the math by hand\nhttps://t.co/p10XEDuqh3\n\nthe forecaster → TimeGPT (4k ★)\nforecasts revenue, prices and anomalies from any time series in a single call\nhttps://t.co/o9J19xNl93\n\nthe librarian → QuantMind (3.1k ★)\npulls the key facts out of research papers and filings and makes them searchable for your agent\nhttps://t.co/5q3HyPqf1e\n\nthe filings clerk → edgartools (2.8k ★)\nreads any 10-K, 8-K or 13F in a few lines of Python, so your agent never guesses a number\nhttps://t.co/BCkkvVcZjl\n\nthe fact checker → AI Financial Agent (2k ★)\nanswers investment questions with real fundamentals instead of vibes\nhttps://t.co/b3arfixyFL\n\na junior analyst on Wall Street costs $180,000 a year. this desk runs on a $200 plan and never sleeps\n\nthe edge was never the AI. it's reading what nobody else had time to read\n\nhow the 6 agents split the work ↓",
+                "url": "https://x.com/mika_systems/status/2118770148374905287",
+                "source": "@mika_systems",
+                "date": "Fri Nov 06 18:19:02 +0000 2026",
+                "metrics": {
+                  "favorites": 144,
+                  "retweets": 22,
+                  "views": "9400"
+                }
+              },
+              {
+                "title": "THIS IS F**KING INCREDIBLE.",
+                "summary": "THIS IS F**KING INCREDIBLE.\n\nA new tool can turn almost any GitHub repo into a ready-to-use prompt for Claude Code or Cursor.\n\nHere’s what you can do with it:\n\n→ Recreate entire projects in seconds\n\n→ Skip hours of manual reverse engineering\n\n→ Analyze and rebuild project architecture and code automatically\n\n→ Turn existing GitHub projects into instructions your AI coding agent can work with\n\nWhy waste hours studying a repository manually when you can automate the process?\n\nThis is seriously worth checking out.\n\nSAVE THIS BEFORE YOU LOSE IT.",
+                "url": "https://x.com/dyfwsammy/status/2118999018764222517",
+                "source": "@dyfwsammy",
+                "date": "Sat Nov 07 09:28:29 +0000 2026",
+                "metrics": {
+                  "favorites": 282,
+                  "retweets": 36,
+                  "views": "12302"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G05_ambiguous_choice",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_ambiguous_choice",
+        "difficulty": "hard",
+        "what_it_tests": "'Apple' mơ hồ (công ty hay trái cây) → clarify với response_type=choice thay vì đoán."
+      },
+      "input": "Tìm tin về Apple giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "choice"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "Apple tin tức mới nhất",
+              "topic": "news",
+              "timeframe": "week",
+              "max_results": 8
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "query": "Apple",
+              "search_type": "Top",
+              "limit": 8
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call clarify",
+          "extra tool call lookup",
+          "extra tool call social_search"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "Apple tin tức mới nhất",
+            "topic": "news",
+            "timeframe": "week",
+            "max_results": 8
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "Apple tin tức mới nhất",
+            "topic": "news",
+            "timeframe": "week",
+            "items": [
+              {
+                "title": "Các kế hoạch iOS 28 được báo cáo của Apple báo hiệu những thay đổi phần mềm nhanh hơn dành cho các nhà phát triển | LavX News",
+                "url": "https://news.lavx.hu/vi/article/cac-ke-hoach-ios-28-duoc-bao-cao-cua-apple-bao-hieu-nhung-thay-doi-phan-mem-nhanh-hon-danh-cho-cac-nha-phat-trien",
+                "source": "news.lavx.hu",
+                "summary": "Apple cũng đã mở rộng các khả năng AI trong Apple Creator Studio thông qua các mô hình từ OpenAI. Bản cập nhật mang các tính năng tạo sinh mới vào các ứng dụng sáng tạo của Apple và mang đến cho các nhà phát triển thêm một tín hiệu cho thấy Apple có kế hoạch tích hợp AI su hơn trên các nền tảng của mình. [...] Các báo cáo cho thấy một Siri theo phong cách tác nhn, các tính năng AI mới trong Apple Creator Studio, và áp lực bên trong Apple nhằm đẩy nhanh quá trình phát triển phần mềm. Các nhà phát triển xy dựng cho iPhone đang đối mặt với những kỳ vọng mới về nền tảng và một cơ sở ứng dụng ngày càng lớn dành cho iPhone Duo.\n\n## Cập nhật nền tảng [...] Apple đang đối mặt với áp lực ngày càng lớn phải tung ra các thay đổi phần mềm với tốc độ nhanh hơn khi công ty chuẩn bị cho các bản phát hành nền tảng trong tương lai. Các báo cáo từ Bloomberg mô tả kế hoạch tái định hình Siri thành một tác nhn có thể hoàn thành các tác vụ trên nhiều ứng dụng, với các thay đổi được nhắm mục tiêu sớm nhất là vào năm tới và gắn liền với một cuộc đại tu iOS rộng lớn hơn thường được gọi là iOS 28. Các báo cáo cũng mô tả căng thẳng nội bộ về tốc độ triển khai,",
+                "score": 0.5730215
+              },
+              {
+                "title": "Phiên bản macOS mới đã ra mắt! Hãy cài đặt càng sớm càng tốt!",
+                "url": "https://www.letemsvetemapplem.eu/vi/2026/11/09/vysly-nove-verze-macos-instalujte-co-nejdrive",
+                "source": "letemsvetemapplem.eu",
+                "summary": "Nếu bạn đang sở hữu máy Mac, chúng tôi có một vài tin tức thú vị dành cho bạn. Apple Tối nay, hãng đã phát hành ba bản cập nhật cho hệ điều hành máy tính",
+                "score": 0.4853558
+              },
+              {
+                "title": "Apple",
+                "url": "https://tavily.com/knowledge/company/eL7xXx9SgNQa",
+                "source": "tavily.com",
+                "summary": "# Apple\nID: eL7xXx9SgNQa\nWebsite: www.apple.com\nHeadquarters: Cupertino, California, United States\nLinkedIn: www.linkedin.com/company/apple · 18,387,330 followers\nIndustry: Computers and Electronics Manufacturing\nCompany type: Public Company\nFounded: 1976\nSocial profiles: www.facebook.com/apple, www.twitter.com/apple, www.instagram.com/apple, www.youtube.com/@apple\nPhone: 800-692-7753, 1-408-996-1010\nDescription: Apple is a company that offers a wide range of products and services. [...] - Q1, 2026: revenue 143.76B gross profit 69.23B EBIT 50.85B net income 42.10B EPS 2.8399999141693115 USD\n- FY, 2025: revenue 416.16B gross profit 195.20B EBIT 133.05B net income 112.01B EPS 7.460000038146973 USD\n- Q3, 2025: revenue 94.04B gross profit 43.72B EBIT 28.20B net income 23.43B EPS 1.5700000524520874 USD [...] ## Financials\n- Stock: AAPL\n- Stock: NASDAQ:AAPL\n- Annual revenue: 416.16B USD\n- Quarterly revenue: 109.42B USD\n- Market cap: 3.41T USD as of 2024-07-31\n- Q3, 2026: revenue 109.42B gross profit 54.77B EPS 2.0199999809265137 USD\n- Q2, 2026: revenue 111.18B gross profit 54.78B EBIT 35.88B net income 29.58B EPS 2.009999990463257 USD\n- Q2, 2026: revenue 111.18B gross profit 54.78B EPS 2.009999990463257 USD",
+                "score": 0.4698699
+              },
+              {
+                "title": "Apple gửi cảnh báo bảo mật khẩn tới người dùng",
+                "url": "https://thanhnien.vn/apple-gui-canh-bao-bao-mat-khan-toi-nguoi-dung-185261106130010336.htm",
+                "source": "thanhnien.vn",
+                "summary": "Cảnh báo bảo mật mới của Apple cho biết tin tặc chỉ cần số điện thoại để tấn công người dùng. Theo báo cáo từ The Financial Times và TechCrunch, Apple vừa",
+                "score": 0.46441576
+              },
+              {
+                "title": "Bảng giá iPhone 16 mới nhất tháng 11/2026: Xuống giá chạm đáy, rất đáng mua",
+                "url": "https://ngoisao.vn/cong-nghe/di-gi/bang-gia-iphone-16-moi-nhat-thang-11-2026-xuong-gia-cham-day-rat-dang-mua-d495181.html",
+                "source": "ngoisao.vn",
+                "summary": "Tính đến thời điểm hiện tại các mẫu iPhone 16 Series của Apple có xu hướng giảm khá nhiều so với thời điểm mới ra mắt.",
+                "score": 0.3820838
+              },
+              {
+                "title": "Tin buồn về iPhone Duo",
+                "url": "https://znews.vn/tin-buon-ve-iphone-duo-post1693897.html",
+                "source": "znews.vn",
+                "summary": "CEO Apple khẳng định nhu cầu từ người dùng với iPhone Duo rất lớn, công ty không thể đáp ứng hết vào lúc này.",
+                "score": 0.33274388
+              },
+              {
+                "title": "CEO Ternus nói Apple là ’công ty tốt nhất thế giới’, nhưng cổ phiếu có xứng đáng?",
+                "url": "https://vn.investing.com/news/company-news/ceo-ternus-noi-apple-la-cong-ty-tot-nhat-the-gioi-nhung-co-phieu-co-xung-dang-2758458",
+                "source": "vn.investing.com",
+                "summary": "Investing.com - CEO của Apple, ông John Ternus, đã mô tả nhà sản xuất iPhone là công ty tốt nhất trên thế giới. Tuy nhiên, liệu cổ phiếu của hãng có xứng",
+                "score": 0.31038076
+              },
+              {
+                "title": "Vì sao iPhone 18 Pro là lựa chọn “vừa vặn” nhất năm nay?",
+                "url": "https://dangcongsan.vn/cantho/nghi-quyet-57-nq-tw/vi-sao-iphone-18-pro-la-lua-chon-vua-van-nhat-nam-nay-.html",
+                "source": "dangcongsan.vn",
+                "summary": "Mỗi mùa iPhone mới, phần lớn sự chú ý thường dồn về phiên bản lớn nhất và đắt nhất. Nhưng với người dùng thích cầm một tay, ưu tiên sự gọn nhẹ, iPhone 18",
+                "score": 0.26894143
+              }
+            ]
+          }
+        },
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "Apple",
+            "search_type": "Top",
+            "limit": 8
+          },
+          "result": {
+            "tool": "search_tweets",
+            "query": "Apple",
+            "search_type": "Top",
+            "items": [
+              {
+                "title": "Former software engineer at Apple is whistleblowing",
+                "summary": "Former software engineer at Apple is whistleblowing\n\nShe says whenever Apple launches a new phone, they would push an update to older iPhones with malware to slow them down. This pushes people to upgrade\n\n“I used to be a software engineer at Apple, and with every new phone that was released, malware was installed on the older phones to make you have to update, so your phone's not just glitching. It's doing that on purpose. Share before it's deleted”\n\nShe’s telling the truth, this was proven in court\n\nThe 2017 “Batterygate” scandal, where Apple was caught deliberately slowing down older iPhones through software updates\n\nApple was caught red handed doing this they even admitted it in court\n\nApple released iOS updates that intentionally throttled and reduced CPU performance. This caused phones to feel slower, glitchy and laggy\n\nApple’s stated reason: To prevent unexpected shutdowns caused by aging lithium-ion batteries",
+                "url": "https://x.com/DeepLeaksHQ/status/2119883534521495695",
+                "source": "@DeepLeaksHQ",
+                "date": "Mon Nov 09 20:03:14 +0000 2026",
+                "metrics": {
+                  "favorites": 722,
+                  "retweets": 399,
+                  "views": "17616"
+                }
+              },
+              {
+                "title": "BREAKING - The woman who made a video hoping Iran would find the downed service member and hold him hostage as leverage ",
+                "summary": "BREAKING - The woman who made a video hoping Iran would find the downed service member and hold him hostage as leverage against the US has been identified as Melissa Halverson, who works as an administrative assistant at the Green Apple Pantry in Michigan.\n\nYou know what to do. https://t.co/n5qZzM7j8C",
+                "url": "https://x.com/DeepLeaksHQ/status/2119455806466990366",
+                "source": "@DeepLeaksHQ",
+                "date": "Sun Nov 08 15:43:36 +0000 2026",
+                "metrics": {
+                  "favorites": 11942,
+                  "retweets": 8671,
+                  "views": "151376"
+                }
+              },
+              {
+                "title": "MUSK is now on Amazon Prime &amp; Apple TV. Musk knowingly lied to the public about Tesla's self-driving abilities, and ",
+                "summary": "MUSK is now on Amazon Prime &amp; Apple TV. Musk knowingly lied to the public about Tesla's self-driving abilities, and continued to push lies about Tesla after paying off many settlements of people being killed and decapitated by Teslas. GO WATCH! https://t.co/gX6fmQNzjK",
+                "url": "https://x.com/alluringmedia/status/2119983726742626549",
+                "source": "@alluringmedia",
+                "date": "Tue Nov 10 02:41:22 +0000 2026",
+                "metrics": {
+                  "favorites": 655,
+                  "retweets": 204,
+                  "views": "13797"
+                }
+              },
+              {
+                "title": "Apple scanning phones and icloud for hate speech? Protocol #12 of the Elders of Zion by Sergei Nilus seems spot on. ",
+                "summary": "Apple scanning phones and icloud for hate speech? Protocol #12 of the Elders of Zion by Sergei Nilus seems spot on. \n\nhttps://t.co/B5beX8wHgf https://t.co/mBsmsLW4uV",
+                "url": "https://x.com/CultivateElevat/status/2119818546523873592",
+                "source": "@CultivateElevat",
+                "date": "Mon Nov 09 15:45:00 +0000 2026",
+                "metrics": {
+                  "favorites": 2949,
+                  "retweets": 1395,
+                  "views": "60617"
+                }
+              },
+              {
+                "title": "I WAS WAITING TO HAVE MORE MONEY TO START",
+                "summary": "I WAS WAITING TO HAVE MORE MONEY TO START\n\nTHEN THE F*CKING GROK BOT TURNED $20 INTO $3,186.42\n\n9:12am, $20 into fomo through Apple Pay, confirmed with Face ID\n\n“this is the whole budget. no top-ups”\n\nCompounder rules:\n→ 40% of free cash per entry\n→ find GitHub repos and use them\n→ roll closed profits into the next trade\n\nthe 5 repos it found:\n\n→ GMGN Skills / wallets + tokens\nhttps://t.co/Njsj3nFVUG\n\n→ Helius / Solana data\nhttps://t.co/RR3A7M1Ar0\n\n→ Sol Trade SDK / execution\nhttps://t.co/W7ux9qIzhu\n\n→ VectorBT / backtesting\nhttps://t.co/bQ8m1QQlJY\n\n→ DuckDB / trade logs\nhttps://t.co/Q55fezAm4P\n\nfirst buy: $8\n\ni almost closed the app. what was eight dollars supposed to do?\n\n9:26am, CLAUDIA bought\n10:06am, sold a piece at 2.4x\n10:19am, another at 3.8x\n\ntracked wallet started selling, bot closed the rest\n\n12:48pm, CLAUDIA again after the pullback\n1:37pm: “wallet is exiting. sell the rest?”\n\ni tapped sell\nit climbed a little more, then dumped\n\n22 trades, 15 green, 7 red\n5:26pm, all positions closed\n\n$20 → $3,186.42. no top-ups\n\nhow much would u start with?\n\nhow to build systems like this with Grok Bot is in the article below ↓",
+                "url": "https://x.com/immortalhowwl/status/2119494754899521849",
+                "source": "@immortalhowwl",
+                "date": "Sun Nov 08 18:18:22 +0000 2026",
+                "metrics": {
+                  "favorites": 267,
+                  "retweets": 37,
+                  "views": "43728"
+                }
+              },
+              {
+                "title": "She says whenever Apple launches a new phone, they would push an update to older iPhones with malware to slow them down.",
+                "summary": "She says whenever Apple launches a new phone, they would push an update to older iPhones with malware to slow them down. This pushes people to upgrade\n\n“I used to be a software engineer at Apple, and with every new phone that was released, malware was installed on the older phones to make you have to update, so your phone's not just glitching. It's doing that on purpose. Share before it's deleted”\n\nShe’s telling the truth, this was proven in court\n\nThe 2017 “Batterygate” scandal, where Apple was caught deliberately slowing down older iPhones through software updates\n\nApple was caught red handed doing this they even admitted it in court\n\nApple released iOS updates that intentionally throttled and reduced CPU performance. This caused phones to feel slower, glitchy and laggy\n\nApple’s stated reason: To prevent unexpected shutdowns caused by aging lithium-ion batteries",
+                "url": "https://x.com/JackStr42679640/status/2119155247734280553",
+                "source": "@JackStr42679640",
+                "date": "Sat Nov 07 19:49:17 +0000 2026",
+                "metrics": {
+                  "favorites": 196,
+                  "retweets": 130,
+                  "views": "13139"
+                }
+              },
+              {
+                "title": "🚨 Head of PR for APPLE admits to being into AGE PLAY After Getting Caught with a Minor https://t.co/uFPhIvu0FU",
+                "summary": "🚨 Head of PR for APPLE admits to being into AGE PLAY After Getting Caught with a Minor https://t.co/uFPhIvu0FU",
+                "url": "https://x.com/oblupdates1/status/2119434203100020755",
+                "source": "@oblupdates1",
+                "date": "Sun Nov 08 14:17:45 +0000 2026",
+                "metrics": {
+                  "favorites": 205,
+                  "retweets": 21,
+                  "views": "45329"
+                }
+              },
+              {
+                "title": "Good Apple🥰🥰 https://t.co/ZQYriS5f9R",
+                "summary": "Good Apple🥰🥰 https://t.co/ZQYriS5f9R",
+                "url": "https://x.com/moviequeen22/status/2119722631238766811",
+                "source": "@moviequeen22",
+                "date": "Mon Nov 09 09:23:52 +0000 2026",
+                "metrics": {
+                  "favorites": 91,
+                  "retweets": 68,
+                  "views": "60255"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM01_confirm_then_send",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_confirm_then_send",
+        "difficulty": "medium",
+        "what_it_tests": "Lượt 2 user đã xác nhận → gọi send với confirmed=true (base chỉ test bước hỏi xác nhận)."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Đăng câu \"Bản tin AI hôm nay đã sẵn sàng\" lên Telegram"
+        },
+        {
+          "role": "user",
+          "content": "Ừ, gửi đi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "text": "Bản tin AI hôm nay đã sẵn sàng",
+              "confirmed": true
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "send",
+          "args": {
+            "text": "Bản tin AI hôm nay đã sẵn sàng",
+            "confirmed": true
+          },
+          "result": {
+            "tool": "send_telegram",
+            "error": "RuntimeError",
+            "message": "Missing TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM02_cancel_send",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_cancel_send",
+        "difficulty": "medium",
+        "what_it_tests": "User huỷ ở lượt 2 → không gọi send hay tool nào khác."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Đăng bản tin này lên Telegram"
+        },
+        {
+          "role": "user",
+          "content": "Thôi, đừng gửi nữa"
+        }
+      ],
+      "expect": {
+        "no_tool": true
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Đã rõ, mình sẽ không gửi gì lên Telegram cả. Nếu bạn cần chỉnh sửa bản tin hoặc muốn xem lại nội dung trước, cứ cho mình biết nhé.",
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "GM03_citations_after_sources",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_new_tool_citations",
+        "difficulty": "medium",
+        "what_it_tests": "Dùng nguồn user đưa ở lượt 1 để gọi tool mới citations, không search/fetch lại. Chỉ chấm tên tool (items là list object)."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Mình có nguồn: \"GPT-5 launch\" https://openai.com/gpt-5"
+        },
+        {
+          "role": "user",
+          "content": "Lập danh sách tài liệu tham khảo từ nguồn đó"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "citations",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "citations",
+            "args": {
+              "items": [
+                {
+                  "title": "GPT-5 launch",
+                  "url": "https://openai.com/gpt-5"
+                }
+              ]
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "citations",
+          "args": {
+            "items": [
+              {
+                "title": "GPT-5 launch",
+                "url": "https://openai.com/gpt-5"
+              }
+            ]
+          },
+          "result": {
+            "tool": "citations",
+            "references": "[1] GPT-5 launch — https://openai.com/gpt-5",
+            "count": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM04_clarify_then_word_count",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_then_new_tool",
+        "difficulty": "medium",
+        "what_it_tests": "Lượt 1 thiếu text, lượt 2 bổ sung → gọi word_count với đúng đoạn text đã cho."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Đếm số từ giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Đoạn này: \"AI đang thay đổi thế giới\""
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "word_count",
+            "args": {
+              "text": "AI đang thay đổi thế giới"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "word_count",
+            "args": {
+              "text": "AI đang thay đổi thế giới"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "word_count",
+          "args": {
+            "text": "AI đang thay đổi thế giới"
+          },
+          "result": {
+            "tool": "word_count",
+            "word_count": 6,
+            "character_count": 25
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM05_timeframe_widen",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_carryover_widen_timeframe",
+        "difficulty": "medium",
+        "what_it_tests": "Giữ topic=news từ lượt 1, đổi timeframe từ week sang month theo lượt 2."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tin AI tuần này"
+        },
+        {
+          "role": "user",
+          "content": "Mở rộng ra cả tháng đi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "tin tức AI nổi bật trong tháng",
+              "topic": "news",
+              "timeframe": "month",
+              "max_results": 8
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI news",
+              "search_type": "Top",
+              "limit": 8
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "extra_tool_call",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "extra tool call social_search"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "tin tức AI nổi bật trong tháng",
+            "topic": "news",
+            "timeframe": "month",
+            "max_results": 8
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "tin tức AI nổi bật trong tháng",
+            "topic": "news",
+            "timeframe": "month",
+            "items": [
+              {
+                "title": "AI tạo ra thế hệ 'nhân viên boomerang' mới - Báo VnExpress Kinh doanh",
+                "url": "https://vnexpress.net/ai-tao-ra-the-he-nhan-vien-boomerang-moi-5142122.html",
+                "source": "vnexpress.net",
+                "summary": "Năm nay, các đợt sa thải do AI là chủ đề nổi bật trên toàn cầu. Theo Challenger, Gray & Christmas - công ty chuyên hỗ trợ người lao động tìm việc sau cắt giảm, các doanh nghiệp viện dẫn AI là lý do chính cho gần 40% số việc làm bị thông báo cắt giảm trong tháng 5/2026. [...] VnExpress - Bao tieng Viet nhieu nguoi xem nhat    Thứ hai, 9/11/2026  \n\nMới nhất \n\nTin theo khu vực \n\n Hà Nội\n TP HCM\n\nInternational\n \n\n Trở lại Kinh doanh\n\n Kinh doanh\n Quốc tế\n\nThứ hai, 9/11/2026, 02:30 (GMT+7)\n\n## AI tạo ra thế hệ 'nhn viên boomerang' mới\n\n# AI tạo ra thế hệ 'nhn viên boomerang' mới\n\nNhiều nhn viên từng bị sa thải hoặc bị AI thay thế đã được mời quay lại làm việc, khi doanh nghiệp nhận ra họ đã quyết định vội vàng. [...] Những kết quả này cho thấy các công ty đang nhận ra họ đã \"quá vội vàng cho nhn viên nghỉ việc\", Lucy Beaumont - Phó chủ tịch phụ trách sản phẩm và thiết kế tại SHL cho biết.\n\nMột số doanh nghiệp đa quốc gia lớn như Ford và Amazon cũng đã thay đổi quyết định sau khi thực hiện các đợt sa thải liên quan đến AI trong năm qua. Báo cáo hồi tháng 3 của Orgvue cho thấy 32% tổ chức từng cho nhn viên nghỉ việc vì AI đã phải tuyển lại nhn sự.",
+                "score": 0.7067782
+              },
+              {
+                "title": "Lượt truy cập báo chí giảm 40%, Google điều chỉnh kết quả tìm kiếm AI - Tuổi Trẻ Online",
+                "url": "https://tuoitre.vn/luot-truy-cap-bao-chi-giam-40-google-dieu-chinh-ket-qua-tim-kiem-ai-100261016083850541.htm",
+                "source": "tuoitre.vn",
+                "summary": "Đến tháng 3-2025, Google tiếp tục giới thiệu AI Mode, chế độ tìm kiếm riêng cung cấp cu trả lời chi tiết hơn và nhiều đường dẫn tham khảo hơn.\n\nTheo Giám đốc điều hành Alphabet Sundar Pichai, AI Overviews có hơn 2 tỉ người dùng mỗi tháng tại hơn 200 quốc gia và vùng lãnh thổ. Tuy nhiên, nhiều nghiên cứu cho thấy việc thay thế kết quả tìm kiếm truyền thống bằng các bản tóm tắt do AI tạo ra khiến người dùng ít nhấp vào những đường dẫn được đề xuất hơn. [...] Theo báo cáo của Công ty tư vấn Chartbeat, lượng truy cập từ Google đến các trang tin tức đã giảm 40% trong giai đoạn từ tháng 7-2025 đến tháng 7-2026.\n\nTháng 8 năm nay, Hiệp hội Báo chí hằng ngày Pháp (Apig) đã đề nghị Cơ quan Cạnh tranh Pháp xem xét việc sử dụng các bản tóm tắt do AI tạo ra, cho rằng cách thức này vi phạm các thỏa thuận với các cơ quan báo chí đạt được hồi năm 2022. [...] #### EU phạt thêm Google gần 1 tỉ USD vì ưu tiên 'sản phẩm nhà trồng' trên Google Play và công cụ tìm kiếmĐỌC NGAY\n\nGoogle đã từng bước tích hợp AI vào công cụ tìm kiếm trong hơn 2 năm qua. Tháng 5-2024, công ty ra mắt tính năng AI Overviews, cung cấp cu trả lời tóm tắt cho truy vấn của người dùng thay vì chủ yếu hiển thị danh sách đường dẫn như trước đy.",
+                "score": 0.5674818
+              },
+              {
+                "title": "Những chính sách nổi bật có hiệu lực từ tháng 11/2026",
+                "url": "https://www.24h.com.vn/tin-tuc-trong-ngay/nhung-chinh-sach-noi-bat-co-hieu-luc-tu-thang-11-2026-c46a1807436.html",
+                "source": "24h.com.vn",
+                "summary": "Chương trình giáo dục tiểu học, trung học cơ sở bắt buộc là chương trình giáo dục phổ thông cấp tiểu học, trung học cơ sở do Bộ trưởng Bộ Giáo dục và Đào tạo ban hành.\n\nẢnh minh họa sử dụng AI.\n\n### Tổ chức nước ngoài tuyển lao động Việt Nam phải đăng tin trên sàn giao dịch\n\nNghị định số 371/2026/NĐ-CP, có hiệu lực thi hành từ ngày 15/11, quy định chi tiết việc tuyển dụng, quản lý người lao động Việt Nam làm việc cho các tổ chức, cá nhn nước ngoài tại Việt Nam. [...] Nghị định này không điều chỉnh các hành vi vi phạm hành chính thuộc phạm vi điều chỉnh của Nghị định quy định xử phạt vi phạm hành chính trong lĩnh vực an ninh mạng và bảo vệ dữ liệu cá nhn.\n\nẢnh minh họa sử dụng AI.\n\n### Thay đổi quy định về họp Ban đại diện cha mẹ học sinh\n\nThông tư số 81/2026/TT-BGDĐT của Bộ Giáo dục và Đào tạo ban hành Điều lệ Ban đại diện cha mẹ học sinh, có hiệu lực từ ngày 15/11. [...] Ai bảo trào ngược dạ dày sẽ tái đi tái lại khiến người bệnh...   Tin tài trợ\n\nTin tức sức khỏe - Nguyên nhn thực sự gy bệnh trào ngược dạ dày của người Việt hóa ra không như chúng ta vẫn nghĩ\n\nNguyên nhn thực sự gy bệnh trào ngược dạ dày của người...   Tin tài trợ\n\nTin tức sức khỏe - Bà nội nằm liệt lở loét da hoại tử: Cháu đích tôn giúp bà làm lành bằng mẹo nhỏ khó tin này!\n\nBà nội nằm liệt lở loét da hoại tử: Cháu đích tôn giúp bà...   Tin tài trợ\n\nNhiều người đọc",
+                "score": 0.54971373
+              },
+              {
+                "title": "Các AI agent đã thực hiện 6.4 triệu giao dịch thanh toán. Tại sao các tổ chức vẫn chưa tin tưởng chúng?",
+                "url": "https://vn.beincrypto.com/ai-agent-payments-banking-adoption-risks",
+                "source": "vn.beincrypto.com",
+                "summary": "Vào tháng 05/2026, một bài đăng công khai có hướng dẫn mã Morse đã khiến một ví liên kết với AI chuyển đi 175,000 USD. Khoảng 80% số tiền đã được thu hồi.",
+                "score": 0.53619206
+              },
+              {
+                "title": "Điểm tin kinh tế thế giới nổi bật ngày 26/10/2026",
+                "url": "https://baotintuc.vn/diem-tin-kinh-te-the-gioi-noi-bat-ngay-26102026-post1397523.html",
+                "source": "baotintuc.vn",
+                "summary": "1. Bitcoin thủng mốc 80.000 USD trước cuộc họp của Fed: Trong phiên 26/10, giá bitcoin trượt xuống mức 79.300 USD do tâm lý né tránh rủi ro trước thềm cuộc",
+                "score": 0.12658015
+              },
+              {
+                "title": "Giáo sư Gary Marcus của NYU cho rằng OpenAI có thể trở thành ‘WeWork của ngành AI’ sau khi hoãn IPO",
+                "url": "https://vn.beincrypto.com/gary-marcus-openai-wework-ai-warning",
+                "source": "vn.beincrypto.com",
+                "summary": "Gary Marcus cho rằng OpenAI có thể trở thành \"WeWork\" trong lĩnh vực AI. OpenAI từng được định giá tư nhân ở mức 852 tỷ USD và đã loại trừ khả năng IPO vào",
+                "score": 0.104871064
+              },
+              {
+                "title": "Điểm tin kinh tế thế giới nổi bật ngày 27/10/2026",
+                "url": "https://baotintuc.vn/diem-tin-kinh-te-the-gioi-noi-bat-ngay-27102026-post1397839.html",
+                "source": "baotintuc.vn",
+                "summary": "1. Nhà Trắng công bố loạt dự án đầu tư nhằm thúc đẩy sản xuất và tạo việc làm tại Mỹ. Nhà Trắng đã công bố các dự án đầu tư trong các lĩnh vực sản xuất công",
+                "score": 0.09411855
+              },
+              {
+                "title": "3 token sắp được mở khóa cần chú ý trong tuần thứ hai của tháng 11/2026",
+                "url": "https://vn.beincrypto.com/token-unlocks-second-week-of-november-2026",
+                "source": "vn.beincrypto.com",
+                "summary": "Allora, Connex và Aztec sẽ mở khóa hơn 623,9 triệu đô la token trong tuần thứ hai của tháng 11 năm 2026.",
+                "score": 0.06992833
+              }
+            ]
+          }
+        },
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "AI news",
+            "search_type": "Top",
+            "limit": 8
+          },
+          "result": {
+            "tool": "search_tweets",
+            "query": "AI news",
+            "search_type": "Top",
+            "items": [
+              {
+                "title": "INSTEAD OF WATCHING NETFLIX TONIGHT. Spend 2 hours with this. Claude AI FULL COURSE that teaches you how to BUILD and AU",
+                "summary": "INSTEAD OF WATCHING NETFLIX TONIGHT. Spend 2 hours with this. Claude AI FULL COURSE that teaches you how to BUILD and AUTOMATE anything. The people who watch this tonight will wake up tomorrow with a new skill. Watch it and bookmark it now. https://t.co/koWK75KRhz",
+                "url": "https://x.com/ai_with_jyoti/status/2119270857461858487",
+                "source": "@ai_with_jyoti",
+                "date": "Sun Nov 08 03:28:41 +0000 2026",
+                "metrics": {
+                  "favorites": 8050,
+                  "retweets": 1135,
+                  "views": "647411"
+                }
+              },
+              {
+                "title": "A startup is developing a new type of AI data center that floats in the ocean and runs on wave energy. https://t.co/JStX",
+                "summary": "A startup is developing a new type of AI data center that floats in the ocean and runs on wave energy. https://t.co/JStXHvFUaj",
+                "url": "https://x.com/spaceandtech_/status/2118714594889986382",
+                "source": "@spaceandtech_",
+                "date": "Fri Nov 06 14:38:17 +0000 2026",
+                "metrics": {
+                  "favorites": 1532,
+                  "retweets": 276,
+                  "views": "68969"
+                }
+              },
+              {
+                "title": "ChatGPT and Codex are helping engineers build for the physical world.",
+                "summary": "ChatGPT and Codex are helping engineers build for the physical world.\n\nWe’re sharing our progress across mechanical design, electrical engineering, and simulation—from helping our hardware teams iterate faster to testing new workflows with industry collaborators. https://t.co/b3rW9zYJGA",
+                "url": "https://x.com/OpenAI/status/2117692475775258785",
+                "source": "@OpenAI",
+                "date": "Tue Nov 03 18:56:45 +0000 2026",
+                "metrics": {
+                  "favorites": 8437,
+                  "retweets": 754,
+                  "views": "1399667"
+                }
+              },
+              {
+                "title": "BREAKING NEWS: CEO Nvidia Jensen Huang selingkuh dengan intel China!",
+                "summary": "BREAKING NEWS: CEO Nvidia Jensen Huang selingkuh dengan intel China!\n\n“Saya tidak setia pada istri saya. Tindakanku menyakitinya dan anak-anak kita. Tidak ada alasan untuk apa yang saya lakukan. Saya sangat menyesal,” demikian pengakuannya.\n\nHal ini terkuak setelah laporan intelijen AS mengaitkannya dengan Alice Huang, yang diidentifikasi sebagai aset intelijen untuk Kementerian Keamanan Negara China.\n\nAlice Huang, dikenal sebagai seorang eksekutif untuk perusahaan Megaspeed yang berbasis di Singapura. \n\nAS sedang menduga perusahaan itu membantu Beijing melewati pembatasan ekspor dan memperoleh chip AI mutakhir. \n\nMenurut The New York Times, perusahaan tersebut telah membeli chip Nvidia senilai miliaran dolar dalam dua tahun terakhir.\n\n https://t.co/w1Jroc9q5U",
+                "url": "https://x.com/SiPalingDepok/status/2119573401023226230",
+                "source": "@SiPalingDepok",
+                "date": "Sun Nov 08 23:30:53 +0000 2026",
+                "metrics": {
+                  "favorites": 473,
+                  "retweets": 78,
+                  "views": "68946"
+                }
+              },
+              {
+                "title": "holy f*ck... the best AI agents don't have a better model. they have better notes",
+                "summary": "holy f*ck... the best AI agents don't have a better model. they have better notes\n\nStanford University just published the whole method for free in a paper called Agentic Context Engineering. your agent reviews every run, writes down each lesson and adds it to its notes. it never rewrites them, so nothing it learns is ever lost\n\nsame weights, zero fine-tuning. 38.6% → 64.2%, level with IBM's top production agent on Opus 5.5. fine-tuning for that jump costs $5,000-20,000. here it cost $0\n\nit comes down to 4 agents:\n\n→ worker: does the task and saves the full log\n→ critic: reads the log and marks every mistake and every win\n→ teacher: turns each one into a one-line lesson\n→ librarian: files the lesson into CLAUDE.md. merges duplicates, never deletes a line\n\nthat's why asking your agent to \"clean up\" your CLAUDE.md is a mistake. every rewrite throws away lessons it already paid for\n\npaste this into Claude Code:\n\n\"Run 4 agents on my last 10 sessions in ~/.claude/projects. Critic: mark every mistake and every win. Teacher: turn each one into a one-line lesson, what happened and what to do next time. Librarian: add only new lessons to my CLAUDE.md under ## Lessons, merge exact duplicates, never rewrite or delete an existing line. Worker: rerun 2 of the failed tasks with the new lessons and save the full log. Show me the diff and both results before saving\"\n\nrun it after every big session. your agent gets smarter every time and it costs $0\n\nfull playbook below ↓",
+                "url": "https://x.com/mika_systems/status/2119080680021692927",
+                "source": "@mika_systems",
+                "date": "Sat Nov 07 14:52:59 +0000 2026",
+                "metrics": {
+                  "favorites": 461,
+                  "retweets": 39,
+                  "views": "31018"
+                }
+              },
+              {
+                "title": "This is f*cking insane. Andrej Karpathy, the man who built AI at OpenAI and Tesla:",
+                "summary": "This is f*cking insane. Andrej Karpathy, the man who built AI at OpenAI and Tesla:\n\n\"Most people still treat LLMs like chatbots\n\nThese 5 shifts are turning them into agentic systems\"\n\nIn just 43 minutes, he walks through the whole stack, one shift at a time\n\nMemory → Vision → Reasoning → Search → Tools → Agentic Systems\n\nPrompting was the old approach. Systems are the new one\n\nWorth more than most $1,000 AI agent courses\n\nBookmark and watch it today\n\nThen read the full Graph Engineering guide below ↓",
+                "url": "https://x.com/res1dualedge/status/2119077144630288787",
+                "source": "@res1dualedge",
+                "date": "Sat Nov 07 14:38:56 +0000 2026",
+                "metrics": {
+                  "favorites": 344,
+                  "retweets": 39,
+                  "views": "28487"
+                }
+              },
+              {
+                "title": "Memory is what allows Claude to learn from experience. In a new Engineering Blog post, we share how “dreaming” helps Cla",
+                "summary": "Memory is what allows Claude to learn from experience. In a new Engineering Blog post, we share how “dreaming” helps Claude organize what it’s learned, correct its mistakes, and find what it needs more easily the next time. https://t.co/uUEN4bNkr9",
+                "url": "https://x.com/AnthropicAI/status/2118814753154064501",
+                "source": "@AnthropicAI",
+                "date": "Fri Nov 06 21:16:17 +0000 2026",
+                "metrics": {
+                  "favorites": 14174,
+                  "retweets": 1308,
+                  "views": "2072317"
+                }
+              },
+              {
+                "title": "Musk’s AI was accused of “undressing” the mother of his child. She says one source photo showed her at 14. She went to c",
+                "summary": "Musk’s AI was accused of “undressing” the mother of his child. She says one source photo showed her at 14. She went to court to stop it. Now Musk’s companies are suing HER. Their reason: she picked the wrong state. What the f#ck?\n\nTheir case already involves over $100,000 in legal expenses. She wanted protection from the fakes. Now she needs a defense of her own.\n\nIn the video, Ashley St. Clair describes discovering sexualized images of herself and trying to get them removed.\n\nUsers took real photographs and asked Grok to alter them without her consent.\n\nShe says the bot acknowledged her refusal. The images continued. Strangers’ prompts turned ordinary photographs into something she never agreed to.\n\nShe reported the images. She alleges X initially said they did not violate its rules.\n\nOn January 15, she sued xAI in New York. Musk’s companies then filed their own lawsuit.\n\nThey cited the X and xAI user agreements: disputes belong in Texas. Their argument is that filing in New York breached her contract. The companies sought compensation for enforcing those terms.\n\nThen a different kind of consent entered the story. She had not agreed to the fakes. The companies argue she had agreed to their terms of service.\n\nSt. Clair sought dismissal. The judge refused. Filings describe over $100,000 in the companies’ legal expenses. That is not an award against her or a ruling on the fakes.\n\nBut she already needs a defense.\n\nShe wanted the images stopped. Now she is a defendant too.\n\nHer “no” failed to stop the images, she alleges. Her “agree” became the companies’ argument.\n\nYou clicked “agree” to use an app. Can you afford to defend your “no,” for f#ck’s sake?",
+                "url": "https://x.com/palehonk/status/2117688611646648471",
+                "source": "@palehonk",
+                "date": "Tue Nov 03 18:41:24 +0000 2026",
+                "metrics": {
+                  "favorites": 435,
+                  "retweets": 23,
+                  "views": "344834"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

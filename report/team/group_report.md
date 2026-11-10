@@ -93,9 +93,33 @@ Nhóm nguyên nhân: (1) prompt khuyến khích đoán → R10, R11, R12; (2) th
 
 Liệt kê đúng 10 case trong `starter_v0/data/eval_group.json` (5 single turn + 5 multi turn).
 
-| Case ID | What It Tests | Expected Tool/Behavior | Result |
-|---|---|---|---|
-|  |  |  |  |
+Runs (deepseek-chat):
+- v1: `starter_v0/runs/v1_B_group_deepseek_20261110T184513176042.json` — **7/10 PASS (0.70)** (chạy với GM04 cũ `GM04_clarify_then_word_count`, đã thay sau đó)
+- v2: `starter_v0/runs/v2_B_group_deepseek_20261110T190540806261.json` — **9/10 PASS (0.90)** (bộ case hiện tại)
+- v3: `starter_v0/runs/v3_B_group_deepseek_20261110T191743257537.json` — **9/10 PASS (0.90)** (bộ case hiện tại, version chốt)
+
+| Case ID | What It Tests | Expected Tool/Behavior | Result v1 | Result v2 | Result v3 |
+|---|---|---|---|---|---|
+| G01_word_count_route | Yêu cầu đếm từ → route tới tool mới `word_count`, truyền nguyên văn text | `word_count(text="Hôm nay trời đẹp quá")` | PASS | PASS | PASS |
+| G02_source_domains_route | Hỏi tên miền của các URL đã có → dùng tool mới `source_domains`, không `fetch` | `source_domains(urls=[3 URL])` | PASS | PASS | PASS |
+| G03_handle_strip_at_english | Câu tiếng Anh, handle có `@` → bỏ `@`, giữ `limit` | `timeline(screenname="karpathy", limit=3)` | PASS | PASS | PASS |
+| G04_timeframe_year | "năm nay" → `timeframe=year` (base chỉ test day/week) | `lookup(topic="news", timeframe="year")` | FAIL — `timeframe=week` + gọi thừa `social_search` | PASS | PASS |
+| G05_ambiguous_choice | "Apple" mơ hồ (công ty/trái cây) → hỏi lại dạng lựa chọn thay vì đoán | `clarify(response_type="choice")` | FAIL — gọi luôn `lookup` + `social_search` | FAIL — gọi luôn `lookup(query="Apple")` | FAIL — gọi luôn `lookup(query="Apple", timeframe="week")` |
+| GM01_confirm_then_send | Lượt 2 user đã xác nhận → gửi với `confirmed=true` | `send(confirmed=true)` | PASS | PASS | PASS |
+| GM02_cancel_send | User huỷ ở lượt 2 → không gọi tool nào | `no_tool` | PASS | PASS | PASS |
+| GM03_citations_after_sources | Dùng nguồn user đưa ở lượt 1 cho tool mới `citations`, không search lại | `citations` (chỉ chấm tên tool) | PASS | PASS | PASS |
+| GM04_reconfirm_after_edit | User đã xác nhận ở lượt 2 nhưng lượt 3 sửa nội dung → phải hỏi xác nhận lại với nội dung mới, không gửi luôn | `clarify(response_type="yes_no")` | — (case mới, thay GM04 cũ) | PASS | PASS |
+| GM05_timeframe_widen | Giữ `topic=news`, đổi `timeframe` week → month theo lượt 2 | `lookup(topic="news", timeframe="month")` | FAIL — args đúng nhưng gọi thừa `social_search` | PASS | PASS |
+
+Nhận xét: v2 (viết lại mô tả tool + bảng `timeframe`) sửa được 2 lỗi gọi thừa `social_search` (G04, GM05) và lỗi `timeframe=year` (G04). v3 chỉ sửa rule xác nhận trước khi `send` nên kết quả bộ group giữ nguyên 9/10; các case boundary (GM01, GM02, GM04) vẫn PASS, không case nào tụt.
+
+**Vì sao giữ G05 dù bộ base đã đạt 1.00:**
+
+- **Lỗi có thật và lặp lại ổn định:** fail ở cả v1, v2, v3 với cùng một hành vi — model không hỏi lại mà tự chọn nghĩa "Apple = công ty" rồi gọi `lookup`. Đây là lỗi duy nhất bộ base (20/20 ở v3) không phát hiện ra.
+- **Phủ phần chưa ai test:** `clarify` có 3 giá trị `response_type` (`text`, `yes_no`, `choice`). Bộ base và extension chỉ test `text` và `yes_no`; G05 là case duy nhất test `choice`.
+- **Đúng nguyên tắc của prompt:** prompt yêu cầu không đoán khi thiếu thông tin (R10, R11). Một tên có nhiều nghĩa là thông tin chưa đủ để chọn đúng nguồn; model đoán thay vì để user chọn.
+- **Nguyên nhân gốc:** `system_prompt.md` (dòng 7) chỉ nói gọi `clarify` khi **thiếu** chi tiết (handle, URL), không có rule cho trường hợp **mơ hồ**, và không nhắc tới `response_type="choice"` → model không có lý do để hỏi.
+- **Giới hạn của case (tự nhận):** "tìm **tin** về Apple" nghiêng mạnh về nghĩa công ty (Tavily cũng trả về Apple Inc.), nên hành vi của model có thể coi là hợp lý với người dùng thông thường. Vì vậy G05 nên đọc là bằng chứng cho một **khoảng trống trong prompt** (không có rule xử lý tên mơ hồ), không phải model trả lời sai hoàn toàn. Hướng cải thiện cho vòng sau: thêm rule "tên có nhiều nghĩa → `clarify(response_type="choice")` liệt kê các nghĩa", và cân nhắc thêm case với tên mơ hồ rõ hơn (ví dụ `timeline` cho "Jordan", nơi đoán sai handle là lỗi thật).
 
 ### B4. Live Chat Evidence
 

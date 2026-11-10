@@ -35,8 +35,8 @@
 
 ## 5. Tự đánh giá
 
-Số liệu (lấy từ run JSON): case_accuracy 0.45 → 0.65 → 0.95 → 1.00 qua v0–v3; routing 0.60 → 1.00; multiturn 0.67 → 1.00.
+Qua quá trình thực hiện, em đã học được cách đọc và phân tích log để xác định nguyên nhân lỗi, từ đó lựa chọn hướng cải thiện phù hợp giữa việc chỉnh sửa `system_prompt.md` và `tools.yaml`. Kết quả đánh giá cho thấy `case_accuracy` tăng từ 0.45 ở v0 lên 1.00 ở v3; routing tăng từ 0.60 lên 1.00 và multiturn tăng từ 0.67 lên 1.00.
 
-Điều chưa chắc chắn: 1.00 chỉ đo trên bộ base mà prompt và mô tả tool được chỉnh theo chính các case đó, nên có thể quá khớp. Chưa chạy v3 trên bộ extension và bộ group để kiểm chứng. Case R12 chỉ pass sau v3 và hành vi "xác nhận trước khi hỏi nội dung" là một lựa chọn thiết kế để khớp eval, không phải cách duy nhất hợp lý.
+Tuy nhiên, kết quả 1.00 mới được kiểm chứng trên bộ base gồm 20 case, trong khi prompt và mô tả tool đã được tối ưu dựa trên chính bộ dữ liệu này. Vì vậy, vẫn có khả năng mô hình bị overfitting và chưa đảm bảo khả năng tổng quát hóa. Số liệu của nhóm ủng hộ lo ngại này: v3 chạy trên bộ group (10 case do nhóm tự viết) đạt 9/10 (0.90), thấp hơn 1.00 ở bộ base (`starter_v0/runs/v3_B_group_deepseek_20261110T191743257537.json`). Em chưa kiểm thử v3 trên bộ extension. Ngoài ra, cách xử lý case R12 ở v3 là một lựa chọn thiết kế nhằm đáp ứng yêu cầu của bộ evaluation, không phải cách xử lý duy nhất hợp lý.
 
-> Sau khi làm bài này em học được cách đọc log, nên cân nhắc khi nào nên sửa prompt khi nào nên sửa tools. 
+**Bài học rút ra:** Em hiểu rõ hơn vai trò của việc phân tích lỗi trước khi tối ưu hệ thống. Không phải lỗi nào cũng cần sửa prompt; có những trường hợp cần làm rõ mô tả tool, điều kiện sử dụng hoặc quy ước tham số để cải thiện khả năng routing và thực thi của Agent.

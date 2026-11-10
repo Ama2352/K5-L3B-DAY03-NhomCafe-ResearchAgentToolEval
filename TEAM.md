@@ -15,7 +15,7 @@
 | STT | Họ tên | MSSV | Email | GitHub | Vai trò |
 | --: | ------ | ---- | ----- | ------ | ------- |
 |   1 | Vũ Ngọc Quỳnh Anh | 2A202603875 | 26ai.anhvnq@vinuni.edu.vn | qavu2407-lang | CP4: 10 eval case nhóm (5 single + 5 multi turn), chạy group eval v1–v3, phân tích B3 |
-|   2 | Nguyễn Thảo Quyên |   2A202603895   |   26ai.quyennt@vinuni.edu.vn    |    100678carwyn   | CP1–CP2: provider DeepSeek, baseline v0, tối ưu prompt (v1) và tools.yaml (v2) |
+|   2 | Nguyễn Thảo Quyên |   2A202603895   |   26ai.quyennt@vinuni.edu.vn    |    100678carwyn   | CP1–CP2: provider DeepSeek, baseline v0, tối ưu prompt (v1, v3) và tools.yaml (v2); bonus: gửi Telegram thật |
 |   3 | Hồ Nguyễn Minh Sang |  2A202603905  |   26ai.sanghnm@vinuni.edu.vn    | Ama2352 | CP3: tool mới + unit test; CP5: UI, transcript, báo cáo; quản lý repo, merge PR |
 
 ## Cá nhân
@@ -35,7 +35,8 @@ Sao chép mục dưới đây cho từng thành viên.
 ### Phần việc phụ trách
 
 - CP1: setup môi trường, thêm provider DeepSeek, chạy baseline v0, phân tích lỗi (B2).
-- CP2: tối ưu v1 (`system_prompt.md`) và v2 (`tools.yaml`).
+- CP2: tối ưu v1 (`system_prompt.md`), v2 (`tools.yaml`) và v3 (`system_prompt.md`).
+- Bonus: gửi Telegram thật sau khi người dùng xác nhận; chat live bản v3 để lấy transcript.
 
 ### Đóng góp cụ thể
 
@@ -43,12 +44,17 @@ Sao chép mục dưới đây cho từng thành viên.
 - Chạy v0 (0.45), phân tích 11 case FAIL theo loại lỗi và nguyên nhân.
 - v1: bỏ chỉ dẫn đoán/gửi vội/ép một bước, thêm rule hỏi lại, xác nhận trước khi gửi, từ chối ngoài phạm vi (0.45 → 0.65).
 - v2: viết lại description 10 tool gốc và quy ước tham số (0.65 → 0.95).
+- v3: tách xác nhận gửi/đăng thành hai bước, `yes_no` trước rồi mới hỏi nội dung (0.95 → 1.00 trên bộ base).
+- Telegram: tạo bot và kênh private, cấu hình `.env` (gitignored), chat live 7 lượt bằng v3, `send(confirmed=true)` trả `status: sent`; quét `transcripts/` và `runs/` không có token.
+- Viết B1, B2, A2, A3, B6 và phần Telegram của B4/B5 trong `report/team/group_report.md`.
 
 ### Bằng chứng
 
-- Commit `b6cabe6` (provider DeepSeek), `aee80bb` (v0 + B2), `2382810` (v1); v2 trên nhánh `feature/tools-v2` (cập nhật hash sau khi commit).
-- Run: `starter_v0/runs/v0_B_base_deepseek_20261110T174313805995.json`, `v1_..._20261110T182742199017.json`, `v2_..._20261110T184518723180.json`.
-- `starter_v0/artifacts/version_log.csv`, bảng B1 và B2 trong `report/team/group_report.md`.
+- Commit `b6cabe6` (provider DeepSeek), `aee80bb` (v0 + B2), `2382810` (v1), `2b10ae5` (v2), `415cd21` (v3); Telegram trên nhánh `docs/live-chat-telegram-evidence`.
+- Run: `starter_v0/runs/v0_B_base_deepseek_20261110T174313805995.json`, `v1_..._20261110T182742199017.json`, `v2_..._20261110T184518723180.json`, `v3_..._20261110T190413436138.json`.
+- Transcript Telegram: `starter_v0/transcripts/v3_deepseek_20261111T000241323945.transcript.json`.
+- `starter_v0/artifacts/version_log.csv`, bảng B1, B2, B4 và B5 trong `report/team/group_report.md`.
+- Báo cáo cá nhân: [2A202603895_NguyenThaoQuyen.md](report/team/2A202603895_NguyenThaoQuyen.md).
 
 ## Vũ Ngọc Quỳnh Anh
 

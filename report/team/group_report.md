@@ -93,9 +93,24 @@ Nhóm nguyên nhân: (1) prompt khuyến khích đoán → R10, R11, R12; (2) th
 
 Liệt kê đúng 10 case trong `starter_v0/data/eval_group.json` (5 single turn + 5 multi turn).
 
-| Case ID | What It Tests | Expected Tool/Behavior | Result |
-|---|---|---|---|
-|  |  |  |  |
+Runs (deepseek-chat):
+- v1: `starter_v0/runs/v1_B_group_deepseek_20261110T184513176042.json` — **7/10 PASS (0.70)** (chạy với GM04 cũ `GM04_clarify_then_word_count`, đã thay sau đó)
+- v2: `starter_v0/runs/v2_B_group_deepseek_20261110T190540806261.json` — **9/10 PASS (0.90)** (bộ case hiện tại)
+
+| Case ID | What It Tests | Expected Tool/Behavior | Result v1 | Result v2 |
+|---|---|---|---|---|
+| G01_word_count_route | Yêu cầu đếm từ → route tới tool mới `word_count`, truyền nguyên văn text | `word_count(text="Hôm nay trời đẹp quá")` | PASS | PASS |
+| G02_source_domains_route | Hỏi tên miền của các URL đã có → dùng tool mới `source_domains`, không `fetch` | `source_domains(urls=[3 URL])` | PASS | PASS |
+| G03_handle_strip_at_english | Câu tiếng Anh, handle có `@` → bỏ `@`, giữ `limit` | `timeline(screenname="karpathy", limit=3)` | PASS | PASS |
+| G04_timeframe_year | "năm nay" → `timeframe=year` (base chỉ test day/week) | `lookup(topic="news", timeframe="year")` | FAIL — `timeframe=week` + gọi thừa `social_search` | PASS |
+| G05_ambiguous_choice | "Apple" mơ hồ (công ty/trái cây) → hỏi lại dạng lựa chọn thay vì đoán | `clarify(response_type="choice")` | FAIL — gọi luôn `lookup` + `social_search` | FAIL — vẫn không hỏi lại, gọi luôn `lookup(query="Apple")` |
+| GM01_confirm_then_send | Lượt 2 user đã xác nhận → gửi với `confirmed=true` | `send(confirmed=true)` | PASS | PASS |
+| GM02_cancel_send | User huỷ ở lượt 2 → không gọi tool nào | `no_tool` | PASS | PASS |
+| GM03_citations_after_sources | Dùng nguồn user đưa ở lượt 1 cho tool mới `citations`, không search lại | `citations` (chỉ chấm tên tool) | PASS | PASS |
+| GM04_reconfirm_after_edit | User đã xác nhận ở lượt 2 nhưng lượt 3 sửa nội dung → phải hỏi xác nhận lại với nội dung mới, không gửi luôn | `clarify(response_type="yes_no")` | — (case mới, thay GM04 cũ) | PASS |
+| GM05_timeframe_widen | Giữ `topic=news`, đổi `timeframe` week → month theo lượt 2 | `lookup(topic="news", timeframe="month")` | FAIL — args đúng nhưng gọi thừa `social_search` | PASS |
+
+Nhận xét: v2 (viết lại mô tả tool + bảng `timeframe`) sửa được 2 lỗi gọi thừa `social_search` (G04, GM05) và lỗi `timeframe=year` (G04). Lỗi còn lại là G05: model không hỏi lại khi tên thực thể mơ hồ → gợi ý cho v3: thêm rule dùng `clarify(response_type="choice")` khi tên có nhiều nghĩa.
 
 ### B4. Live Chat Evidence
 

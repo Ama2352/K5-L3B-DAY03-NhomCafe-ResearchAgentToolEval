@@ -14,8 +14,13 @@
 
 | STT | Họ tên | MSSV | Email | GitHub | Vai trò |
 | --: | ------ | ---- | ----- | ------ | ------- |
+<<<<<<< HEAD
 |   1 | Vũ Ngọc Quỳnh Anh | 2A202603875 | 26ai.anhvnq@vinuni.edu.vn | qavu2407-lang | CP4: 10 eval case nhóm (5 single + 5 multi turn), chạy group eval v1–v3, phân tích B3; bonus Test challenge (0 skipped) |
 |   2 | Nguyễn Thảo Quyên |   2A202603895   |   26ai.quyennt@vinuni.edu.vn    |    100678carwyn   | CP1–CP2: provider DeepSeek, baseline v0, tối ưu prompt (v1) và tools.yaml (v2) |
+=======
+|   1 | Vũ Ngọc Quỳnh Anh | 2A202603875 | 26ai.anhvnq@vinuni.edu.vn | qavu2407-lang | CP4: 10 eval case nhóm (5 single + 5 multi turn), chạy group eval v1–v3, phân tích B3 |
+|   2 | Nguyễn Thảo Quyên |   2A202603895   |   26ai.quyennt@vinuni.edu.vn    |    100678carwyn   | CP1–CP2: provider DeepSeek, baseline v0, tối ưu prompt (v1, v3) và tools.yaml (v2); bonus: gửi Telegram thật |
+>>>>>>> origin/docs/live-chat-telegram-evidence
 |   3 | Hồ Nguyễn Minh Sang |  2A202603905  |   26ai.sanghnm@vinuni.edu.vn    | Ama2352 | CP3: tool mới + unit test; CP5: UI, transcript, báo cáo; quản lý repo, merge PR |
 
 ## Cá nhân
@@ -35,7 +40,8 @@ Sao chép mục dưới đây cho từng thành viên.
 ### Phần việc phụ trách
 
 - CP1: setup môi trường, thêm provider DeepSeek, chạy baseline v0, phân tích lỗi (B2).
-- CP2: tối ưu v1 (`system_prompt.md`) và v2 (`tools.yaml`).
+- CP2: tối ưu v1 (`system_prompt.md`), v2 (`tools.yaml`) và v3 (`system_prompt.md`).
+- Bonus: gửi Telegram thật sau khi người dùng xác nhận; chat live bản v3 để lấy transcript.
 
 ### Đóng góp cụ thể
 
@@ -43,12 +49,17 @@ Sao chép mục dưới đây cho từng thành viên.
 - Chạy v0 (0.45), phân tích 11 case FAIL theo loại lỗi và nguyên nhân.
 - v1: bỏ chỉ dẫn đoán/gửi vội/ép một bước, thêm rule hỏi lại, xác nhận trước khi gửi, từ chối ngoài phạm vi (0.45 → 0.65).
 - v2: viết lại description 10 tool gốc và quy ước tham số (0.65 → 0.95).
+- v3: tách xác nhận gửi/đăng thành hai bước, `yes_no` trước rồi mới hỏi nội dung (0.95 → 1.00 trên bộ base).
+- Telegram: tạo bot và kênh private, cấu hình `.env` (gitignored), chat live 7 lượt bằng v3, `send(confirmed=true)` trả `status: sent`; quét `transcripts/` và `runs/` không có token.
+- Viết B1, B2, A2, A3, B6 và phần Telegram của B4/B5 trong `report/team/group_report.md`.
 
 ### Bằng chứng
 
-- Commit `b6cabe6` (provider DeepSeek), `aee80bb` (v0 + B2), `2382810` (v1); v2 trên nhánh `feature/tools-v2` (cập nhật hash sau khi commit).
-- Run: `starter_v0/runs/v0_B_base_deepseek_20261110T174313805995.json`, `v1_..._20261110T182742199017.json`, `v2_..._20261110T184518723180.json`.
-- `starter_v0/artifacts/version_log.csv`, bảng B1 và B2 trong `report/team/group_report.md`.
+- Commit `b6cabe6` (provider DeepSeek), `aee80bb` (v0 + B2), `2382810` (v1), `2b10ae5` (v2), `415cd21` (v3); Telegram trên nhánh `docs/live-chat-telegram-evidence`.
+- Run: `starter_v0/runs/v0_B_base_deepseek_20261110T174313805995.json`, `v1_..._20261110T182742199017.json`, `v2_..._20261110T184518723180.json`, `v3_..._20261110T190413436138.json`.
+- Transcript Telegram: `starter_v0/transcripts/v3_deepseek_20261111T000241323945.transcript.json`.
+- `starter_v0/artifacts/version_log.csv`, bảng B1, B2, B4 và B5 trong `report/team/group_report.md`.
+- Báo cáo cá nhân: [2A202603895_NguyenThaoQuyen.md](report/team/2A202603895_NguyenThaoQuyen.md).
 
 ## Vũ Ngọc Quỳnh Anh
 
@@ -79,24 +90,53 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Phần việc phụ trách
 
-- CP3: ba tool local `citations`, `source_domains`, `word_count`, đăng ký và unit test.
+- CP3: xây dựng tool mới, tài liệu contract, đăng ký tool và unit test.
 - CP5: UI Streamlit, hướng dẫn chạy, link dùng thử, transcript live và phần báo cáo tương ứng.
+- Bonus: tool thứ tư `extract_links` và Small Local Model Challenge qua Ollama.
 - Quản lý repo nhóm: kiểm tra, xử lý xung đột và merge PR vào nhánh `main`.
 
 ### Đóng góp cụ thể
 
-- Bổ sung 9 test cho ba tool; giữ contract registry/declaration/TOOL.md đồng bộ.
+- Viết ba tool local `citations` (định dạng danh sách nguồn), `source_domains`
+  (lấy hostname duy nhất), `word_count` (đếm từ/ký tự); viết `TOOL.md`, đăng ký
+  trong `tools/__init__.py` và `artifacts/tools.yaml`, bổ sung 9 unit test
+  kiểm tra đầu vào hợp lệ, input sai và nhánh lỗi.
 - Tạo giao diện chat tối giản, theme sáng đồng nhất, cấu hình provider/model/version,
   hiển thị hoạt động và lỗi, lưu/tải transcript. Mỗi phiên giữ nguyên prompt/tools và hash.
 - Kiểm tra UI qua Cloudflare Tunnel, thử desktop/mobile; chạy lại CLI trên v3 sau khi merge CP2.
 - Thêm case mẫu `G_CP3_citations_existing_source` để kiểm tra route tool mới trước
   tích hợp CP4. Sau tích hợp, bộ chính giữ 10 case CP4, gồm G01/G02/GM03 phủ ba tool mới;
   run 1/1 của case mẫu được giữ làm bằng chứng lịch sử.
-- Có sử dụng Codex hỗ trợ code, test, phân tích log và soạn báo cáo; bằng chứng từ chạy thật.
+- Tái sử dụng `chat.run_model_tool_loop` cho UI, giữ cùng backend với CLI;
+  chạy transcript v3 kiểm tra tìm tin, đọc nguồn, gọi ba tool mới, hỏi URL còn
+  thiếu và hỏi xác nhận trước khi gửi. Phân biệt test offline với log model thật.
+- Bổ sung tool thứ tư `extract_links` để trích URL HTTP(S) duy nhất từ văn bản,
+  giữ thứ tự và bỏ trùng; viết tài liệu, đăng ký, 3 test và bộ eval bonus riêng.
+  Run routing đạt 2/2, không thay đổi bộ eval nhóm 10 case.
+- Thực hiện Small Local Model Challenge với Llama 3.2 3B và Qwen 2.5 1.5B;
+  xây dựng hai vòng prompt local, so sánh Qwen với cùng giới hạn sinh:
+  6/20 → 7/20 → 9/20. Chạy cloud đối chiếu và kiểm tra ngược prompt v5 đạt 20/20;
+  lưu cấu hình tái hiện, prompt, run JSON, metric và hash trong version log;
+  phân tích lỗi và giới hạn của kết quả tại B7 báo cáo nhóm.
+- Bổ sung hướng dẫn chạy và bằng chứng CP3/CP5, sửa lỗi mã hóa tiếng Việt,
+  hoàn thiện tài liệu tham khảo và các mục bonus liên quan trong báo cáo nhóm.
+- Quản lý repo, review và tích hợp PR của các thành viên vào `main`; phối hợp
+  xử lý conflict, đối chiếu quy định nộp bài, chạy test sau tích hợp, kiểm tra
+  secret trong log và loại file tạm khỏi phần nộp. Phần viết test challenge 4b
+  và gửi Telegram thật do hai thành viên khác thực hiện.
 
 ### Bằng chứng
 
 - Commit `60a1efa` (tool/test), `c7f23ac` (UI/evidence), `4ec301c` (tích hợp PR vào main).
+- Commit `fde2934`: tool thứ tư, eval routing 2/2 và bằng chứng bonus local.
+- Code: `starter_v0/tools/{citations,source_domains,word_count,extract_links}/`,
+  `starter_v0/app.py`, `starter_v0/ui_session.py`; test tool và UI trong `starter_v0/tests/`.
+- Run tool thứ tư: `starter_v0/runs/v3-bonus4_B_group_openrouter_20261110T235346123648.json`.
+- Bonus local: `starter_v0/artifacts/system_prompt_local_v4.md`,
+  `starter_v0/artifacts/system_prompt_local_v5.md`, `starter_v0/artifacts/ollama_qwen_eval.json`,
+  `starter_v0/artifacts/tools_cloud_v3.yaml`; các run dẫn ở B7 và `starter_v0/artifacts/version_log.csv`.
+- Báo cáo nhóm: hướng dẫn UI tại A1, bằng chứng CP3/CP5 tại B4/B5,
+  bonus local tại B7 và phần tài liệu tham khảo.
 - Báo cáo cá nhân: [2A202603905_HoNguyenMinhSang.md](report/team/2A202603905_HoNguyenMinhSang.md).
 - Run routing: `starter_v0/runs/v3-cp3-routing_B_group_openrouter_20261110T194332874245.json` (1/1 đạt).
 - Transcript v3: `starter_v0/transcripts/v3_openrouter_20261110T194205268170.transcript.json`

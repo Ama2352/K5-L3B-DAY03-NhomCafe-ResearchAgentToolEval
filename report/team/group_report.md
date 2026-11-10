@@ -65,7 +65,7 @@ Lấy từ `starter_v0/artifacts/version_log.csv` và `starter_v0/runs/*.json`. 
 | v0 | baseline | Đo hành vi chưa tối ưu trước khi sửa | – | 0.45 (case_accuracy; routing 0.60, args 0.45, multiturn 0.67) | `starter_v0/runs/v0_B_base_deepseek_20261110T174313805995.json` |
 | v1 | `system_prompt.md` | Prompt gốc khuyến khích đoán và làm vội; thay bằng rule hỏi lại (`clarify`), xác nhận trước `send`, từ chối ngoài phạm vi | 0.45 | 0.65 (routing 0.80, args 0.65, multiturn 0.67); pass 9→13/20; sửa R08, R10, R11, R14 | `starter_v0/runs/v1_B_base_deepseek_20261110T182742199017.json` |
 | v2 | `tools.yaml` (kèm 3 tool CP3 đã merge) | Mô tả tool một dòng nên model mở rộng `query`, gọi thừa `social_search`; viết lại description + quy ước tham số | 0.65 | 0.95 (routing 1.00, args 0.95, multiturn 1.00); pass 13→19/20; sửa R02, R03, R06, R13, M02, M06; còn R12 (`clarify` dùng `text` thay vì `yes_no`) | `starter_v0/runs/v2_B_base_deepseek_20261110T184518723180.json` |
-| v3 |  |  |  |  |  |
+| v3 | `system_prompt.md` | Model dùng `text` ở R12 vì prompt chưa tách xác nhận ý định gửi khỏi xin nội dung; tách thành 2 bước (`yes_no` trước, `text` sau) | 0.95 | 1.00 (routing 1.00, args 1.00, multiturn 1.00); pass 19→20/20; sửa R12, không case nào tụt | `starter_v0/runs/v3_B_base_deepseek_20261110T190413436138.json` |
 
 ### B2. Failure Analysis
 

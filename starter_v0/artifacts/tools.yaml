@@ -123,3 +123,37 @@ tools:
         max_pages: {type: integer, default: 5, description: "Số trang"}
         max_chars: {type: integer, default: 8000, description: "Số ký tự"}
       required: [arxiv_url]
+  - name: citations
+    description: "Tạo danh sách tài liệu tham khảo đánh số từ tiêu đề và URL nguồn đã có. Không tìm kiếm hay kiểm chứng nguồn; không dùng khi chưa có dữ liệu nguồn."
+    parameters:
+      type: object
+      properties:
+        items:
+          type: array
+          description: "Các nguồn đã có, mỗi nguồn gồm title và URL HTTP(S)."
+          items:
+            type: object
+            properties:
+              title: {type: string}
+              url: {type: string}
+            required: [title, url]
+      required: [items]
+
+  - name: source_domains
+    description: "Trích xuất hostname duy nhất từ các URL nguồn đã có. Chỉ dùng khi đã có URL; không truy cập hoặc xác minh website."
+    parameters:
+      type: object
+      properties:
+        urls:
+          type: array
+          items: {type: string}
+          description: "Danh sách URL nguồn HTTP(S)."
+      required: [urls]
+
+  - name: word_count
+    description: "Đếm từ và ký tự trong văn bản được cung cấp. Dùng khi người dùng yêu cầu đếm; không tóm tắt hoặc truy xuất nội dung."
+    parameters:
+      type: object
+      properties:
+        text: {type: string, description: "Văn bản cần đếm."}
+      required: [text]

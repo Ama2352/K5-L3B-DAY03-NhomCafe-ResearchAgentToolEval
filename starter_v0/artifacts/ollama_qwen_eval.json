@@ -1,0 +1,6 @@
+{
+  "model": "qwen2.5:1.5b-lab-eval",
+  "from": "qwen2.5:1.5b",
+  "parameters": {"num_predict": 256, "num_ctx": 8192},
+  "stream": false
+}

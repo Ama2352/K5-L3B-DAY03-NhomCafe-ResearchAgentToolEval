@@ -90,6 +90,10 @@ Sao chép mục dưới đây cho từng thành viên.
   tích hợp CP4. Sau tích hợp, bộ chính giữ 10 case CP4, gồm G01/G02/GM03 phủ ba tool mới;
   run 1/1 của case mẫu được giữ làm bằng chứng lịch sử.
 - Có sử dụng Codex hỗ trợ code, test, phân tích log và soạn báo cáo; bằng chứng từ chạy thật.
+- Bổ sung bonus trên nhánh `feature/bonus-local-models`: tool thứ tư `extract_links`
+  có test riêng và eval routing 2/2; thử Llama 3.2 3B và Qwen 2.5 1.5B, hai vòng
+  tối ưu local và kiểm tra ngược cloud. Log/so sánh ở B7 và version_log.csv.
+  Phần challenge 4b do thành viên khác phụ trách, không sửa trong nhánh này.
 
 ### Bằng chứng
 

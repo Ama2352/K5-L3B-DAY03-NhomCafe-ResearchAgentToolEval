@@ -150,3 +150,11 @@ tools:
       properties:
         text: {type: string, description: "Văn bản cần đếm."}
       required: [text]
+
+  - name: extract_links
+    description: "Trích các URL HTTP(S) duy nhất từ văn bản hoặc Markdown đã cung cấp, theo thứ tự xuất hiện. Dùng để lấy link nguồn từ ghi chú có sẵn; không truy cập web. KHÔNG dùng để tìm nguồn mới, đọc trang (fetch), kiểm chứng URL hoặc lấy hostname (source_domains)."
+    parameters:
+      type: object
+      properties:
+        text: {type: string, description: "Văn bản hoặc Markdown không rỗng cần trích link."}
+      required: [text]

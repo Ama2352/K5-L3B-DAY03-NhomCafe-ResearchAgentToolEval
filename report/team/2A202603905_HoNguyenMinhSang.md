@@ -35,6 +35,16 @@
 
 ## 4. Bằng chứng
 
+**Bổ sung bonus trên nhánh `feature/bonus-local-models`:** thêm `extract_links`
+để trích URL có sẵn trong ghi chú, cùng `TOOL.md`, đăng ký, 3 test riêng và bộ
+`data/eval_bonus.json` (run thật 2/2 đạt). Chạy Small Local Model Challenge trên
+Llama 3.2 3B và Qwen 2.5 1.5B; chuỗi Qwen có cùng giới hạn sinh đạt 6/20 → 7/20 → 9/20;
+prompt v5 trên cloud vẫn 20/20. File cấu hình/model snapshot, prompt local, run JSON
+và version log nằm trong `starter_v0/`, bảng đối chiếu ở B7 báo cáo nhóm.
+Không thay đổi challenge 4b do thành viên khác phụ trách; test Telegram chỉ là
+regression offline đã có, không gửi Telegram thật. Kết quả kiểm tra nhánh:
+101 passed, 17 stub gốc skipped, 0 failed.
+
 - Commit `60a1efa`: tool mới và unit test; `c7f23ac`: UI và transcript;
   `4ec301c`: tích hợp PR #7, #8 và #9 vào main.
 - Code: `starter_v0/tools/{citations,source_domains,word_count}/`,

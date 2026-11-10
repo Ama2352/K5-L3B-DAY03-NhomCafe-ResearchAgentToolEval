@@ -17,8 +17,8 @@
 ### A1. Agent này làm được gì
 
 Café Research hỗ trợ tìm tin web và bài đăng X, đọc URL hoặc paper arXiv,
-tra cứu policy nội bộ và tổng hợp nguồn thành digest. Nhóm bổ sung ba tool
-định dạng tài liệu tham khảo, thống kê hostname nguồn và đếm từ/ký tự.
+tra cứu policy nội bộ và tổng hợp nguồn thành digest. Nhóm bổ sung bốn tool
+định dạng tài liệu tham khảo, thống kê hostname nguồn, đếm từ/ký tự và trích link từ ghi chú.
 
 **Cách chạy UI:**
 
@@ -38,7 +38,7 @@ Dependency Streamlit nằm trong `starter_v0/requirements.txt`.
 
 **Link dùng thử (deploy):**
 
-URL public: https://weeks-yield-consolidated-dom.trycloudflare.com
+URL public: https://tucson-deleted-footwear-some.trycloudflare.com
 
 Đã mở giao diện qua link HTTPS, gửi câu hỏi đếm từ và tải transcript thành công.
 Link Cloudflare Quick Tunnel là tạm thời, chỉ hoạt động khi Streamlit và tunnel
@@ -62,8 +62,9 @@ Phần A được bổ sung ở giai đoạn hoàn thiện bài; không có bằ
 | citations | tạo danh sách tài liệu tham khảo đánh số từ tiêu đề và URL đã có | có |
 | source_domains | lấy các hostname duy nhất từ danh sách URL nguồn | có |
 | word_count | đếm từ và ký tự trong văn bản được cung cấp | có |
+| extract_links | trích URL HTTP(S) duy nhất từ văn bản/Markdown đã có, không gọi mạng | có |
 
-### A3. C?u h?i m?u ?? th?
+### A3. Câu hỏi mẫu để thử
 
 1. Tìm 3 tin tức AI trong tuần này, kèm link nguồn.
 2. Tweet mới nhất của Sam Altman là gì?
@@ -200,14 +201,26 @@ Hash khác run DeepSeek v3 do CRLF/LF; nội dung prompt/tools sau chuẩn hóa 
 
 Cả hai phiên đều không lỗi provider. Phiên 7 lượt đọc một bài đã có trong ngữ
 cảnh ở lượt 2; không dùng lượt này làm bằng chứng hỏi lại khi thiếu URL.
-Phiên 3 lượt là kiểm tra CLI tự động nhập kịch bản qua `chat.py`, không phải
-xác nhận của người ngoài nhóm. Chưa có bằng chứng người ngoài nhóm dùng thử.
+Phiên 3 lượt là kiểm tra CLI tự động nhập kịch bản qua `chat.py`.
+
+**Bằng chứng dùng thử do nhóm cung cấp:** theo xác nhận của người phụ trách repo,
+một nhóm người dùng đã thử câu hỏi mẫu trên UI và cung cấp file tải về
+`v3_openrouter_ui_8a5ae3bb178f43cabccffdb2a1163da6.transcript.json`.
+Đã đối chiếu JSON trong file Downloads với
+[bản lưu trong repo](../../starter_v0/transcripts/v3_openrouter_ui_8a5ae3bb178f43cabccffdb2a1163da6.transcript.json):
+nội dung khớp nhau, nhãn `v3`, model `openai/gpt-4o-mini`, thời điểm tạo phiên
+`2026-11-10T21:01:02`. Yêu cầu: “Đếm số từ trong đoạn: Research agents use tools.”;
+tool `word_count` trả 4 từ, 26 ký tự, lượt kết thúc `answered`, không có lỗi tool.
+File có **một lượt**, chứng minh việc thử câu hỏi mẫu; không thay thế transcript
+CLI nhiều lượt ở trên. Danh tính người thử và việc họ thuộc nhóm nào là thông
+tin do người phụ trách xác nhận, không phải metadata có sẵn trong JSON.
 
 | Hạng mục | File bằng chứng | Kết quả | Giới hạn / Kiểm soát |
 |---|---|---|---|
 | Tool mới `citations` | `starter_v0/tools/citations/`, `starter_v0/tools/__init__.py`, `starter_v0/artifacts/tools.yaml` | Định dạng các nguồn đã có thành danh sách tài liệu tham khảo đánh số. | Không tự truy xuất hoặc xác minh nguồn; từ chối URL không hợp lệ. |
 | Tool mới `source_domains` | `starter_v0/tools/source_domains/` | Trích xuất các hostname duy nhất từ danh sách URL nguồn. | Không truy xuất hoặc xác minh website. |
 | Tool mới `word_count` | `starter_v0/tools/word_count/` | Đếm số từ và ký tự trong văn bản được cung cấp. | Đếm theo quy tắc nhận diện từ cục bộ; không tóm tắt nội dung. |
+| Tool mới `extract_links` | `starter_v0/tools/extract_links/`, `starter_v0/tests/test_extract_links.py` | Lấy link HTTP(S) có sẵn theo thứ tự, bỏ trùng, xử lý Markdown; có test input sai và URL lỗi | Chỉ trích cú pháp, không mở hoặc xác minh URL |
 | Unit test các tool mới | `starter_v0/tests/test_tools_todo.py` | 9 test mới đạt; toàn bộ suite: 86 passed, 17 skipped, 0 failed. | Test chạy offline, không gửi yêu cầu mạng. |
 | UI (lệnh chạy + link dùng thử) | `starter_v0/app.py`, `starter_v0/ui_session.py`, `starter_v0/README.md`; transcript UI ở B4 | Giao diện chat Streamlit đã chạy qua link public; chọn cấu hình, xem tool/lỗi, lưu và tải transcript; lệnh và URL ở A1 | Link tunnel tạm thời; hành vi model phụ thuộc prompt/tools CP2 |
 | Kiểm thử tích hợp CP5 | `starter_v0/tests/test_ui_session.py`, `starter_v0/tests/test_app.py` | 6 test mới đạt; toàn suite 92 passed, 17 skipped, 0 failed | Test offline không thay thế transcript live; các stub có sẵn vẫn skip |
@@ -224,42 +237,90 @@ khi trả kết quả cho model/UI/transcript. Regression test offline
 Toàn suite sau tích hợp: **93 passed, 17 skipped, 0 failed**. Không gửi Telegram
 thật trong test; đây là bằng chứng regression test cho tool có sẵn.
 
-Chỉ điền nếu nhóm làm bonus (ghi riêng, tối đa 10 điểm). Tool có sẵn (`send`, `policy`, `papers`, `paper_text`) không tự được bonus.
+Bonus được ghi riêng, không cộng vào điểm chính; kết quả chấm do người chấm quyết định.
 
-| Bonus | Evidence File | What Worked | Risk / Guardrail |
-|---|---|---|---|
-| Small Local Model | xem B7 |  |  |
-| Hơn 3 tool mới (≥ 4) |  |  |  |
-| `send` gửi thật lên Telegram sau xác nhận | transcript |  |  |
-| Test challenge (0 skipped / regression test) | `pytest` output |  |  |
+| Challenge / bonus | Trạng thái đã kiểm tra | Bằng chứng và giới hạn |
+|---|---|---|
+| Small Local Model — tối đa 4 điểm | Đã có bằng chứng đủ các bước | Hai model ≤8B, hai vòng tối ưu Qwen với cùng runtime, kiểm tra ngược cloud, run JSON và version log; xem B7 |
+| Hơn 3 tool mới — tối đa 3 điểm | Đã có đủ 4 tool kèm khai báo, TOOL.md và ≥3 test/tool | `extract_links` là tool thứ tư; run `v3-bonus4_B_group_openrouter_20261110T235346123648.json` đạt 2/2, 0 lỗi provider với `data/eval_bonus.json`; bộ group chính giữ 10 case, có G01/G02/GM03 cho ba tool trước |
+| Gửi Telegram thật sau xác nhận — tối đa 2 điểm | Chưa có bằng chứng đạt | Transcript CP5 dừng ở hỏi xác nhận; không có luồng xác nhận → `send(confirmed=true)` → `status=sent` |
+| Test challenge: 0 skipped toàn suite | Do thành viên khác phụ trách | Nhánh bonus-local-models không thay đổi các stub challenge 4b; kết quả nhánh này không được dùng để kết luận hoàn thành phần 0 skipped |
+| Test challenge: regression cho bug tool có sẵn — tối đa 1 điểm | Có cơ sở đề nghị chấm theo nhánh regression | Một bug lộ bot token trong lỗi HTTP của `send`; đã sửa và có regression test nêu trên, bắt lỗi trước sửa và đạt sau sửa |
 
-Test challenge: số bug tìm được trong tool có sẵn (nếu có), cách sửa, và test regression tương ứng.
+Hai nhánh test challenge là điều kiện “hoặc” trong rubric, không phải hai bonus
+độc lập. Vì đã có regression test, không cần đạt 0 skipped để đề nghị chấm
+bonus test challenge. Bằng chứng này không chứng minh gửi Telegram thật.
 
 ### B7. Small Local Model Challenge (bonus)
 
-Chỉ điền nếu nhóm làm bonus này.
+**Môi trường và tính so sánh.** Ollama 0.40.15 chạy trên CPU, máy có khoảng 15,6 GB RAM.
+Hai model khác nhau, đều ≤8B: `llama3.2:3b` (3,2B) và `qwen2.5:1.5b` (1,5B), Q4_K_M.
+Các run dùng cùng bộ base 20 case và bản 13 tool v3 lưu ở
+`artifacts/tools_cloud_v3.yaml`. Tool thứ tư được kiểm tra riêng ở bộ bonus,
+không thêm vào bộ tool so sánh local/cloud.
 
-| Version | Model (provider) | Prompt/Tools | case_accuracy | tool_routing | argument | multiturn | Run File |
-|---|---|---|---|---|---|---|---|
-| v3 | (cloud) | v3 |  |  |  |  |  |
-| v3-<model> | (ollama) | v3 |  |  |  |  |  |
-| v3-<model> | (ollama) | v3 |  |  |  |  |  |
-| v4-local |  |  |  |  |  |  |  |
-| v5-local |  |  |  |  |  |  |  |
+Lần v5 không giới hạn sinh đã dừng ở R09 sau khi log Ollama ghi hơn 3.400 token
+được sinh; lần chưa hoàn tất này không có summary và không được tính điểm.
+Để tránh sinh kéo dài, tạo tag `qwen2.5:1.5b-lab-eval` từ cùng weights Qwen,
+chỉ đặt `num_predict=256`, `num_ctx=8192` theo
+`artifacts/ollama_qwen_eval.json`. Đã chạy lại **cả v3, v4 và v5** với cùng tag.
+So sánh hai vòng tối ưu chỉ dùng ba run capped này; các run mặc định là loạt tham khảo riêng.
+Giới hạn 256 token có thể cắt câu trả lời dài; eval chấm routing/args, không chấm chất lượng văn bản.
 
-Lỗi đặc thù của model nhỏ (đếm từ run JSON):
+| Version / series | Model | Cases | Routing | Args | Multiturn | Run file |
+|---|---|---:|---:|---:|---:|---|
+| v3-cloud-reference | openai/gpt-4o-mini | 20/20 | 1.00 | 1.00 | 1.0000 | [JSON](../../starter_v0/runs/v3-cloud-reference_B_base_openrouter_20261110T235619993148.json) |
+| v3-llama3b | llama3.2:3b | 4/20 | 0.40 | 0.20 | 0.1667 | [JSON](../../starter_v0/runs/v3-llama3b_B_base_ollama_20261110T235730337165.json) |
+| v3-qwen1_5b | qwen2.5:1.5b | 6/20 | 0.55 | 0.30 | 0.1667 | [JSON](../../starter_v0/runs/v3-qwen1_5b_B_base_ollama_20261111T000037734623.json) |
+| v4-local-qwen1_5b | qwen2.5:1.5b | 7/20 | 0.60 | 0.35 | 0.1667 | [JSON](../../starter_v0/runs/v4-local-qwen1_5b_B_base_ollama_20261111T000443430689.json) |
+| v3-qwen1_5b-capped | qwen2.5:1.5b-lab-eval | 6/20 | 0.55 | 0.30 | 0.1667 | [JSON](../../starter_v0/runs/v3-qwen1_5b-capped_B_base_ollama_20261111T001712015662.json) |
+| v4-local-qwen1_5b-capped | qwen2.5:1.5b-lab-eval | 7/20 | 0.60 | 0.35 | 0.1667 | [JSON](../../starter_v0/runs/v4-local-qwen1_5b-capped_B_base_ollama_20261111T002051798796.json) |
+| v5-local-qwen1_5b-capped | qwen2.5:1.5b-lab-eval | 9/20 | 0.60 | 0.45 | 0.3333 | [JSON](../../starter_v0/runs/v5-local-qwen1_5b-capped_B_base_ollama_20261111T002435080278.json) |
+| v5-local-cloud-check | openai/gpt-4o-mini | 20/20 | 1.00 | 1.00 | 1.0000 | [JSON](../../starter_v0/runs/v5-local-cloud-check_B_base_openrouter_20261111T000650531484.json) |
 
-| Failure Pattern | Count | Example Case | Fix Tried | Helped? |
-|---|---|---|---|---|
-| wrong / hallucinated tool |  |  |  |  |
-| invalid JSON args (`_invalid_json_arguments`) |  |  |  |  |
-| no tool call / answered directly |  |  |  |  |
-| missed `clarify` |  |  |  |  |
-| repeated / unnecessary calls |  |  |  |  |
+Mọi run trong bảng đều đo đủ 20/20 case và `provider_error_cases=0`.
+Một số API tool trả `HTTPError` trong log; đây không phải lỗi model provider.
+Do đó điểm này chỉ chứng minh lựa chọn tool/args theo evaluator, không chứng minh
+API trả dữ liệu tốt hay câu trả lời cuối chính xác. Model chạy local nhưng các
+tool tìm web/X vẫn gọi dịch vụ mạng.
 
-- Cái gì giúp model nhỏ gọi tool đúng hơn nhất? Bằng chứng?
-- Bản prompt tối ưu cho local chạy trên model cloud thì sao?
-- Khi nào nhóm sẽ chọn model local thay vì cloud cho agent này?
+**Hai giả thuyết tối ưu.**
+- V4: rút system prompt từ 377 xuống 146 từ để giảm việc mất chỉ dẫn;
+  giữ model, tool và runtime của loạt capped. Case cải thiện: R14_out_of_scope_coding;
+  case tụt: --.
+- V5: bổ sung ví dụ tool call và args có kiểu, nhắc gọi tool thật thay vì chỉ
+  hứa tìm hoặc viết JSON trong text; giữ nguyên tools/runtime. Case cải thiện
+  so với v4 capped: R05_limit_arg, M01_clarify_then_fill; case tụt: --.
+- Kiểm tra ngược cùng prompt v5 trên OpenRouter `openai/gpt-4o-mini` giữ
+  20/20 như cloud reference, không giảm điểm ở lần đo này.
+
+**Mẫu lỗi đếm trực tiếp từ log** (các hàng có thể trùng case, không cộng thành tổng fail):
+
+| Pattern | Llama v3 default | Qwen v3 capped | Qwen v4 capped | Qwen v5 capped |
+|---|---:|---:|---:|---:|
+| No native call when tool expected | 2 | 5 | 4 | 4 |
+| Expected clarify missing | 3 | 3 | 3 | 3 |
+| observed_mismatch=wrong_arg_value | 4 | 5 | 6 | 4 |
+| Invalid JSON args | 0 | 0 | 0 | 0 |
+| Unknown tool name | 0 | 0 | 0 | 0 |
+| Repeated tool in one case | 0 | 0 | 0 | 0 |
+
+Kết luận có bằng chứng: prompt ngắn giúp Qwen từ 6/20 lên 7/20 trong loạt capped;
+riêng R14 ngoài phạm vi coding đổi từ fail sang pass. Kết quả v5 và các case
+tăng/giảm được ghi ở trên, không chỉ giữ những case cải thiện. Đây là kết quả
+trên bộ dùng để tối ưu, chưa chứng minh tổng quát hóa. Với yêu cầu chất lượng
+routing cao, cloud vẫn là lựa chọn có bằng chứng tốt hơn trong thử nghiệm này.
+Local phù hợp khi cần inference tại máy và chấp nhận kiểm tra/fallback; chưa đo
+latency hoặc tổng chi phí toàn pipeline để kết luận hiệu năng hay chi phí.
+
+Tái chạy từ `starter_v0/`: tạo tag bằng POST
+`http://localhost:11434/api/create` với nội dung file JSON cấu hình trên;
+chạy `run_eval.py --provider ollama --model qwen2.5:1.5b-lab-eval`,
+`--tools artifacts/tools_cloud_v3.yaml --suite base --eval-cases data/eval_base.json`.
+Lần lượt chọn `--system-prompt artifacts/system_prompt.md`,
+`artifacts/system_prompt_local_v4.md`, `artifacts/system_prompt_local_v5.md`
+và nhãn version tương ứng. Chi tiết hash, giả thuyết và metric trước/sau có
+trong `artifacts/version_log.csv`. Các run giữ timestamp thực tế 10–11/11/2026.
 
 ## 5. Khó khăn và cách xử lý
 
@@ -295,4 +356,24 @@ Chi tiết đóng góp của từng thành viên nằm trong [TEAM.md](../../TEA
 
 ## 8. Tài liệu tham khảo
 
--
+1. [README của bài lab](../../README.md), [CHECKPOINTS](../../CHECKPOINTS.md),
+   [RUBRIC](../../RUBRIC.md) và [SUBMISSION](../../SUBMISSION.md): yêu cầu,
+   checkpoint, điều kiện run hợp lệ và tiêu chí chấm bắt buộc/bonus.
+2. [Tool folder contract](../../starter_v0/tools/README.md) và
+   [hướng dẫn cấu hình tool](../../docs/TOOL-SETUP.md): cấu trúc tool,
+   frontmatter, biến môi trường và cách kết nối provider/tool.
+3. [Streamlit — st.chat_input](https://docs.streamlit.io/develop/api-reference/chat/st.chat_input)
+   và [AppTest](https://docs.streamlit.io/develop/api-reference/app-testing/st.testing.v1.apptest):
+   tham khảo giao diện chat và kiểm tra tương tác UI.
+4. [pytest — monkeypatch/mock](https://docs.pytest.org/en/stable/how-to/monkeypatch.html):
+   mock HTTP và biến môi trường để kiểm tra tool offline.
+5. [Cloudflare — Quick Tunnels](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/):
+   mở URL tạm cho ứng dụng chạy local; link hoạt động theo phiên tunnel.
+6. Ollama: [Llama 3.2 3B](https://ollama.com/library/llama3.2:3b),
+   [Qwen 2.5 1.5B](https://ollama.com/library/qwen2.5:1.5b),
+   [tạo model với tham số riêng](https://docs.ollama.com/api/create):
+   kiểm tra kích thước model và cấu hình tag eval. Metadata model được đối chiếu
+   thêm qua `/api/tags` và `/api/show` của Ollama trên máy chạy benchmark.
+
+Số liệu và nhận xét của báo cáo được đối chiếu từ run JSON, transcript, test và
+commit trong repo đã dẫn ở B1–B5; tài liệu API không thay thế bằng chứng thực nghiệm.

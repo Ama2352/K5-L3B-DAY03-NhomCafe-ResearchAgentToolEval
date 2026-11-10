@@ -16,37 +16,60 @@
 
 ### A1. Agent này làm được gì
 
-> 1–2 câu mô tả agent dùng để làm gì (cho team khác hiểu nhanh).
-
-Ví dụ: "Research agent: tìm tin theo từ khóa / theo tài khoản, đọc URL, tổng hợp thành digest, và gửi lên Telegram khi được xác nhận."
+Café Research hỗ trợ tìm tin web và bài đăng X, đọc URL hoặc paper arXiv,
+tra cứu policy nội bộ và tổng hợp nguồn thành digest. Nhóm bổ sung ba tool
+định dạng tài liệu tham khảo, thống kê hostname nguồn và đếm từ/ký tự.
 
 **Cách chạy UI:**
 
-> Lệnh chạy UI (ví dụ `streamlit run app.py`) và dependency đã thêm vào `starter_v0/requirements.txt`.
+Chạy từ `starter_v0/`:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install --no-cache-dir -r requirements.txt
+.\.venv\Scripts\python.exe -m streamlit run app.py --global.developmentMode false
+```
+
+UI: http://localhost:8501. Nhập câu hỏi để bắt đầu; mặc định dùng OpenRouter.
+Mở **Cài đặt** trước câu hỏi đầu tiên để đổi provider/model và nhập đúng nhãn
+version hiện tại. **Cuộc trò chuyện mới** bắt đầu lại và cho đổi cấu hình.
+Trong môi trường kiểm tra
+CP5, OpenRouter / `openai/gpt-4o-mini` đã qua preflight; DeepSeek chưa có key.
+Dependency Streamlit nằm trong `starter_v0/requirements.txt`.
 
 **Link dùng thử (deploy):**
 
-> Dán link public để team khác mở thử ngay. Cách deploy nhanh bằng Cloudflare Tunnel xem README. Nếu deploy Vercel/Streamlit Cloud thì dán link đó.
->
-> URL:
+URL public: https://weeks-yield-consolidated-dom.trycloudflare.com
+
+Đã mở giao diện qua link HTTPS, gửi câu hỏi đếm từ và tải transcript thành công.
+Link Cloudflare Quick Tunnel là tạm thời, chỉ hoạt động khi Streamlit và tunnel
+còn chạy. Hướng dẫn mở lại và kịch bản demo: [starter_v0/README.md](../../starter_v0/README.md).
+Phần A được bổ sung ở giai đoạn hoàn thiện bài; không có bằng chứng đã xong trước 16:30.
 
 ### A2. Tool agent có
-
-> Liệt kê các tool agent đang dùng (gồm tool mới nhóm tự thêm). Mỗi tool 1 dòng: tên + làm được gì.
 
 | Tên tool | Làm được gì | Tool mới nhóm thêm? |
 |---|---|---|
 | clarify | hỏi lại người dùng khi thiếu thông tin | không |
-|  |  |  |
-|  |  |  |
+| timeline | lấy bài đăng của một tài khoản X | không |
+| social_search | tìm bài đăng X theo từ khóa | không |
+| lookup | tìm web/tin tức theo chủ đề và thời gian | không |
+| fetch | đọc nội dung một URL | không |
+| format | định dạng các item có sẵn thành digest | không |
+| policy | tìm trong bộ policy nội bộ | không |
+| papers | tìm paper arXiv | không |
+| paper_text | tải và trích text PDF arXiv | không |
+| send | gửi Telegram khi có xác nhận và cấu hình channel | không |
+| citations | định dạng tiêu đề/URL thành danh sách tham khảo | có |
+| source_domains | trích hostname duy nhất từ các URL | có |
+| word_count | đếm từ và ký tự của văn bản | có |
 
 ### A3. Câu hỏi mẫu để thử
 
-> 3–5 câu hỏi/yêu cầu mẫu để team khác tự thử agent ngay.
-
-1.
-2.
-3.
+1. Tìm 3 tin tức AI trong tuần này, kèm link nguồn.
+2. Đọc bài viết này giúp tôi. (Kiểm tra agent có hỏi URL; sau đó bổ sung URL.)
+3. Đếm số từ trong đoạn: Research agents use tools.
+4. Liệt kê hostname duy nhất từ https://example.com/a và https://example.com/b.
+5. Chuẩn bị gửi nội dung "Bản tin thử nghiệm CP5" lên Telegram; hãy hỏi tôi xác nhận nội dung trước.
 
 ## 3. Giải pháp
 
@@ -101,9 +124,35 @@ Liệt kê đúng 10 case trong `starter_v0/data/eval_group.json` (5 single turn
 
 Lấy từ `starter_v0/transcripts/*.transcript.json`.
 
+Phiên smoke thật chạy bằng `chat.py`, provider OpenRouter / `openai/gpt-4o-mini`:
+`starter_v0/transcripts/v0-cp5-smoke_openrouter_20261110T183625534828.transcript.json`.
+Artifact: `v0-cp5-smoke+peb1c8179815b+t6a2da240a3cb`.
+Đây là snapshot kiểm tra tích hợp CP5, không thay thế baseline v0 hoặc bản v3 CP2.
+
 | Turn | User Request | Tool Calls | Version Evidence | Outcome |
 |---|---|---|---|---|
-|  |  |  |  |  |
+| 1 | Đếm số từ trong “Research agents use tools.” | `word_count` | snapshot CP5 nêu trên | Trả 4 từ, 26 ký tự; answered |
+| 2 | Đọc bài viết này giúp tôi (không có URL) | `fetch` → `format` | cùng snapshot | FAIL hành vi thiếu thông tin: tự đoán `https://www.example.com/article`, không hỏi lại |
+| 3 | Bổ sung URL `https://example.com/` | `fetch` → `format` | cùng snapshot | Đọc URL đã cung cấp và tổng hợp, answered |
+| 4 | Chuẩn bị gửi bản tin, chưa xác nhận | `send` → `clarify` | cùng snapshot | Tool trả `needs_confirmation`, agent hỏi xác nhận; không gửi thật. Model vẫn gọi `send` trước khi hỏi, cần CP2 xử lý |
+
+Không có lượt lỗi provider trong phiên này. Cần chạy lại kịch bản trên bản cuối
+CP2 để chứng minh agent hỏi URL và xác nhận trước khi gọi action tool.
+
+Kiểm tra trực tiếp qua UI public: transcript
+`starter_v0/transcripts/cp5-ui-smoke_openrouter_ui_edc771ac423547388a35056c1f686833.transcript.json`,
+artifact `cp5-ui-smoke+peb1c8179815b+t6a2da240a3cb`, OpenRouter / `openai/gpt-4o-mini`.
+Lượt 1 yêu cầu đếm “Research agents use tools.”; agent gọi `word_count`, trả 4 từ
+và 26 ký tự, status `answered`. File tải bằng nút **Tải transcript JSON** khớp
+với transcript lưu trên máy chủ. Đây là bằng chứng UI; phiên CLI bốn lượt ở trên
+là bằng chứng `chat.py` theo checkpoint.
+
+Sau khi tối giản giao diện, đã kiểm tra lại việc nhập câu hỏi ngay từ màn hình
+ban đầu và nút câu hỏi mẫu qua link public. Transcript mới:
+`starter_v0/transcripts/v0_openrouter_ui_4a4d770c004f4a5e8617570d239b88cd.transcript.json`.
+Lượt đếm từ trả 4 từ, 26 ký tự; bố cục đã kiểm tra ở desktop và mobile 390px,
+không tràn ngang. Cài đặt và hoạt động tool được thu gọn; chức năng lưu/tải
+transcript và ghi nhận lỗi vẫn được giữ.
 
 ### B5a. Bằng chứng bắt buộc — Tool mới, unit test, UI
 
@@ -113,7 +162,8 @@ Lấy từ `starter_v0/transcripts/*.transcript.json`.
 | Tool mới `source_domains` | `starter_v0/tools/source_domains/` | Trích xuất các hostname duy nhất từ danh sách URL nguồn. | Không truy xuất hoặc xác minh website. |
 | Tool mới `word_count` | `starter_v0/tools/word_count/` | Đếm số từ và ký tự trong văn bản được cung cấp. | Đếm theo quy tắc nhận diện từ cục bộ; không tóm tắt nội dung. |
 | Unit test các tool mới | `starter_v0/tests/test_tools_todo.py` | 9 test mới đạt; toàn bộ suite: 86 passed, 17 skipped, 0 failed. | Test chạy offline, không gửi yêu cầu mạng. |
-| UI (lệnh chạy + link dùng thử) | Chưa hoàn thành | Chưa hoàn thành | Chưa hoàn thành |
+| UI (lệnh chạy + link dùng thử) | `starter_v0/app.py`, `starter_v0/ui_session.py`, `starter_v0/README.md`; transcript UI ở B4 | Giao diện chat Streamlit đã chạy qua link public; chọn cấu hình, xem tool/lỗi, lưu và tải transcript; lệnh và URL ở A1 | Link tunnel tạm thời; hành vi model phụ thuộc prompt/tools CP2 |
+| Kiểm thử tích hợp CP5 | `starter_v0/tests/test_ui_session.py`, `starter_v0/tests/test_app.py` | 6 test mới đạt; toàn suite 92 passed, 17 skipped, 0 failed | Test offline không thay thế transcript live; các stub có sẵn vẫn skip |
 
 Mỗi tool có các test cho đầu vào hợp lệ, đầu vào sai và nhánh lỗi. Ví dụ, unit test kiểm tra URL không hợp lệ được trả về dưới dạng error dict; eval routing không chứng minh được code tool xử lý đúng đầu vào đó.
 
@@ -160,7 +210,17 @@ Lỗi đặc thù của model nhỏ (đếm từ run JSON):
 
 > Khó khăn chính và cách nhóm xử lý. Nếu gặp lỗi kỹ thuật (provider lỗi, hết quota API, tool không chạy), mô tả lỗi và dẫn bằng chứng: run JSON, log, ảnh chụp.
 
--
+- Môi trường kiểm tra không cho ghi thêm package vào `.venv` hiện có, và pip bị
+  kẹt khi ghi cache. Đã cài dependency vào thư mục tạm ngoài repo bằng
+  `--target`, `--no-cache-dir`, `--no-compile` để chạy kiểm thử ban đầu. Sau đó đã
+  cài Streamlit trực tiếp vào `.venv` và chạy lại toàn suite thành công
+  (92 passed, 17 skipped). Không đưa package hoặc file build vào bài nộp.
+- Streamlit trong môi trường kiểm tra mặc định bật development mode khiến trang
+  gốc trả 404 dù health endpoint báo OK. Chạy với `--global.developmentMode false`
+  đã phục vụ trang và chat bình thường. Đã kiểm tra cả HTTP và giao diện public.
+- Snapshot hiện tại đoán URL khi thiếu thông tin, và gọi `send` trước khi hỏi
+  xác nhận (tool chặn gửi). Bằng chứng thật ở B4; bàn giao CP2 để sửa prompt/tool
+  declaration rồi chạy lại trên bản cuối. Không sửa các file CP2/CP4 trong phần CP5.
 
 ## 6. Tổng hợp đóng góp
 

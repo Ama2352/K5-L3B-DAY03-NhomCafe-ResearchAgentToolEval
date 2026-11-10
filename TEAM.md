@@ -13,8 +13,9 @@
 
 | STT | Họ tên | MSSV | Email | GitHub | Vai trò |
 | --: | ------ | ---- | ----- | ------ | ------- |
-|   1 | Nguyễn Thảo Quyên |   2A202603895   |   26ai.quyennt@vinuni.edu.vn    |    100678carwyn   | CP1–CP2: provider DeepSeek, baseline v0, tối ưu prompt (v1) và tools.yaml (v2) |
-|   2 | Hồ Nguyễn Minh Sang |      |       | Ama2352 | CP3: tool mới (citations, source_domains, word_count) + unit test; quản lý repo, merge PR |
+|   1 |Vũ Ngọc Quỳnh Anh|2A202603875  |   26ai.anhvnq@vinuni.edu.vn     |    https://github.com/qavu2407-lang    |         |
+|   2 | Nguyễn Thảo Quyên |   2A202603895   |   26ai.quyennt@vinuni.edu.vn    |    100678carwyn   | CP1–CP2: provider DeepSeek, baseline v0, tối ưu prompt (v1) và tools.yaml (v2) |
+|   3 | Hồ Nguyễn Minh Sang |  2A202603905  |   26ai.sanghnm@vinuni.edu.vn    | Ama2352 | CP3: tool mới (citations, source_domains, word_count) + unit test; quản lý repo, merge PR |
 
 ## Cá nhân
 

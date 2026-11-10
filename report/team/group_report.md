@@ -36,17 +36,29 @@ Ví dụ: "Research agent: tìm tin theo từ khóa / theo tài khoản, đọc 
 
 | Tên tool | Làm được gì | Tool mới nhóm thêm? |
 |---|---|---|
-| clarify | hỏi lại người dùng khi thiếu thông tin | không |
-|  |  |  |
-|  |  |  |
+| clarify | hỏi lại người dùng khi thiếu thông tin (handle, URL, nội dung) và xin xác nhận có/không trước khi gửi | không |
+| timeline | lấy các bài đăng gần đây của một tài khoản X/Twitter | không |
+| social_search | tìm bài đăng X/Twitter theo từ khóa (Top/Latest) | không |
+| lookup | tìm tin tức/thông tin trên web (`topic=news`, `timeframe`) | không |
+| fetch | đọc nội dung của một URL do người dùng đưa | không |
+| format | trình bày các item đã có thành bản tin markdown | không |
+| send | gửi văn bản lên Telegram, chỉ sau khi người dùng xác nhận (`confirmed=true`) | không |
+| policy | tìm trong tài liệu chính sách nội bộ | không |
+| papers | tìm bài báo trên arXiv | không |
+| paper_text | tải và trích text của một bài arXiv | không |
+| citations | tạo danh sách tài liệu tham khảo đánh số từ tiêu đề và URL đã có | có |
+| source_domains | lấy các hostname duy nhất từ danh sách URL nguồn | có |
+| word_count | đếm từ và ký tự trong văn bản được cung cấp | có |
 
 ### A3. Câu hỏi mẫu để thử
 
 > 3–5 câu hỏi/yêu cầu mẫu để team khác tự thử agent ngay.
 
-1.
-2.
-3.
+1. "Tweet mới nhất của Sam Altman là gì?" (gọi `timeline` với `screenname=sama`)
+2. "Tin tức AI hôm nay có gì nổi bật?" (gọi `lookup` với `topic=news`, `timeframe=day`)
+3. "Mọi người đang bàn gì về GPT-5 trên Twitter?" (gọi `social_search`)
+4. "Tóm tắt 5 tweet mới nhất giúp mình" (thiếu tài khoản, agent phải hỏi lại bằng `clarify`)
+5. "Đăng bản tin này lên Telegram giúp mình" (agent xin xác nhận trước, không tự gửi)
 
 ## 3. Giải pháp
 
@@ -168,10 +180,11 @@ Chi tiết đóng góp của từng thành viên nằm trong [TEAM.md](../../TEA
 
 ## 7. Hạn chế và hướng cải thiện — B6. Reflection
 
-- Fix nào thuộc `system_prompt.md`?
-- Fix nào thuộc `tools.yaml`?
-- Failure nào cần review thủ công thay vì chấm tự động?
-- Nếu có thêm một vòng, nhóm sẽ thử giả thuyết nào?
+- **Fix thuộc `system_prompt.md`** (hành vi của agent): v1 bỏ chỉ dẫn đoán/gửi vội/ép một bước và thêm rule hỏi lại bằng `clarify`, xác nhận trước khi `send`, từ chối ngoài phạm vi (R08, R10, R11, R14 từ FAIL sang PASS, 0.45 → 0.65). v3 tách xác nhận gửi/đăng thành hai bước (R12, 0.95 → 1.00).
+- **Fix thuộc `tools.yaml`** (cách dùng tool và tham số): v2 viết lại description và quy ước tham số: `query` là từ khóa ngắn, `topic=news`, bảng `timeframe`, handle không có `@`, gọi một lần (R02, R03, R06, R13, M02, M06 từ FAIL sang PASS, 0.65 → 0.95). Một dòng "không lặp tool" thêm vào prompt ở v1 không có tác dụng với R02 và R06; hai case này chỉ sửa được sau khi sửa `tools.yaml`.
+- **Failure cần review thủ công:** R12 ("Đăng bản tin này lên Telegram"). Ở v1 và v2 model gọi `clarify` với `response_type=text` để xin nội dung bản tin, còn eval chỉ chấp nhận `yes_no`. Hành vi đó an toàn (không gửi) và có lý, nhưng không khớp eval; nhóm chọn sửa prompt ở v3 để khớp. Run: `starter_v0/runs/v2_B_base_deepseek_20261110T184518723180.json`, `starter_v0/runs/v3_B_base_deepseek_20261110T190413436138.json`.
+- **Hạn chế:** 1.00 chỉ đo trên bộ base mà prompt và mô tả tool được chỉnh theo chính các case đó, nên có thể quá khớp. Điểm v2 gồm cả tác động của 3 tool mới (CP3) lẫn phần viết lại description, nên không tách riêng được từng phần. Mọi run dùng một model (`deepseek-chat`).
+- **Giả thuyết cho vòng tiếp theo:** chạy v3 trên bộ extension và bộ group để kiểm tra mức quá khớp, rồi xem 3 tool mới có được route đúng lúc không.
 
 ## 8. Tài liệu tham khảo
 

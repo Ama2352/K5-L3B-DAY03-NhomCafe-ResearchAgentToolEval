@@ -1,0 +1,25 @@
+{
+  "dataset_id": "group10_bonus_extract_links",
+  "dataset_role": "group",
+  "description": "Separate bonus routing cases for the fourth local research tool; base and extension suites unchanged.",
+  "cases": [
+    {
+      "id": "BONUS01_extract_research_links",
+      "phase": "B",
+      "suite": "group",
+      "query": "Trích danh sách URL HTTP(S) duy nhất từ ghi chú này, không mở trang: [Paper](https://arxiv.org/abs/1706.03762), blog https://example.org/research. Paper lặp lại https://arxiv.org/abs/1706.03762.",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "extract_links", "args": {"text": "[Paper](https://arxiv.org/abs/1706.03762), blog https://example.org/research. Paper lặp lại https://arxiv.org/abs/1706.03762."}}]},
+      "metadata": {"skill": "extract_links", "difficulty": "medium", "what_it_tests": "Extract links from supplied research notes using the local extract_links tool rather than fetching or searching."}
+    },
+    {
+      "id": "BONUS02_extract_plain_links",
+      "phase": "B",
+      "suite": "group",
+      "query": "Lấy các link HTTP(S) có trong đoạn văn sau bằng tool, giữ thứ tự và bỏ link trùng: https://example.com/a và http://example.net/b rồi https://example.com/a",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "extract_links", "args": {"text": "https://example.com/a và http://example.net/b rồi https://example.com/a"}}]},
+      "metadata": {"skill": "extract_links", "difficulty": "easy", "what_it_tests": "Route plain-text unique URL extraction to extract_links with the original supplied text."}
+    }
+  ]
+}

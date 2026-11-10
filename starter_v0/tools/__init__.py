@@ -20,6 +20,7 @@ from .lookup.tool import web_search
 from .citations.tool import citations
 from .source_domains.tool import source_domains
 from .word_count.tool import word_count
+from .extract_links.tool import extract_links
 
 
 # NOTE (starter_v0): tool names here are intentionally vague. These keys are the
@@ -41,6 +42,7 @@ TOOL_FUNCTIONS = {
     "citations": citations,
     "source_domains": source_domains,
     "word_count": word_count,
+    "extract_links": extract_links,
     # TODO CP3 (student): register your new tool here, e.g. "my_tool": my_tool_function,
     # then declare it in artifacts/tools.yaml and run `pytest tests/test_tool_contract.py`.
 }

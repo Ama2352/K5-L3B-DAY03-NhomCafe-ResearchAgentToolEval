@@ -56,7 +56,7 @@ Sao chép mục dưới đây cho từng thành viên.
 
 - CP3: ba tool local `citations`, `source_domains`, `word_count`, đăng ký và unit test.
 - CP5: UI Streamlit, hướng dẫn chạy, link dùng thử, transcript live và phần báo cáo tương ứng.
-- Tích hợp thay đổi CP2 từ main vào nhánh Sang, giữ bằng chứng của các phần.
+- Quản lý repo nhóm: kiểm tra, xử lý xung đột và merge PR vào nhánh `main`.
 
 ### Đóng góp cụ thể
 
@@ -70,7 +70,7 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Bằng chứng
 
-- Commit `60a1efa` (tool/test), `c7f23ac` (UI/evidence), `966687f` (merge main).
+- Commit `60a1efa` (tool/test), `c7f23ac` (UI/evidence), `4ec301c` (tích hợp PR vào main).
 - Báo cáo cá nhân: [2A202603905_HoNguyenMinhSang.md](report/team/2A202603905_HoNguyenMinhSang.md).
 - Run routing: `starter_v0/runs/v3-cp3-routing_B_group_openrouter_20261110T194332874245.json` (1/1 đạt).
 - Transcript v3: `starter_v0/transcripts/v3_openrouter_20261110T194205268170.transcript.json`

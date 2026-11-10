@@ -12,7 +12,7 @@
 
 - CP3: thêm tool mới, đăng ký tool và unit test.
 - CP5: triển khai UI, hướng dẫn chạy, transcript live và báo cáo bằng chứng.
-- Quản lý repo, tích hợp thay đổi của nhóm từ main vào nhánh Sang.
+- Quản lý repo nhóm: kiểm tra, xử lý xung đột và merge PR vào nhánh `main`.
 
 ## 3. Đóng góp cụ thể
 
@@ -28,13 +28,14 @@
   snapshot prompt/tools và hash để các thay đổi trong lúc làm CP2 không làm lẫn bằng chứng.
 - Dùng Cloudflare Quick Tunnel để chia sẻ UI; kiểm tra chat và tải JSON qua link
   public, kiểm tra bố cục desktop/mobile 390px và dọn file kiểm tra tạm khỏi repo.
-- Merge CP2 từ main, giữ cả nội dung CP2/CP5 khi giải quyết xung đột báo cáo.
-  Chạy lại transcript v3 thay vì dùng log prompt cũ để kết luận về bản cuối.
+- Quản lý và tích hợp các PR của nhóm vào `main`; kiểm tra thay đổi, phối hợp
+  xử lý xung đột báo cáo và giữ bằng chứng CP2/CP4/CP5. Chạy lại transcript v3
+  thay vì dùng log prompt cũ để kết luận về bản cuối.
 
 ## 4. Bằng chứng
 
 - Commit `60a1efa`: tool mới và unit test; `c7f23ac`: UI và transcript;
-  `966687f`: merge main vào Sang.
+  `4ec301c`: tích hợp PR #7, #8 và #9 vào main.
 - Code: `starter_v0/tools/{citations,source_domains,word_count}/`,
   `starter_v0/app.py`, `starter_v0/ui_session.py`, `.streamlit/config.toml` trong starter.
 - Test: `starter_v0/tests/test_tools_todo.py`, `test_ui_session.py`, `test_app.py`.
@@ -58,7 +59,7 @@ Phần tổng kết dưới đây dựa trên bằng chứng kỹ thuật; thàn
 mức độ hiểu và bổ sung trải nghiệm học tập của mình trước khi nộp.
 
 - Phần việc đã có bằng chứng: ba tool local, unit test, UI, xuất transcript,
-  kiểm tra routing tool mới và tích hợp CP2. Unit test kiểm tra code tool;
+  kiểm tra routing tool mới và quản lý, merge PR của nhóm. Unit test kiểm tra code tool;
   eval/transcript kiểm tra quyết định gọi tool của model — hai loại không thay thế nhau.
 - Hạn chế còn lại: model OpenRouter hỏi URL bằng text, chưa gọi `clarify` ở lượt
   thiếu URL; link tunnel chỉ tồn tại khi tiến trình chạy; chưa có bonus gửi Telegram thật.

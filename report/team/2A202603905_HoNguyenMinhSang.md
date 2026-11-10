@@ -21,7 +21,8 @@
   Các tool chạy local, không xác minh nguồn, đầu vào lỗi trả error dict.
 - Có `TOOL.md`, đăng ký trong registry và tools.yaml, 3 test/tool cho happy path,
   input sai và nhánh lỗi. Case nhóm `G_CP3_citations_existing_source` kiểm tra
-  model gọi tool mới khi đã có nguồn, không tìm kiếm hoặc fetch thừa.
+  model gọi tool mới khi đã có nguồn, không tìm kiếm hoặc fetch thừa. Sau tích hợp,
+  case mẫu được thay bằng bộ 10 case CP4 (G01/G02/GM03 phủ ba tool mới); run mẫu vẫn giữ làm lịch sử.
 - Làm UI Streamlit chat nhiều lượt, cấu hình thu gọn, theme nền xanh xám nhạt
   và chữ đậm; hiển thị tool call/lỗi và cho tải transcript JSON.
 - Tái sử dụng `chat.run_model_tool_loop`, giữ nguyên backend của CLI. Phiên UI
@@ -63,7 +64,7 @@ mức độ hiểu và bổ sung trải nghiệm học tập của mình trướ
   eval/transcript kiểm tra quyết định gọi tool của model — hai loại không thay thế nhau.
 - Hạn chế còn lại: model OpenRouter hỏi URL bằng text, chưa gọi `clarify` ở lượt
   thiếu URL; link tunnel chỉ tồn tại khi tiến trình chạy; chưa có bonus gửi Telegram thật.
-- Việc cần phối hợp: CP4 bổ sung đủ 10 case và run; một người ngoài nhóm xác nhận
+- Sau tích hợp, CP4 đã có đủ 10 case và run; việc cần phối hợp còn lại là một người ngoài nhóm xác nhận
   demo; nhóm chốt nhánh/commit nộp và hoàn thiện báo cáo của từng thành viên.
 - Hướng cải thiện: thêm regression case cho việc hỏi lại bằng text thay vì control tool,
   kiểm tra routing của cả ba tool trên provider cuối và dùng hosting ổn định cho demo dài hạn.

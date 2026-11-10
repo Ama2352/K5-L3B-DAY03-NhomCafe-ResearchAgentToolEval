@@ -28,5 +28,11 @@ def send_telegram(text: str = "", confirmed: bool = False) -> dict[str, Any]:
         response.raise_for_status()
         return {"tool": "send_telegram", "status": "sent"}
     except Exception as exc:
-        return err("send_telegram", exc)
+        failure = err("send_telegram", exc)
+        # requests includes the token-bearing Bot API URL in HTTP errors.
+        # Remove it before results reach the model, UI, or transcript writer.
+        token = os.getenv("TELEGRAM_BOT_TOKEN")
+        if token:
+            failure["message"] = failure["message"].replace(token, "[REDACTED]")
+        return failure
 

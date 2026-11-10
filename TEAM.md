@@ -64,8 +64,9 @@ Sao chép mục dưới đây cho từng thành viên.
 - Tạo giao diện chat tối giản, theme sáng đồng nhất, cấu hình provider/model/version,
   hiển thị hoạt động và lỗi, lưu/tải transcript. Mỗi phiên giữ nguyên prompt/tools và hash.
 - Kiểm tra UI qua Cloudflare Tunnel, thử desktop/mobile; chạy lại CLI trên v3 sau khi merge CP2.
-- Thêm case `G_CP3_citations_existing_source` để kiểm tra route tool mới; bàn giao CP4
-  bổ sung 4 single turn và 5 multi turn còn lại, không coi một case này là hoàn thành CP4.
+- Thêm case mẫu `G_CP3_citations_existing_source` để kiểm tra route tool mới trước
+  tích hợp CP4. Sau tích hợp, bộ chính giữ 10 case CP4, gồm G01/G02/GM03 phủ ba tool mới;
+  run 1/1 của case mẫu được giữ làm bằng chứng lịch sử.
 - Có sử dụng Codex hỗ trợ code, test, phân tích log và soạn báo cáo; bằng chứng từ chạy thật.
 
 ### Bằng chứng

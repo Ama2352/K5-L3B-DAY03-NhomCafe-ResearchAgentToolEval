@@ -2,18 +2,281 @@
   "dataset_id": "day03_v2_research_group",
   "dataset_role": "group",
   "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
-  "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
+  "allowed_failure_types": [
+    "wrong_tool",
+    "wrong_arg_value",
+    "wrong_boundary",
+    "unnecessary_tool",
+    "out_of_scope",
+    "missing_info"
+  ],
   "cases": [
     {
-      "id": "G_CP3_citations_existing_source",
+      "id": "G01_word_count_route",
       "phase": "B",
       "suite": "group",
-      "query": "Tạo danh sách tài liệu tham khảo đánh số từ nguồn đã có: tiêu đề Example Domain, URL https://example.com/. Không tìm kiếm hoặc đọc lại website.",
+      "query": "Đếm số từ trong câu: \"Hôm nay trời đẹp quá\"",
       "failure_type": "wrong_tool",
       "expect": {
-        "tool_calls": [{"name": "citations", "args": {"items": [{"title": "Example Domain", "url": "https://example.com/"}]}}]
+        "tool_calls": [
+          {
+            "name": "word_count",
+            "args": {
+              "text": "Hôm nay trời đẹp quá"
+            }
+          }
+        ]
       },
-      "metadata": {"what_it_tests": "Route tới tool mới citations khi đã có tiêu đề và URL; không gọi lookup hoặc fetch thừa."}
+      "metadata": {
+        "skill": "routing_new_tool_word_count",
+        "difficulty": "easy",
+        "what_it_tests": "Yêu cầu đếm từ → route tới tool mới word_count, truyền nguyên văn đoạn text (không tóm tắt, không search)."
+      }
+    },
+    {
+      "id": "G02_source_domains_route",
+      "phase": "B",
+      "suite": "group",
+      "query": "Các link này thuộc những trang nào: https://openai.com/blog/a, https://www.theverge.com/x, https://openai.com/research/b",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_domains",
+            "args": {
+              "urls": [
+                "https://openai.com/blog/a",
+                "https://www.theverge.com/x",
+                "https://openai.com/research/b"
+              ]
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "routing_new_tool_source_domains",
+        "difficulty": "medium",
+        "what_it_tests": "Hỏi tên miền của các URL đã có → dùng source_domains, không fetch từng link; truyền đủ 3 URL nguyên văn."
+      }
+    },
+    {
+      "id": "G03_handle_strip_at_english",
+      "phase": "B",
+      "suite": "group",
+      "query": "Show me the latest 3 tweets from @karpathy",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "args_handle_strip_at_english",
+        "difficulty": "medium",
+        "what_it_tests": "Câu tiếng Anh, handle có @ → bỏ @ (screenname=karpathy) và giữ limit=3."
+      }
+    },
+    {
+      "id": "G04_timeframe_year",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tin AI năm nay",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "year"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "args_timeframe_year",
+        "difficulty": "easy",
+        "what_it_tests": "'năm nay' → lookup topic=news, timeframe=year (base chỉ test day/week)."
+      }
+    },
+    {
+      "id": "G05_ambiguous_choice",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tìm tin về Apple giúp mình",
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "choice"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "clarify_ambiguous_choice",
+        "difficulty": "hard",
+        "what_it_tests": "'Apple' mơ hồ (công ty hay trái cây) → clarify với response_type=choice thay vì đoán."
+      }
+    },
+    {
+      "id": "GM01_confirm_then_send",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Đăng câu \"Bản tin AI hôm nay đã sẵn sàng\" lên Telegram"
+        },
+        {
+          "role": "user",
+          "content": "Ừ, gửi đi"
+        }
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_confirm_then_send",
+        "difficulty": "medium",
+        "what_it_tests": "Lượt 2 user đã xác nhận → gọi send với confirmed=true (base chỉ test bước hỏi xác nhận)."
+      }
+    },
+    {
+      "id": "GM02_cancel_send",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Đăng bản tin này lên Telegram"
+        },
+        {
+          "role": "user",
+          "content": "Thôi, đừng gửi nữa"
+        }
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "no_tool": true
+      },
+      "metadata": {
+        "skill": "multiturn_cancel_send",
+        "difficulty": "medium",
+        "what_it_tests": "User huỷ ở lượt 2 → không gọi send hay tool nào khác."
+      }
+    },
+    {
+      "id": "GM03_citations_after_sources",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Mình có nguồn: \"GPT-5 launch\" https://openai.com/gpt-5"
+        },
+        {
+          "role": "user",
+          "content": "Lập danh sách tài liệu tham khảo từ nguồn đó"
+        }
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "citations",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_new_tool_citations",
+        "difficulty": "medium",
+        "what_it_tests": "Dùng nguồn user đưa ở lượt 1 để gọi tool mới citations, không search/fetch lại. Chỉ chấm tên tool (items là list object)."
+      }
+    },
+    {
+      "id": "GM04_reconfirm_after_edit",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Đăng câu \"Bản tin AI tuần này\" lên Telegram"
+        },
+        {
+          "role": "user",
+          "content": "Ừ"
+        },
+        {
+          "role": "user",
+          "content": "À khoan, đổi thành \"Bản tin AI tháng này\" rồi gửi"
+        }
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_reconfirm_after_edit",
+        "difficulty": "hard",
+        "what_it_tests": "User đã xác nhận ở lượt 2 nhưng lượt 3 sửa nội dung → phải hỏi xác nhận lại (clarify yes_no) với nội dung mới, không gửi luôn."
+      }
+    },
+    {
+      "id": "GM05_timeframe_widen",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tin AI tuần này"
+        },
+        {
+          "role": "user",
+          "content": "Mở rộng ra cả tháng đi"
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_carryover_widen_timeframe",
+        "difficulty": "medium",
+        "what_it_tests": "Giữ topic=news từ lượt 1, đổi timeframe từ week sang month theo lượt 2."
+      }
     }
   ]
 }

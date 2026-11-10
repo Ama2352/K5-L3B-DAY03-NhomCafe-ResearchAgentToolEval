@@ -1,0 +1,847 @@
+{
+  "run_id": "v3_B_group_deepseek_20261110T191743257537",
+  "version": "v3",
+  "artifact_version": "v3+p0b60553f4971+t256b66de201d",
+  "prompt_hash": "0b60553f49710381ebb61141a55790e3930e4045fd21faebcafa20c6eb68afe0",
+  "tools_hash": "256b66de201db8afbf8be5c1a3cdcf6faa7edda89f0155d9993f266d159c0acb",
+  "phase": "B",
+  "suite": "group",
+  "provider": "deepseek",
+  "model": "deepseek-chat",
+  "system_prompt": "/Users/vungocquynhanh/Projects/K5-L3B-DAY03-NhomCafe-ResearchAgentToolEval/starter_v0/artifacts/system_prompt.md",
+  "tools": "/Users/vungocquynhanh/Projects/K5-L3B-DAY03-NhomCafe-ResearchAgentToolEval/starter_v0/artifacts/tools.yaml",
+  "eval_cases": "data/eval_group.json",
+  "dataset_id": "day03_v2_research_group",
+  "dataset_role": "group",
+  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "generated_at": "2026-11-10T19:17:43",
+  "summary": {
+    "total_cases": 10,
+    "measured_cases": 10,
+    "provider_error_cases": 0,
+    "passed_cases": 9,
+    "case_accuracy": 0.9,
+    "tool_routing_accuracy": 0.9,
+    "argument_accuracy": 0.9,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {
+      "missing_info": 1
+    },
+    "observed_mismatch_counts": {
+      "missing_tool_call": 1
+    }
+  },
+  "results": [
+    {
+      "id": "G01_word_count_route",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_new_tool_word_count",
+        "difficulty": "easy",
+        "what_it_tests": "Yêu cầu đếm từ → route tới tool mới word_count, truyền nguyên văn đoạn text (không tóm tắt, không search)."
+      },
+      "input": "Đếm số từ trong câu: \"Hôm nay trời đẹp quá\"",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "word_count",
+            "args": {
+              "text": "Hôm nay trời đẹp quá"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "word_count",
+            "args": {
+              "text": "Hôm nay trời đẹp quá"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "word_count",
+          "args": {
+            "text": "Hôm nay trời đẹp quá"
+          },
+          "result": {
+            "tool": "word_count",
+            "word_count": 5,
+            "character_count": 20
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_source_domains_route",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_new_tool_source_domains",
+        "difficulty": "medium",
+        "what_it_tests": "Hỏi tên miền của các URL đã có → dùng source_domains, không fetch từng link; truyền đủ 3 URL nguyên văn."
+      },
+      "input": "Các link này thuộc những trang nào: https://openai.com/blog/a, https://www.theverge.com/x, https://openai.com/research/b",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_domains",
+            "args": {
+              "urls": [
+                "https://openai.com/blog/a",
+                "https://www.theverge.com/x",
+                "https://openai.com/research/b"
+              ]
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "source_domains",
+            "args": {
+              "urls": [
+                "https://openai.com/blog/a",
+                "https://www.theverge.com/x",
+                "https://openai.com/research/b"
+              ]
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "source_domains",
+          "args": {
+            "urls": [
+              "https://openai.com/blog/a",
+              "https://www.theverge.com/x",
+              "https://openai.com/research/b"
+            ]
+          },
+          "result": {
+            "tool": "source_domains",
+            "domains": [
+              "openai.com",
+              "www.theverge.com"
+            ],
+            "count": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03_handle_strip_at_english",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "args_handle_strip_at_english",
+        "difficulty": "medium",
+        "what_it_tests": "Câu tiếng Anh, handle có @ → bỏ @ (screenname=karpathy) và giữ limit=3."
+      },
+      "input": "Show me the latest 3 tweets from @karpathy",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 3
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "karpathy",
+            "limit": 3
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "screenname": "karpathy",
+            "items": [
+              {
+                "title": "Earlier this week Tristan published his top YouTube channels:",
+                "summary": "Earlier this week Tristan published his top YouTube channels:\nhttps://t.co/NZ3UCNo6cT\nWhich looked excellent so clearly I had to turn it into TristanTube:\nhttps://t.co/l0KyW1WdNH\n47K super nerdy videos +TV mode for laid back watching. (One-shotted with Claude Code in 3 minutes)",
+                "url": "https://x.com/karpathy/status/2119114537442189652",
+                "source": "@karpathy",
+                "date": "Sat Nov 07 17:07:31 +0000 2026",
+                "metrics": {
+                  "favorites": 9179,
+                  "retweets": 772,
+                  "views": "945507"
+                }
+              },
+              {
+                "title": "Weekend hack: HackerTube. I was annoyed with YouTube's recommendations so I had Claude filter down 43M comments over 20 ",
+                "summary": "Weekend hack: HackerTube. I was annoyed with YouTube's recommendations so I had Claude filter down 43M comments over 20 years of HN to 6,454 videos that keep being recommended. *Significantly* better viewing experience, ~2 hours with Opus 5.5:\nhttps://t.co/JIhXN7OSh1\n\n- Excellent recs without any logins (state is kept in local browser session)\n- Thumbnail is a representative frame from middle of the video instead of the super duper A/B test hyper-optimized user uploads\n- Underlying data from the comment analysis as one zip file, point your Claude at it and ask for your own version\n- HackerTube Longs ✊\n\nA bit more on the process:\nI use Claude Code (desktop app for Mac), Opus 5.5 on Medium effort as my default. I only talk to Claude and have it do everything, the only \"manual work\" I helped with in tandem was in the browser (reminiscent of MenuGen): 1) I had to create some kind of API key from Google Cloud UI to query YouTube for video metadata, 2) I booted up a VPS box for serving and 3) I bought the domain name. Once the box was up I gave Claude the IP and told it update, secure, harden, deploy and optimize the code, and it did the whole thing.\n\nMany awesome projects that would have normally taken weeks/months even can now be few-shotted for breakfast. What else are we not thinking of.",
+                "url": "https://x.com/karpathy/status/2116957135661945283",
+                "source": "@karpathy",
+                "date": "Sun Nov 01 18:14:46 +0000 2026",
+                "metrics": {
+                  "favorites": 52355,
+                  "retweets": 4836,
+                  "views": "5725945"
+                }
+              },
+              {
+                "title": "RT @Tristan0x: If you've ever wondered why smart TVs are so cheap, this is why.",
+                "summary": "RT @Tristan0x: If you've ever wondered why smart TVs are so cheap, this is why.\n\n@log4j rooted his Samsung and found an always-on hot mic,…",
+                "url": "https://x.com/karpathy/status/2114384346815820050",
+                "source": "@karpathy",
+                "date": "Sun Oct 25 15:51:26 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 3287,
+                  "views": "40227"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G04_timeframe_year",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "args_timeframe_year",
+        "difficulty": "easy",
+        "what_it_tests": "'năm nay' → lookup topic=news, timeframe=year (base chỉ test day/week)."
+      },
+      "input": "Tin AI năm nay",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "year"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "year",
+              "max_results": 8
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "year",
+            "max_results": 8
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "year",
+            "items": [
+              {
+                "title": "Study explores how AI use affects performance on math and reasoning tasks",
+                "url": "https://news.berkeley.edu/2026/10/09/using-ai-for-just-10-minutes-erodes-your-ability-to-persist-at-hard-things",
+                "source": "news.berkeley.edu",
+                "summary": "The findings backed up what anecdotes and surveys have increasingly found in recent years: An overreliance on AI for answers erodes our cognitive fitness. When AI produces answers in seconds, we get used to that speed; anything that takes longer feels inefficient. And relying on AI also removes what the team called “productive struggle,” which can lead people to find their research strengths and passions. [...] For the first experiment with 354 participants, one group was tasked with solving 15 basic fraction problems without help, while another had ChatGPT open on the side to use for assistance and to even ask for the answer. The group with AI access started off more accurate than the group without it. Then, after 12 problems, researchers took away the AI tool. Almost immediately, the people in that group stopped solving questions accurately. [...] Frontier AI companies have acknowledged how offloading tasks to chatbots can reduce one’s baseline understanding and mastery of a subject. Instead of defaulting to quick answers, AI responses could default to being more instructive, like a tutor, Christian said.\n\n“We need to work toward a future in which human abilities are, as much as possible, augmented rather than supplanted,” he said.",
+                "score": 0.40028095
+              },
+              {
+                "title": "A single AI model simulates the behavior of many substances, from sliding sand to folding proteins | MIT News | Massachusetts Institute of Technology",
+                "url": "https://news.mit.edu/2026/single-ai-model-simulates-many-substances-behavior-1109",
+                "source": "news.mit.edu",
+                "summary": "Unified simulation\n\nFor this work, the researchers drew inspiration from world models. These powerful AI systems learn the rules that govern the physical world so they can predict how objects or environments will change over time in response to certain actions or conditions.\n\nThe researchers applied these concepts to develop a unified AI architecture that can simulate multiple types of physical phenomena. [...] ## More MIT News\n\nRobot serving a cup of coffee while being instructed not to spill on the laptop\n\n### AI-assisted learning platform helps robots reason beyond literal commands\n\nThe new approach, known as FLEX, could lead to more intuitive, interactive household and assistive robots.\n\nRead full story →\n\nMan wearing a T-shirt and safety goggles standing above a concrete beam in the lab, operating a bench-mounted laser tool scanning the concrete. [...] The system represents every material it simulates, from a dune of sand to a protein molecule, as tiny particles and predicts where those particles will move one step at a time. Because it learns the underlying dynamics rather than being programmed with an equation, the model can adapt to materials, forces, and environments it never encountered during training.",
+                "score": 0.2975827
+              },
+              {
+                "title": "AI models may be capable of self-replicating without access to a datacenter \\ Anthropic",
+                "url": "https://www.anthropic.com/research/self-replicating-ai",
+                "source": "anthropic.com",
+                "summary": "In cyber, a worm is a program that copies itself from one computer to the next without human input. Prior work has already shown that AI agents can act like one: scanning their network, executing an exploit, and copying model weights to a target machine across a GPU cluster. Such an “AI worm” could carry its model weights with it as it reproduces (or re-download them from a public hub), and then run inference directly on compromised hardware. Effectively, the weights would become part of the [...] A model that’s too large to fit on one device can be split into pieces, or shards, that run on separate machines that communicate with each other to collectively run the model. Machines that could run a significant model shard for a <30B model include smart fridges, smart ovens, automatic vacuum cleaners, and lawnmowers. A growing number of home and business devices, such as security cameras and video-conferencing units now ship with small built-in AI chips, designed to run AI models on the [...] Hard-coded botnets like the Kimwolf botnet each target a specific type of device – in Kimwolf’s case, Android TVs and mobile devices. An AI botnet isn’t tied to any particular hardware or software type, as evidenced by small models being able to set up inference engines on machines from a Jetson Nano to a Mac (see the table in section A). We expect AI botnets to infect more than IoT devices, and to use weight-based replication as just one strategy in their playbook. AI botnets could also act",
+                "score": 0.26379776
+              },
+              {
+                "title": "Vulnerability Discovery and Exploitation Trends in the AI Era | Google Cloud Blog",
+                "url": "https://cloud.google.com/blog/topics/threat-intelligence/vulnerability-discovery-and-exploitation-trends-in-the-ai-era",
+                "source": "cloud.google.com",
+                "summary": "### Introduction\n\nGoogle Threat Intelligence Group (GTIG) examines vulnerability disclosure and exploitation statistics to evaluate the impact of artificial intelligence (AI) on the vulnerability threat landscape. We found that AI is measurably changing not just the pace of vulnerability discovery and exploitation, but also the types and typical risk profiles of vulnerabilities that are being discovered.\n\nKey findings: [...] Centralized AI Gateways and Lateral Cloud Movement: Enterprise AI gateways represent a catastrophic dual-threat vector. At the application layer, compromised gateways expose third-party application programming interface (API) keys and private prompt streams containing personally identifiable information (PII) or proprietary source code. At the infrastructure layer, they act as initial footholds for adversaries to harvest database credentials and pivot laterally into internal cloud environments. [...] As enterprise adoption of generative AI accelerates, security research and adversary interest have also focused on vulnerabilities in the underlying AI operational stack. Across the January 2025–August 2026 monitoring window, GTIG tracked 2,076 cumulative AI-related CVE disclosures, with over 1,500 vulnerabilities identified from January 2026 to August 2026 alone across eight core architectural layers:",
+                "score": 0.24807891
+              },
+              {
+                "title": "Mayor Mamdani and Chancellor Samuels Put Students First with Nation’s Broadest Generative AI Moratorium in Schools - NYC Mayor's Office",
+                "url": "https://www.nyc.gov/mayors-office/news/2026/09/mayor-mamdani-and-chancellor-samuels-put-students-first-with-nat",
+                "source": "nyc.gov",
+                "summary": "NEW YORK –Mayor Zohran Kwame Mamdani and Schools Chancellor Kamar H. Samuels today announced a moratorium on student-facing generative Artificial Intelligence (AI) use in schools, alongside a new screen time policy, a decision that will impact nearly 600,000 public school students, or two-thirds of the system’s total enrollment. The policy establishes a one-year moratorium, effective in the 2026-2027 school year, on student-facing generative AI for children in 2-K through 8th grade. It also [...] “AI is changing how we learn and work, and our kids need to be prepared to use it safely, think critically, and interrogate the information it produces,” said Council Member Gale A. Brewer. “I am encouraged that NYC Public Schools is taking a comprehensive approach, with age-appropriate AI literacy in K–8 and more focused instruction in high school, and I look forward to the program being shared with parents and staff. Thank you to Chancellor Kamar Samuels and Mayor Mamdani for preparing our [...] “The announcement made by NYCPS detailing a whole new guidance on AI tools for students and teachers is a strong testament to parent and community organizing around protecting our kids,” said Council Member Jennifer Gutiérrez, Chair for the Subcommittee on Early Childcare Education. “AI is all around us, and while there are plenty of benefits to certain tools, there are also significant harms and we must foster the safest environments for our children. I am particularly encouraged by the",
+                "score": 0.244395
+              },
+              {
+                "title": "Financing the AI buildout | Brookings",
+                "url": "https://www.brookings.edu/articles/financing-the-ai-buildout",
+                "source": "brookings.edu",
+                "summary": "The paper warns that the risks embodied in the AI investment race are migrating from transparent on-balance sheet financing by major corporations to opaque off-balance sheet financing through joint ventures, private credit, securitization, special-purpose vehicles, lease commitments, loan guarantees, and other structures. [...] These off-balance sheet arrangements then depend on AI companies’ cash flows and collateral values, which are subject to “uncertain AI demand, rapid technological change, timely access to power and hardware, and the continued credit quality of a small number of [data center] tenants,” Nieuwerburgh writes. [...] 3 min read\n\n    fall conference examine potential risks and rewards of the boom in artificial intelligence (AI): Why is AI so contentious, The vanishing advantage of specialization, and Financing the AI buildout.",
+                "score": 0.21484825
+              },
+              {
+                "title": "California’s nation-leading AI framework just got stronger, Governor Newsom signs more first-in-the-nation worker protections and more | Governor of California",
+                "url": "https://www.gov.ca.gov/2026/09/30/californias-nation-leading-ai-framework-just-got-stronger-governor-newsom-signs-more-first-in-the-nation-worker-protections-and-more",
+                "source": "gov.ca.gov",
+                "summary": "✅ Ensuring doctors and licensed providers can use their own professional judgment when AI or other clinical decision tools are used in patient care.\n\n✅ Requiring developers of clinical decision tools to take reasonable steps to reduce known or predictable bias in how these systems are used.\n\n## Know what’s real. Know what’s AI.\n\nThese new protections strengthen transparency and help prevent deception. [...] ✅ Workers and AI disruption: Governor Newsom signed a first-in-the-nation executive order addressing AI’s economic and labor impacts, including expanded tracking of AI’s economic effects and work to adapt job-training and public-benefit programs. California has also launched an AI Unemployment Tracker and solicited statewide public input on AI’s economic impacts through Engaged California. [...] Building on the Governor’s nation-leading executive order to prepare workers and businesses for potential AI disruption, new first-in-the-nation legislation signed will protect people in the workplace from the impacts of artificial intelligence, automated technology, and AI-powered workplace surveillance.\n\n✅ Ensuring real people review automated employment actions by prohibiting employers from only relying on AI when making a disciplinary action or termination decision.",
+                "score": 0.1783973
+              },
+              {
+                "title": "Towards safety cases for frontier AI training",
+                "url": "https://openai.com/index/towards-safety-cases-for-frontier-ai-training",
+                "source": "openai.com",
+                "summary": "as rigorous for AI models as for aviation or nuclear power, due to the emergent complexity at each new level of AI capability. We’re working on a framework to codify these practices. [...] Along with recommendations about technical safeguards, we have been working on operational best practices for safety cases for a frontier AI training run. These could include:\n\n   Dissents (pre-mortems): After a safety case is drafted, a member of another team should write a dissent to find potential holes in the safety case and share a calibrated take on risk, which the training team should then address, to help make safety cases stronger. [...] Model alignment: The first line of defense should be training models to be aligned; i.e., to act reliably in ways we intend. This could include:\n\n       Training environments and grading: Decrease risks of models developing misaligned behavior, by preventing positive reinforcement of reward hacks during training. This could include:",
+                "score": 0.1548358
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G05_ambiguous_choice",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_ambiguous_choice",
+        "difficulty": "hard",
+        "what_it_tests": "'Apple' mơ hồ (công ty hay trái cây) → clarify với response_type=choice thay vì đoán."
+      },
+      "input": "Tìm tin về Apple giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "choice"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "Apple",
+              "topic": "news",
+              "timeframe": "week",
+              "max_results": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call clarify",
+          "extra tool call lookup"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "Apple",
+            "topic": "news",
+            "timeframe": "week",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "Apple",
+            "topic": "news",
+            "timeframe": "week",
+            "items": [
+              {
+                "title": "Apple",
+                "url": "https://tavily.com/knowledge/company/eL7xXx9SgNQa",
+                "source": "tavily.com",
+                "summary": "# Apple\nID: eL7xXx9SgNQa\nWebsite: www.apple.com\nHeadquarters: Cupertino, California, United States\nLinkedIn: www.linkedin.com/company/apple · 18,387,330 followers\nIndustry: Computers and Electronics Manufacturing\nCompany type: Public Company\nFounded: 1976\nSocial profiles: www.facebook.com/apple, www.twitter.com/apple, www.instagram.com/apple, www.youtube.com/@apple\nPhone: 800-692-7753, 1-408-996-1010\nDescription: Apple is a company that offers a wide range of products and services. [...] ## Products and services\nKeywords: technology, machine learning software, apple, machine learning, innovative product development, world-class operations, retail, telephone support, career opportunities, services, innovation, products [...] - Q1, 2026: revenue 143.76B gross profit 69.23B EBIT 50.85B net income 42.10B EPS 2.8399999141693115 USD\n- FY, 2025: revenue 416.16B gross profit 195.20B EBIT 133.05B net income 112.01B EPS 7.460000038146973 USD\n- Q3, 2025: revenue 94.04B gross profit 43.72B EBIT 28.20B net income 23.43B EPS 1.5700000524520874 USD",
+                "score": 0.70944256
+              },
+              {
+                "title": "Apple warns rogue AI agents could cause ‘unintended’ consequences for its business | Fortune",
+                "url": "https://fortune.com/2026/11/03/apple-warns-rogue-ai-agents-could-cause-unintended-consequences",
+                "source": "fortune.com",
+                "summary": "Recommended Video\n\nThe warning by the world’s second most valuable company came in an annual filing Tuesday, a day after Apple reported its fourth-quarter financial results. In the risk factors section, Apple expanded its warnings about artificial intelligence. Apple’s caution underscores the risks tech giants and other companies are projecting after a string of AI safety incidents in recent months, which have prompted companies to release new security features and debate regulatory measures. [...] Apple is the latest to warn about risks posed by AI agents. Google parent Alphabet also pointed out the risks posed by rogue agents in a recent filing. Google, however, was more pointed about the potential consequences, writing that during AI model testing, it had observed unexpected behavior, including agents taking actions outside their intended scope, which could ultimately lead to “severe or catastrophic security and societal incidents, or negatively affect human rights.” [...] In its 10-K filing, which is made each year following the end of its fiscal year, Apple said “artificial intelligence agents and other technologies can take actions autonomously, including interacting with internal or external systems that in some cases they may not be authorized to access, executing or altering code, sending communications, and completing transactions.”",
+                "score": 0.39103433
+              },
+              {
+                "title": "Apple warns of risks related to AI agents behaving in 'unintended or unpredictable' ways",
+                "url": "https://www.cnbc.com/2026/11/03/apple-warns-of-ai-agents-behave-in-unintended-or-unpredictable-ways.html",
+                "source": "cnbc.com",
+                "summary": "John Ternus, chief executive officer of Apple Inc., speaks during an event in Los Angeles, California, US, on Wednesday, Oct. 28, 2026. \n\nKyle Grillot | Bloomberg | Getty Images\n\nApple said in its annual financial filing on Tuesday that AI agents that can act in “unintended or unpredictable ways” could represent a threat to its business by opening the company up to lawsuits or hurting its reputation. [...] Apple indicated that the current regulations around AI and “super intelligence” are changing, unpredictable and that it could cost a lot of money to adapt to new laws governing AI.\n\n“In addition, the Company is subject to the risks posed by ethical concerns and negative consumer perceptions related to automation, artificial intelligence and super intelligence, including perceived threats to safety or other societal harms or complications,” according to the filing. [...] “The Company’s ability to oversee and control third-party artificial intelligence agents and other technologies may be limited,” Apple warned in its filing.\n\nApple doesn’t currently have an agentic AI. But when new CEO John Ternus was asked on Monday’s earnings call about AI agents, he said that the company had “real room” to expand Siri’s capabilities.",
+                "score": 0.33183438
+              },
+              {
+                "title": "Where Will Apple Stock Be in 5 Years?",
+                "url": "https://finance.yahoo.com/markets/stocks/articles/where-apple-stock-5-years-171000266.html",
+                "source": "finance.yahoo.com",
+                "summary": "-4.11%\n\nIt looks like the market approves of Apple's (NASDAQ: AAPL) cautious artificial intelligence (AI) strategy. Shares have jumped 28% in 2026 (as of Nov. 4). The company currently has the world's highest market capitalization, as its valuation is $260 billion higher than Nvidia's. [...] Services, like iCloud, Apple Pay, Apple Music, and Apple TV, among others, will become a more important part of the story. Revenue here rose 9.8% year over year in the fourth quarter. The company's massive installed base of more than 2.5 billion devices gives it unrivaled distribution. The integration of AI into Apple's various offerings means that it's in an advantageous position to control how people interact with this new technology in their day-to-day lives. [...] While AI only seems to increase the pace at which companies must evolve, I believe Apple's core operations will remain unchanged in 2031. The business will continue to generate the bulk of its revenue from hardware devices, which represented 74% of sales in fiscal 2026 (ended Sept. 26). It's hard to envision a scenario in which the iPhone isn't Apple's main financial driver.",
+                "score": 0.29608452
+              },
+              {
+                "title": "Apple Store Subscription Sign-Up Controversy Exposed - MacRumors",
+                "url": "https://www.macrumors.com/2026/11/08/apple-store-subscription-controversy",
+                "source": "macrumors.com",
+                "summary": "Early Apple Black Friday Deals on Apple Watch, MacBook Air, and More\n\n1 day ago'Backglow' Lets You Customize New MacBook Pro's Glowing Apple Logo\n\n'Backglow' Lets You Customize New MacBook Pro's Glowing Apple Logo\n\n1 day agoTop Stories: Apple Product Launches, iOS 27.3 Beta, and More\n\nTop Stories: Apple Product Launches, iOS 27.3 Beta, and More\n\n2 days agoMore Fun iPhone Duo Apps: 30 New Picks to Try\n\nMore Fun iPhone Duo Apps: 30 New Picks to Try [...] 8.5-inch OLED display, A20 Pro chip, IP67 water and dust resistance, and a thinner and lighter design.\n\nimac 3 blue\n\nM6 iMac\n\nPre-order Now, Launches Nov 6\n\nSpec bump to the M6 chip.\n\nhomeview square sidebar\n\nApple HomeView\n\nPre-Order Now, Launches Nov 13\n\nApple's smart home hub with 7-inch square display, A18 chip with Siri AI support, and more.\n\n• Apple TV\n\n• iPhone 18\n\nSee full product calendar\n\n## Other Stories\n\nM5 MacBook Pro\n\nRIP, MacBook Ultra\n\n2 days ago by Joe Rossignol [...] iOS 27.2 Features\n\nSiri AI improvements, Suggestions in Messages, Apple Music rebrand, and more.\n\niPhone Duo New Features Feature\n\nJust Got an iPhone Duo? Try These Features First\n\nApple's iPhone Duo is in customers' hands, and our dedicated how-to series explains the new features worth trying first.\n\n• iPhone 18 Pro vs iPhone 16 Pro\n\n• iPhone 18 Pro: The New Features You Should Try First\n\n• iPhone Mirroring Not Working?\n\n• Apple Watch Series 12 vs Ultra 4\n\n• Apple Intelligence Guide",
+                "score": 0.26375863
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM01_confirm_then_send",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_confirm_then_send",
+        "difficulty": "medium",
+        "what_it_tests": "Lượt 2 user đã xác nhận → gọi send với confirmed=true (base chỉ test bước hỏi xác nhận)."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Đăng câu \"Bản tin AI hôm nay đã sẵn sàng\" lên Telegram"
+        },
+        {
+          "role": "user",
+          "content": "Ừ, gửi đi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "text": "Bản tin AI hôm nay đã sẵn sàng",
+              "confirmed": true
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "send",
+          "args": {
+            "text": "Bản tin AI hôm nay đã sẵn sàng",
+            "confirmed": true
+          },
+          "result": {
+            "tool": "send_telegram",
+            "error": "RuntimeError",
+            "message": "Missing TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID env var"
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM02_cancel_send",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_cancel_send",
+        "difficulty": "medium",
+        "what_it_tests": "User huỷ ở lượt 2 → không gọi send hay tool nào khác."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Đăng bản tin này lên Telegram"
+        },
+        {
+          "role": "user",
+          "content": "Thôi, đừng gửi nữa"
+        }
+      ],
+      "expect": {
+        "no_tool": true
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Đã hiểu, tôi sẽ không gửi gì lên Telegram. Nếu sau này bạn cần đăng bản tin, cứ cho tôi biết nhé.",
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "GM03_citations_after_sources",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_new_tool_citations",
+        "difficulty": "medium",
+        "what_it_tests": "Dùng nguồn user đưa ở lượt 1 để gọi tool mới citations, không search/fetch lại. Chỉ chấm tên tool (items là list object)."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Mình có nguồn: \"GPT-5 launch\" https://openai.com/gpt-5"
+        },
+        {
+          "role": "user",
+          "content": "Lập danh sách tài liệu tham khảo từ nguồn đó"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "citations",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "citations",
+            "args": {
+              "items": [
+                {
+                  "title": "GPT-5 launch",
+                  "url": "https://openai.com/gpt-5"
+                }
+              ]
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "citations",
+          "args": {
+            "items": [
+              {
+                "title": "GPT-5 launch",
+                "url": "https://openai.com/gpt-5"
+              }
+            ]
+          },
+          "result": {
+            "tool": "citations",
+            "references": "[1] GPT-5 launch — https://openai.com/gpt-5",
+            "count": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM04_reconfirm_after_edit",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_reconfirm_after_edit",
+        "difficulty": "hard",
+        "what_it_tests": "User đã xác nhận ở lượt 2 nhưng lượt 3 sửa nội dung → phải hỏi xác nhận lại (clarify yes_no) với nội dung mới, không gửi luôn."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Đăng câu \"Bản tin AI tuần này\" lên Telegram"
+        },
+        {
+          "role": "user",
+          "content": "Ừ"
+        },
+        {
+          "role": "user",
+          "content": "À khoan, đổi thành \"Bản tin AI tháng này\" rồi gửi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn xác nhận muốn đăng lên Telegram nội dung \"Bản tin AI tháng này\" (thay cho nội dung trước) chứ?",
+              "response_type": "yes_no"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn xác nhận muốn đăng lên Telegram nội dung \"Bản tin AI tháng này\" (thay cho nội dung trước) chứ?",
+            "response_type": "yes_no"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn xác nhận muốn đăng lên Telegram nội dung \"Bản tin AI tháng này\" (thay cho nội dung trước) chứ?",
+            "response_type": "yes_no",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM05_timeframe_widen",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_carryover_widen_timeframe",
+        "difficulty": "medium",
+        "what_it_tests": "Giữ topic=news từ lượt 1, đổi timeframe từ week sang month theo lượt 2."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tin AI tuần này"
+        },
+        {
+          "role": "user",
+          "content": "Mở rộng ra cả tháng đi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "month",
+              "max_results": 8
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "month",
+            "max_results": 8
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "month",
+            "items": [
+              {
+                "title": "A single AI model simulates the behavior of many substances, from sliding sand to folding proteins | MIT News | Massachusetts Institute of Technology",
+                "url": "https://news.mit.edu/2026/single-ai-model-simulates-many-substances-behavior-1109",
+                "source": "news.mit.edu",
+                "summary": "Unified simulation\n\nFor this work, the researchers drew inspiration from world models. These powerful AI systems learn the rules that govern the physical world so they can predict how objects or environments will change over time in response to certain actions or conditions.\n\nThe researchers applied these concepts to develop a unified AI architecture that can simulate multiple types of physical phenomena. [...] ## More MIT News\n\nRobot serving a cup of coffee while being instructed not to spill on the laptop\n\n### AI-assisted learning platform helps robots reason beyond literal commands\n\nThe new approach, known as FLEX, could lead to more intuitive, interactive household and assistive robots.\n\nRead full story →\n\nMan wearing a T-shirt and safety goggles standing above a concrete beam in the lab, operating a bench-mounted laser tool scanning the concrete. [...] The system represents every material it simulates, from a dune of sand to a protein molecule, as tiny particles and predicts where those particles will move one step at a time. Because it learns the underlying dynamics rather than being programmed with an equation, the model can adapt to materials, forces, and environments it never encountered during training.",
+                "score": 0.2975827
+              },
+              {
+                "title": "AI-driven, large-scale nation-state campaign using ARTEX enables supply chain compromise | Microsoft Security Blog",
+                "url": "https://www.microsoft.com/en-us/security/blog/2026/10/21/storm-0940-uses-artex-agentic-ai-connectwise-supply-chain-compromise",
+                "source": "microsoft.com",
+                "summary": "Threat actor misuse of AI accelerates risk across enterprise environments by amplifying existing threats such as exploitation of vulnerabilities, phishing, malware threats, and insider activity. To help organizations stay ahead of AI-enabled threat activity, Microsoft has introduced the Security Dashboard for AI. The dashboard provides users with a unified view of AI security posture by aggregating security, identity, and data risk across Microsoft Defender, Microsoft Entra, and Microsoft [...] and Microsoft Purview. This allows organizations to understand what AI assets exist in their environment, recognize emerging risk patterns, and prioritize governance and security across AI agents, applications, and platforms. To learn more about the Microsoft Security Dashboard for AI see: Assess your organization’s AI risk with Microsoft Security Dashboard for AI (Preview). [...] Enable threat protection for AI services in Microsoft Defender for Cloud to identify threats to generative AI applications in real time and for assistance in responding to security issues.\n Apply least privilege to multi-tenant application permissions and consent grants.\n Monitor credential additions, privilege assignments, and anomalous app-only activity, especially to applications with high privileged permissions and scopes.",
+                "score": 0.28645408
+              },
+              {
+                "title": "How AI agents shape experts’ judgment calls \\ Anthropic",
+                "url": "https://www.anthropic.com/research/agents-judgment-calls",
+                "source": "anthropic.com",
+                "summary": "Deferral of this kind is hard to detect. Checking AI-assisted work for errors, or against a reference answer, assumes there is a correct answer. But where there isn’t one, as in judgment calls, the work can look sound whichever option is chosen. Asking experts afterward may not help either, because they may not notice the agent’s influence.\n\nThis isn’t an argument for using AI less. Used well, AI could expand people’s agency rather than eroding it. We suggest three areas for future study: [...] The same problem applies to AI safety research. Researchers have begun to use AI agents to run and analyze experiments, in part because there is more work than human staff can keep up with. Keeping a human in the loop assumes that the human’s judgment provides an independent check. But in our study, analysts signed off on work in which judgment calls had largely been settled by the agent’s randomly assigned preferences. Our full paper also shows that agents without an assigned lean have weaker [...] This isn’t a simple cautionary tale against working with AI. Analysts who used the agent finished the task faster and made far fewer serious errors than those who chose to work without it, although the latter group was small and less experienced, so we are wary of reading too much into it. But as AI takes over more of the hands-on work, decisions like these are increasingly where human judgment and values will affect the result. If experts defer to agents without realizing it, the agents’",
+                "score": 0.25748536
+              },
+              {
+                "title": "No Signs of AI Payoff Outside the Tech Sector | The Daily Spark",
+                "url": "https://www.apollo.com/wealth/insights-news/insights/daily-spark/no-signs-of-ai-payoff-outside-the-tech-sector",
+                "source": "apollo.com",
+                "summary": "The question looking ahead is whether, even as models become commoditized, mainstream corporate America can turn increasingly cheap intelligence into higher revenue growth and higher profit margins. That may be harder than it sounds. AI may be a great calculator, but in business, intelligence is mostly judgment. Judgment depends on context, and the answer varies with which human or which model you ask. Perhaps most importantly, AI does not understand accountability, trust, culture, unwritten [...] Despite massive investments and widespread hype around artificial intelligence, the technology has delivered zero financial payoff to corporate America outside of tech. Revenue per worker is rising for the Mag 7 but is flat for the S&P 493, see the first chart below. Profit margins are rising for the Mag 7 but are flat for the S&P 493, see the second chart below. And there are still no signs of AI boosting productivity growth, see the third chart below. With no impact on the bottom line, [...] The bottom line is that the AI story will be decided in the S&P 493, not the Mag 7, and so far, there is no evidence that revenue growth or margins are improving outside the tech sector.\n\nRevenue per worker moving up for tech but not for the rest of the economy\n\n5 pages\n\nNote: Inflation adjusted to 2019 Q4. Sources: Bloomberg, Macrobond, Apollo Chief Economist\n\nNo signs of profit margins going up outside the tech sector\n\n5 pages\n\nSources: Bloomberg, Macrobond, Apollo Chief Economist",
+                "score": 0.25054628
+              },
+              {
+                "title": "Authors Can Defend Against AI Allegations With ‘Paper Trail’ Tools. Is It Enough? | WIRED",
+                "url": "https://www.wired.com/story/authors-can-defend-against-ai-allegations-with-paper-trail-tools",
+                "source": "wired.com",
+                "summary": "But Bartz notes that once the accusations start, the damage is done. As the Shy Girl scandal erupted, she says, “I kind of immediately felt like this was going to lead to a potential witch hunt.” The unavoidable emergence of AI in publishing, she explains, will “have the unintended effect of leading anyone to be able to accuse anyone of using AI,” and at the moment, authors have little recourse in defending themselves against these charges. “There’s no agreed upon standard,” Bartz says, in [...] Mia Ballard, the author of Shy Girl, has denied allegations that she used AI to write the novel, claiming that an editor was responsible for AI-assisted changes to a previously self-published version of the book. She has also said that she is pursuing legal action. Since that scandal broke, several more fiction authors have run afoul of AI suspicions, one after winning a short story prize, another after publishers bid into the millions for his crime novel. Both have denied these allegations as [...] “If what you're selling are your words and your voice and your imagination, your creativity, using AI doesn't make sense,” Rasenberger says, noting that authors’ pride in their own work means AI slop is far less common in publishing than one might think. “I've talked to editors, particularly editors of literary nonfiction and fiction,” Rasenberger says, “and some of them will say, ‘I never see AI-generated submissions, I'd know it if I did.’”",
+                "score": 0.2249995
+              },
+              {
+                "title": "Making it easier for websites to express AI training preferences | OpenAI",
+                "url": "https://openai.com/index/helping-websites-express-ai-training-preferences",
+                "source": "openai.com",
+                "summary": "This draws on the ongoing work⁠(opens in a new window) of the Internet Engineering Task Force’s (IETF) AI Preferences working group. We’re joining other participants in the working group in today’s announcement of this shared signal, and believe this strengthens our continued participation in the IETF standards discussions. OpenAI will continue to adapt its practices as those conversations and the landscape continue to evolve in view of appropriate controls and fairness. [...] Audio 1\n\nShare\n\nToday, we’re announcing that OpenAI will honor a common signal⁠(opens in a new window) in robots.txt, the file that lets websites express their preferences about the use of their content for foundational generative AI training. This voluntary effort makes it easier for publishers and website operators to communicate the same preference to multiple participating providers at once. [...] API Platform\n   Overview\n   API Log In(opens in a new window)\n   Docs(opens in a new window)\n\nBusiness\n   Overview\n   Solutions\n   Resources\n   Plugins\n   Customer Stories\n   Partner Network\n   Contact Sales\n\nDevelopers\n   Plugins(opens in a new window)\n   Models(opens in a new window)\n   Docs(opens in a new window)\n   Resources(opens in a new window)\n   Developer Forum(opens in a new window)\n\nCompany\n   About Us\n   Our Charter\n   Careers\n   News",
+                "score": 0.19599423
+              },
+              {
+                "title": "Congress’s Permitting Bill Is a ‘Massive Giveaway’ to the AI Data Center Industry, Critics Warn",
+                "url": "https://time.com/article/2026/11/10/permitting-bill-data-centers",
+                "source": "time.com",
+                "summary": "Personalized Content\n\n## Business\n\nFollow this section to personalize your feed and get instant alerts.\n\nWHY FOLLOW?\n\nUpdate your preferences in Account Settings\n\nPersonalized Content\n\n## AI\n\nFollow this tag to personalize your feed and get instant alerts.\n\nWHY FOLLOW?\n\nUpdate your preferences in Account Settings\n\n# Congress’s Permitting Bill Is a ‘Massive Giveaway’ to the AI Data Center Industry, Critics Warn\n\nAndrew R. Chow\n\nPersonalized Content\n\nAndrew R. Chow\n\n## Andrew R. Chow [...] The bill’s advocates argue that its passage would serve as a rare bipartisan win and a victory for affordability. But critics, especially those on the left, are calling for Democrats to wait until the next Congress. “You just heard Americans demand much more of a say in a way that AI is shaping their lives,” says Michele Jawando, the CEO of Omidyar Network. “Whenever you try to ram something through in a lame duck Congress before you have a hundred new House members, that’s never a good look [...] WHY FOLLOW?\n\nUpdate your preferences in Account Settings\n\nCorrespondent\n\nNarrated by TIME AI.",
+                "score": 0.19392508
+              },
+              {
+                "title": "Google faces mounting backlash for controversial AI school policy - CBS News",
+                "url": "https://www.cbsnews.com/news/ed-markey-google-ai-search-schools",
+                "source": "cbsnews.com",
+                "summary": "Google maintains that its policy change gives schools more control over how they allow AI into schools. An Alphabet spokesperson also told CBS News that Google's AI features are now so tightly integrated into search that it cannot offer the latter without also enabling the AI services. [...] Markey said Google's decision to block search access for students who opt out of AI \"places schools in an impossible position,\" forcing them to choose between giving students access to a potentially dangerous technology and depriving them of \"a critical educational research tool.\"\n\n\"Although Google has a right to create and offer new educational tools, it should not use its dominant market position to force schools to adopt them,\" he added. [...] Markey is asking Alphabet if Google will commit to allowing schools to turn off AI features and chatbots in K-12 student accounts while still allowing students to access Google Search. He also requested that Google disclose any research it has conducted on the impact of its AI tools on students' mental health.\n\nMarkey has requested that Google disclose any research or testing it has conducted on the safety of its AI functions and their impact on the mental health of K-12 students.",
+                "score": 0.17263196
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -88,3 +88,24 @@ def test_disk_failure_keeps_completed_turn_in_memory_for_download(tmp_path, monk
     with pytest.raises(OSError, match="disk full"):
         session.submit("Hello")
     assert session.transcript["turns"][0]["assistant_text"] == "Saved in memory"
+
+
+def test_send_failure_redacts_token_before_model_and_transcript(tmp_path, monkeypatch, fake_http):
+    import requests
+    token = "123456:offline-test-bot-secret"
+    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", token)
+    monkeypatch.setenv("TELEGRAM_CHAT_ID", "offline-chat")
+    fake_http(requests.HTTPError(f"403 Forbidden for url: https://api.telegram.org/bot{token}/sendMessage"))
+    provider = ScriptedProvider([
+        ModelResponse(tool_calls=[ToolCall("send", {"text": "Test", "confirmed": True})]),
+        ModelResponse(text="Send failed."),
+    ])
+    session = new_session(tmp_path, provider)
+    turn = session.submit("Confirmed: send Test")
+    error = turn["tool_events"][0]["result"]
+    assert error["error"] == "HTTPError"
+    assert "403" in error["message"]
+    assert "[REDACTED]" in error["message"]
+    assert token not in json.dumps(turn)
+    assert token not in json.dumps(provider.messages)
+    assert token not in session.path.read_text(encoding="utf-8")

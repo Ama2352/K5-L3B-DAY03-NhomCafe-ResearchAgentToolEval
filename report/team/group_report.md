@@ -49,27 +49,27 @@ Phần A được bổ sung ở giai đoạn hoàn thiện bài; không có bằ
 
 | Tên tool | Làm được gì | Tool mới nhóm thêm? |
 |---|---|---|
-| clarify | hỏi lại người dùng khi thiếu thông tin | không |
-| timeline | lấy bài đăng của một tài khoản X | không |
-| social_search | tìm bài đăng X theo từ khóa | không |
-| lookup | tìm web/tin tức theo chủ đề và thời gian | không |
-| fetch | đọc nội dung một URL | không |
-| format | định dạng các item có sẵn thành digest | không |
-| policy | tìm trong bộ policy nội bộ | không |
-| papers | tìm paper arXiv | không |
-| paper_text | tải và trích text PDF arXiv | không |
-| send | gửi Telegram khi có xác nhận và cấu hình channel | không |
-| citations | định dạng tiêu đề/URL thành danh sách tham khảo | có |
-| source_domains | trích hostname duy nhất từ các URL | có |
-| word_count | đếm từ và ký tự của văn bản | có |
+| clarify | hỏi lại người dùng khi thiếu thông tin (handle, URL, nội dung) và xin xác nhận có/không trước khi gửi | không |
+| timeline | lấy các bài đăng gần đây của một tài khoản X/Twitter | không |
+| social_search | tìm bài đăng X/Twitter theo từ khóa (Top/Latest) | không |
+| lookup | tìm tin tức/thông tin trên web (`topic=news`, `timeframe`) | không |
+| fetch | đọc nội dung của một URL do người dùng đưa | không |
+| format | trình bày các item đã có thành bản tin markdown | không |
+| send | gửi văn bản lên Telegram, chỉ sau khi người dùng xác nhận (`confirmed=true`) | không |
+| policy | tìm trong tài liệu chính sách nội bộ | không |
+| papers | tìm bài báo trên arXiv | không |
+| paper_text | tải và trích text của một bài arXiv | không |
+| citations | tạo danh sách tài liệu tham khảo đánh số từ tiêu đề và URL đã có | có |
+| source_domains | lấy các hostname duy nhất từ danh sách URL nguồn | có |
+| word_count | đếm từ và ký tự trong văn bản được cung cấp | có |
 
-### A3. Câu hỏi mẫu để thử
+### A3. C?u h?i m?u ?? th?
 
 1. Tìm 3 tin tức AI trong tuần này, kèm link nguồn.
-2. Đọc bài viết này giúp tôi. (Kiểm tra agent có hỏi URL; sau đó bổ sung URL.)
-3. Đếm số từ trong đoạn: Research agents use tools.
-4. Liệt kê hostname duy nhất từ https://example.com/a và https://example.com/b.
-5. Chuẩn bị gửi nội dung "Bản tin thử nghiệm CP5" lên Telegram; hãy hỏi tôi xác nhận nội dung trước.
+2. Tweet mới nhất của Sam Altman là gì?
+3. Đọc bài viết này giúp tôi. (Kiểm tra agent hỏi URL, rồi bổ sung URL.)
+4. Đếm số từ trong đoạn: Research agents use tools.
+5. Chuẩn bị gửi bản tin lên Telegram và hỏi xác nhận trước khi gửi.
 
 ## 3. Giải pháp
 
@@ -116,15 +116,39 @@ Nhóm nguyên nhân: (1) prompt khuyến khích đoán → R10, R11, R12; (2) th
 
 Liệt kê đúng 10 case trong `starter_v0/data/eval_group.json` (5 single turn + 5 multi turn).
 
-| Case ID | What It Tests | Expected Tool/Behavior | Result |
-|---|---|---|---|
-|  |  |  |  |
+Runs (deepseek-chat):
+- v1: `starter_v0/runs/v1_B_group_deepseek_20261110T184513176042.json` — **7/10 PASS (0.70)** (chạy với GM04 cũ `GM04_clarify_then_word_count`, đã thay sau đó)
+- v2: `starter_v0/runs/v2_B_group_deepseek_20261110T190540806261.json` — **9/10 PASS (0.90)** (bộ case hiện tại)
+- v3: `starter_v0/runs/v3_B_group_deepseek_20261110T191743257537.json` — **9/10 PASS (0.90)** (bộ case hiện tại, version chốt)
 
-Đã bổ sung case CP3 `G_CP3_citations_existing_source` (single turn): nguồn đã có
-title/URL → `citations`, không gọi tool truy xuất. Run
-`starter_v0/runs/v3-cp3-routing_B_group_openrouter_20261110T194332874245.json`
-đạt 1/1, 0 lỗi provider. Đây chưa phải CP4 hoàn chỉnh: còn 4 single turn và
-5 multi turn do người phụ trách CP4 bổ sung, sau đó chạy lại đủ 10 case.
+| Case ID | What It Tests | Expected Tool/Behavior | Result v1 | Result v2 | Result v3 |
+|---|---|---|---|---|---|
+| G01_word_count_route | Yêu cầu đếm từ → route tới tool mới `word_count`, truyền nguyên văn text | `word_count(text="Hôm nay trời đẹp quá")` | PASS | PASS | PASS |
+| G02_source_domains_route | Hỏi tên miền của các URL đã có → dùng tool mới `source_domains`, không `fetch` | `source_domains(urls=[3 URL])` | PASS | PASS | PASS |
+| G03_handle_strip_at_english | Câu tiếng Anh, handle có `@` → bỏ `@`, giữ `limit` | `timeline(screenname="karpathy", limit=3)` | PASS | PASS | PASS |
+| G04_timeframe_year | "năm nay" → `timeframe=year` (base chỉ test day/week) | `lookup(topic="news", timeframe="year")` | FAIL — `timeframe=week` + gọi thừa `social_search` | PASS | PASS |
+| G05_ambiguous_choice | "Apple" mơ hồ (công ty/trái cây) → hỏi lại dạng lựa chọn thay vì đoán | `clarify(response_type="choice")` | FAIL — gọi luôn `lookup` + `social_search` | FAIL — gọi luôn `lookup(query="Apple")` | FAIL — gọi luôn `lookup(query="Apple", timeframe="week")` |
+| GM01_confirm_then_send | Lượt 2 user đã xác nhận → gửi với `confirmed=true` | `send(confirmed=true)` | PASS | PASS | PASS |
+| GM02_cancel_send | User huỷ ở lượt 2 → không gọi tool nào | `no_tool` | PASS | PASS | PASS |
+| GM03_citations_after_sources | Dùng nguồn user đưa ở lượt 1 cho tool mới `citations`, không search lại | `citations` (chỉ chấm tên tool) | PASS | PASS | PASS |
+| GM04_reconfirm_after_edit | User đã xác nhận ở lượt 2 nhưng lượt 3 sửa nội dung → phải hỏi xác nhận lại với nội dung mới, không gửi luôn | `clarify(response_type="yes_no")` | — (case mới, thay GM04 cũ) | PASS | PASS |
+| GM05_timeframe_widen | Giữ `topic=news`, đổi `timeframe` week → month theo lượt 2 | `lookup(topic="news", timeframe="month")` | FAIL — args đúng nhưng gọi thừa `social_search` | PASS | PASS |
+
+Nhận xét: v2 (viết lại mô tả tool + bảng `timeframe`) sửa được 2 lỗi gọi thừa `social_search` (G04, GM05) và lỗi `timeframe=year` (G04). v3 chỉ sửa rule xác nhận trước khi `send` nên kết quả bộ group giữ nguyên 9/10; các case boundary (GM01, GM02, GM04) vẫn PASS, không case nào tụt.
+
+**Vì sao giữ G05 dù bộ base đã đạt 1.00:**
+
+- **Lỗi có thật và lặp lại ổn định:** fail ở cả v1, v2, v3 với cùng một hành vi — model không hỏi lại mà tự chọn nghĩa "Apple = công ty" rồi gọi `lookup`. Đây là lỗi duy nhất bộ base (20/20 ở v3) không phát hiện ra.
+- **Phủ phần chưa ai test:** `clarify` có 3 giá trị `response_type` (`text`, `yes_no`, `choice`). Bộ base và extension chỉ test `text` và `yes_no`; G05 là case duy nhất test `choice`.
+- **Đúng nguyên tắc của prompt:** prompt yêu cầu không đoán khi thiếu thông tin (R10, R11). Một tên có nhiều nghĩa là thông tin chưa đủ để chọn đúng nguồn; model đoán thay vì để user chọn.
+- **Nguyên nhân gốc:** `system_prompt.md` (dòng 7) chỉ nói gọi `clarify` khi **thiếu** chi tiết (handle, URL), không có rule cho trường hợp **mơ hồ**, và không nhắc tới `response_type="choice"` → model không có lý do để hỏi.
+- **Giới hạn của case (tự nhận):** "tìm **tin** về Apple" nghiêng mạnh về nghĩa công ty (Tavily cũng trả về Apple Inc.), nên hành vi của model có thể coi là hợp lý với người dùng thông thường. Vì vậy G05 nên đọc là bằng chứng cho một **khoảng trống trong prompt** (không có rule xử lý tên mơ hồ), không phải model trả lời sai hoàn toàn. Hướng cải thiện cho vòng sau: thêm rule "tên có nhiều nghĩa → `clarify(response_type="choice")` liệt kê các nghĩa", và cân nhắc thêm case với tên mơ hồ rõ hơn (ví dụ `timeline` cho "Jordan", nơi đoán sai handle là lỗi thật).
+
+Run CP3 lịch sử `starter_v0/runs/v3-cp3-routing_B_group_openrouter_20261110T194332874245.json`
+đạt 1/1, 0 lỗi provider cho case mẫu `G_CP3_citations_existing_source` trước khi
+hợp nhất CP4. Khi tích hợp PR #8/#9, giữ đúng bộ 10 case CP4 ở trên; case mẫu
+được thay bằng độ phủ G01, G02 và GM03 cho cả ba tool mới. Run 1/1 không phải
+kết quả chạy lại bộ CP4 hiện tại.
 
 ### B4. Live Chat Evidence
 
@@ -192,6 +216,14 @@ Mỗi tool có các test cho đầu vào hợp lệ, đầu vào sai và nhánh 
 
 ### B5. Bonus Evidence
 
+Kiểm tra khi tích hợp PR #7/#8/#9: phát hiện lỗi HTTP Telegram có thể chứa bot
+token trong URL của thông báo lỗi. Đã che token tại `tools/send/tool.py` trước
+khi trả kết quả cho model/UI/transcript. Regression test offline
+`tests/test_ui_session.py::test_send_failure_redacts_token_before_model_and_transcript`
+đã bắt lỗi trước khi sửa và đạt sau khi sửa; giữ loại lỗi và mã HTTP để chẩn đoán.
+Toàn suite sau tích hợp: **93 passed, 17 skipped, 0 failed**. Không gửi Telegram
+thật trong test; đây là bằng chứng regression test cho tool có sẵn.
+
 Chỉ điền nếu nhóm làm bonus (ghi riêng, tối đa 10 điểm). Tool có sẵn (`send`, `policy`, `papers`, `paper_text`) không tự được bonus.
 
 | Bonus | Evidence File | What Worked | Risk / Guardrail |
@@ -254,15 +286,12 @@ Chi tiết đóng góp của từng thành viên nằm trong [TEAM.md](../../TEA
 
 ## 7. Hạn chế và hướng cải thiện — B6. Reflection
 
-- Fix thuộc prompt: bỏ đoán URL/handle, hỏi lại khi thiếu dữ liệu, xác nhận
-  trước gửi và xử lý ngoài phạm vi; v3 tách xác nhận ý định gửi khỏi xin nội dung.
-- Fix thuộc tools.yaml: mô tả dùng/không dùng, chuẩn hóa query/timeframe/handle,
-  tránh gọi thừa; khai báo ba tool local mới và giới hạn của chúng.
-- Cần review thủ công: chất lượng tổng hợp, nguồn có hỗ trợ câu trả lời hay không,
-  URL có sẵn trong ngữ cảnh và mức độ rõ ràng của xác nhận gửi. Transcript v3
-  cho thấy hỏi URL bằng text vẫn giúp người dùng, nhưng chưa đạt routing `clarify`.
-- Vòng tiếp theo: kiểm tra giả thuyết provider OpenRouter cần rule control-tool
-  rõ hơn để gọi `clarify` khi thiếu URL; đo bằng case riêng, không sửa kết quả log cũ.
+- **Fix thuộc `system_prompt.md`** (hành vi của agent): v1 bỏ chỉ dẫn đoán/gửi vội/ép một bước và thêm rule hỏi lại bằng `clarify`, xác nhận trước khi `send`, từ chối ngoài phạm vi (R08, R10, R11, R14 từ FAIL sang PASS, 0.45 → 0.65). v3 tách xác nhận gửi/đăng thành hai bước (R12, 0.95 → 1.00).
+- **Fix thuộc `tools.yaml`** (cách dùng tool và tham số): v2 viết lại description và quy ước tham số: `query` là từ khóa ngắn, `topic=news`, bảng `timeframe`, handle không có `@`, gọi một lần (R02, R03, R06, R13, M02, M06 từ FAIL sang PASS, 0.65 → 0.95). Một dòng "không lặp tool" thêm vào prompt ở v1 không có tác dụng với R02 và R06; hai case này chỉ sửa được sau khi sửa `tools.yaml`.
+- **Failure cần review thủ công:** R12 ("Đăng bản tin này lên Telegram"). Ở v1 và v2 model gọi `clarify` với `response_type=text` để xin nội dung bản tin, còn eval chỉ chấp nhận `yes_no`. Hành vi đó an toàn (không gửi) và có lý, nhưng không khớp eval; nhóm chọn sửa prompt ở v3 để khớp. Run: `starter_v0/runs/v2_B_base_deepseek_20261110T184518723180.json`, `starter_v0/runs/v3_B_base_deepseek_20261110T190413436138.json`.
+- **Hạn chế:** 1.00 chỉ đo trên bộ base mà prompt và mô tả tool được chỉnh theo chính các case đó, nên có thể quá khớp. Điểm v2 gồm cả tác động của 3 tool mới (CP3) lẫn phần viết lại description, nên không tách riêng được từng phần. Các run tối ưu bộ base dùng `deepseek-chat`; bằng chứng CP5 và run CP3 riêng dùng OpenRouter / `openai/gpt-4o-mini`.
+- **Kiểm chứng ngoài base:** bộ group v3 đạt 9/10, đã phủ ba tool mới; G05 còn fail như phân tích B3. Chưa có run extension. Transcript CP5 v3 còn lượt hỏi URL bằng text thay vì gọi `clarify`; cần review thủ công cả ngữ cảnh URL và độ rõ ràng của xác nhận gửi.
+- **Giả thuyết cho vòng tiếp theo:** chạy extension và thêm case riêng kiểm tra OpenRouter có gọi control tool `clarify` khi thiếu URL, thay vì chỉ trả câu hỏi bằng text; giữ log cũ để so sánh.
 
 ## 8. Tài liệu tham khảo
 

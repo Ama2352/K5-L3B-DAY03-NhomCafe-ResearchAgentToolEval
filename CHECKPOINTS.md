@@ -1,6 +1,6 @@
 # Checkpoints
 
-Bài làm nhóm. Giờ ghi cạnh mỗi checkpoint là mốc kiểm tra tại lớp, **không phải deadline**. Deadline nộp bài theo thông báo của coach; xem [SUBMISSION.md](SUBMISSION.md). Mọi lệnh chạy từ `starter_v0/`.
+Bài làm nhóm. Giờ ghi cạnh mỗi checkpoint là mốc kiểm tra tại lớp, **không phải deadline**. Deadline nộp bài: 23h59 ngày lab (GMT+7), coach có thể gia hạn tối đa 48h; xem [SUBMISSION.md](SUBMISSION.md). Mọi lệnh chạy từ `starter_v0/`.
 
 ## CP1 — Setup và baseline v0 (mốc 15:00)
 

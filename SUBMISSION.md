@@ -58,7 +58,7 @@ Không commit `.env`, API key, token Telegram, `.venv`, cache hay `arxiv_papers/
 
 ## Deadline (GMT+7)
 
-- Deadline theo thông báo của coach.
+- Deadline mặc định: **23h59 ngày lab (GMT+7)**. Coach có thể gia hạn tối đa 48h; nếu gia hạn thì theo thông báo của coach.
 - Các mốc trong [CHECKPOINTS.md](CHECKPOINTS.md) chỉ là checkpoint tại lớp, không phải deadline.
 - Sửa sau deadline phải tạo commit hoặc branch mới; xem [RULES.md](RULES.md).
 

@@ -28,6 +28,6 @@
 
 ## Nộp muộn và lỗi kỹ thuật
 
-- Deadline theo thông báo của coach (GMT+7).
+- Deadline mặc định: **23h59 ngày lab (GMT+7)**. Coach có thể gia hạn tối đa 48h; nếu gia hạn thì theo thông báo của coach.
 - Nếu gặp lỗi kỹ thuật (provider lỗi, hết quota API, tool không chạy), mô tả lỗi và đưa bằng chứng (run JSON, log, ảnh chụp) vào mục 5 "Khó khăn và cách xử lý" của `report/team/group_report.md`.
 - Không force-push, xóa commit hoặc sửa ngày commit. Bổ sung sau deadline dùng commit hoặc branch mới và ghi rõ thay đổi.

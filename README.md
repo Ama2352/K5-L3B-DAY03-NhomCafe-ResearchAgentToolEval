@@ -2,7 +2,7 @@
 
 Trong lab này, nhóm build một research agent nhỏ nhưng chạy thật. Agent nhận request của user, chọn tool, truyền arguments, chạy tool thật, lưu full JSON log, rồi dùng log đó để tối ưu prompt/tool declaration qua nhiều version.
 
-**Loại bài:** Nhóm · **Thời lượng:** khoảng 4 giờ tại lớp · **Deadline:** theo thông báo của coach (GMT+7)
+**Loại bài:** Nhóm · **Thời lượng:** khoảng 4 giờ tại lớp · **Deadline:** 23h59 ngày lab (GMT+7), coach có thể gia hạn tối đa 48h
 
 ## Mục tiêu học tập
 

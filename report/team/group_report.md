@@ -8,7 +8,7 @@
 
 ## 1. Thông tin nhóm
 
-- Tên nhóm:
+- Tên nhóm: NhomCafe
 - Thành viên và phân công: xem [TEAM.md](../../TEAM.md)
 - Provider/model dùng cho v0–v3: deepseek / `deepseek-chat`
 
@@ -120,6 +120,12 @@ Liệt kê đúng 10 case trong `starter_v0/data/eval_group.json` (5 single turn
 |---|---|---|---|
 |  |  |  |  |
 
+Đã bổ sung case CP3 `G_CP3_citations_existing_source` (single turn): nguồn đã có
+title/URL → `citations`, không gọi tool truy xuất. Run
+`starter_v0/runs/v3-cp3-routing_B_group_openrouter_20261110T194332874245.json`
+đạt 1/1, 0 lỗi provider. Đây chưa phải CP4 hoàn chỉnh: còn 4 single turn và
+5 multi turn do người phụ trách CP4 bổ sung, sau đó chạy lại đủ 10 case.
+
 ### B4. Live Chat Evidence
 
 Lấy từ `starter_v0/transcripts/*.transcript.json`.
@@ -136,8 +142,8 @@ Artifact: `v0-cp5-smoke+peb1c8179815b+t6a2da240a3cb`.
 | 3 | Bổ sung URL `https://example.com/` | `fetch` → `format` | cùng snapshot | Đọc URL đã cung cấp và tổng hợp, answered |
 | 4 | Chuẩn bị gửi bản tin, chưa xác nhận | `send` → `clarify` | cùng snapshot | Tool trả `needs_confirmation`, agent hỏi xác nhận; không gửi thật. Model vẫn gọi `send` trước khi hỏi, cần CP2 xử lý |
 
-Không có lượt lỗi provider trong phiên này. Cần chạy lại kịch bản trên bản cuối
-CP2 để chứng minh agent hỏi URL và xác nhận trước khi gọi action tool.
+Không có lượt lỗi provider trong phiên cũ này. Đã chạy lại trên bản cuối CP2
+như phần bằng chứng v3 bên dưới; giữ log cũ để thể hiện lỗi trước tối ưu.
 
 Kiểm tra trực tiếp qua UI public: transcript
 `starter_v0/transcripts/cp5-ui-smoke_openrouter_ui_edc771ac423547388a35056c1f686833.transcript.json`,
@@ -155,6 +161,23 @@ không tràn ngang. Cài đặt và hoạt động tool được thu gọn; ch�
 transcript và ghi nhận lỗi vẫn được giữ.
 
 ### B5a. Bằng chứng bắt buộc — Tool mới, unit test, UI
+
+**Bằng chứng live sau tích hợp CP2 v3:** OpenRouter / `openai/gpt-4o-mini`,
+artifact `v3+pcb7f408bd8ea+te7248b8f4ae5`.
+Hash khác run DeepSeek v3 do CRLF/LF; nội dung prompt/tools sau chuẩn hóa xuống dòng khớp.
+
+| Transcript | Lượt | Kết quả thực tế |
+|---|---|---|
+| `starter_v0/transcripts/v3_openrouter_20261110T194257230039.transcript.json` | 1 | Thiếu URL: hỏi người dùng cung cấp link bằng text, không đoán URL; không gọi tool `clarify` (hạn chế routing) |
+| cùng file | 2 | Người dùng bổ sung `https://example.com/`; gọi `fetch`, trả nội dung nguồn |
+| cùng file | 3 | Nội dung gửi đã có nhưng chưa xác nhận: gọi `clarify(response_type=yes_no)`, chờ user; không gọi `send` |
+| `starter_v0/transcripts/v3_openrouter_20261110T194205268170.transcript.json` | 1 | Gọi `lookup` tìm 3 tin AI trong tuần, trả link nguồn |
+| cùng file | 4–6 | Gọi đúng `word_count`, `source_domains`, `citations`; các tool trả kết quả thật |
+
+Cả hai phiên đều không lỗi provider. Phiên 7 lượt đọc một bài đã có trong ngữ
+cảnh ở lượt 2; không dùng lượt này làm bằng chứng hỏi lại khi thiếu URL.
+Phiên 3 lượt là kiểm tra CLI tự động nhập kịch bản qua `chat.py`, không phải
+xác nhận của người ngoài nhóm. Chưa có bằng chứng người ngoài nhóm dùng thử.
 
 | Hạng mục | File bằng chứng | Kết quả | Giới hạn / Kiểm soát |
 |---|---|---|---|
@@ -231,10 +254,15 @@ Chi tiết đóng góp của từng thành viên nằm trong [TEAM.md](../../TEA
 
 ## 7. Hạn chế và hướng cải thiện — B6. Reflection
 
-- Fix nào thuộc `system_prompt.md`?
-- Fix nào thuộc `tools.yaml`?
-- Failure nào cần review thủ công thay vì chấm tự động?
-- Nếu có thêm một vòng, nhóm sẽ thử giả thuyết nào?
+- Fix thuộc prompt: bỏ đoán URL/handle, hỏi lại khi thiếu dữ liệu, xác nhận
+  trước gửi và xử lý ngoài phạm vi; v3 tách xác nhận ý định gửi khỏi xin nội dung.
+- Fix thuộc tools.yaml: mô tả dùng/không dùng, chuẩn hóa query/timeframe/handle,
+  tránh gọi thừa; khai báo ba tool local mới và giới hạn của chúng.
+- Cần review thủ công: chất lượng tổng hợp, nguồn có hỗ trợ câu trả lời hay không,
+  URL có sẵn trong ngữ cảnh và mức độ rõ ràng của xác nhận gửi. Transcript v3
+  cho thấy hỏi URL bằng text vẫn giúp người dùng, nhưng chưa đạt routing `clarify`.
+- Vòng tiếp theo: kiểm tra giả thuyết provider OpenRouter cần rule control-tool
+  rõ hơn để gọi `clarify` khi thiếu URL; đo bằng case riêng, không sửa kết quả log cũ.
 
 ## 8. Tài liệu tham khảo
 

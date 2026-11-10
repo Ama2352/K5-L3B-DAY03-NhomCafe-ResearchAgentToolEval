@@ -3,5 +3,17 @@
   "dataset_role": "group",
   "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": [
+    {
+      "id": "G_CP3_citations_existing_source",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tạo danh sách tài liệu tham khảo đánh số từ nguồn đã có: tiêu đề Example Domain, URL https://example.com/. Không tìm kiếm hoặc đọc lại website.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [{"name": "citations", "args": {"items": [{"title": "Example Domain", "url": "https://example.com/"}]}}]
+      },
+      "metadata": {"what_it_tests": "Route tới tool mới citations khi đã có tiêu đề và URL; không gọi lookup hoặc fetch thừa."}
+    }
+  ]
 }

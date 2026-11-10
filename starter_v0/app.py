@@ -124,7 +124,7 @@ def main():
             provider_name = st.selectbox("Nhà cung cấp", ["openrouter", "deepseek", "openai", "anthropic", "gemini", "ollama"],
                                          key="provider", disabled=session is not None)
             model = st.text_input("Model", placeholder="Mặc định của nhà cung cấp", key="model", disabled=session is not None)
-            version = st.text_input("Nhãn phiên bản", value="v0", key="version", disabled=session is not None,
+            version = st.text_input("Nhãn phiên bản", value="v3", key="version", disabled=session is not None,
                                     help="Nhãn của prompt/tools hiện tại, không tự tải phiên bản cũ.")
             rounds = st.slider("Số bước xử lý tối đa", 1, 8, 4, key="rounds", disabled=session is not None)
             st.caption("Tạo cuộc trò chuyện mới để đổi cấu hình hoặc nạp prompt/tools mới nhất. API key được cấu hình trong .env trên máy chủ.")

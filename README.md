@@ -13,6 +13,16 @@ Trong lab này, nhóm build một research agent nhỏ nhưng chạy thật. Age
 5. Tự viết thêm eval case để đo những lỗi nhóm quan tâm.
 6. Viết report dựa trên log thật, không dựa vào cảm giác.
 
+## Tài liệu cần đọc
+
+| File | Dùng khi |
+|---|---|
+| [SUBMISSION.md](SUBMISSION.md) | Đặt tên repo, cấu trúc bài nộp, deadline và cách nộp (push GitHub + nộp link repo trên LMS) |
+| [RUBRIC.md](RUBRIC.md) | Biết cách chấm (90 bắt buộc + 10 bonus) và bằng chứng cần có |
+| [CHECKPOINTS.md](CHECKPOINTS.md) | Theo các mốc thời gian tại lớp |
+| [RULES.md](RULES.md) | Quy định dùng AI, sao chép, nộp muộn, API key |
+| [TOOL-SETUP.md](TOOL-SETUP.md) | Lấy và cấu hình API key cho từng tool |
+
 ## Scope
 
 Nhiệm vụ bắt buộc:
@@ -29,14 +39,14 @@ Nhiệm vụ bắt buộc:
 - Bắt buộc có UI chạy được bằng Streamlit hoặc Vercel.
 - Hoàn thành `artifacts/REPORT.md`: Phần A (giới thiệu agent: tool gì, làm được gì, câu hỏi mẫu) xong **trước 16:30** làm tài liệu phụ trợ khi demo; Phần B (chi tiết) hoàn thiện sau để nộp bài.
 
-Bonus:
+Bonus (tối đa 10 điểm, chi tiết trong [RUBRIC.md](RUBRIC.md)):
 
-- Action tool `send`: có confirmation trước khi gửi.
-- Extra tools: `policy`, `papers`, `paper_text`.
 - **Small Local Model Challenge**: chạy agent bằng model local nhỏ (≤ 8B) qua Ollama — xem [Step 7](#step-7--bonus-challenge-small-local-model).
+- **Hơn 3 tool mới** (≥ 4 tool do nhóm tự viết, ngoài các tool có sẵn), mỗi tool kèm `TOOL.md` + đăng ký trong `tools/__init__.py` + `tools.yaml` + ≥ 3 test.
+- Action tool `send`: gửi thật lên Telegram sau khi user xác nhận, có transcript chứng minh. (Boundary xác nhận trong prompt/`tools.yaml` là phần **bắt buộc**.)
+- Test challenge: toàn suite `pytest` 0 skipped, hoặc có regression test cho bug tìm được trong tool có sẵn — xem [Step 4b](#step-4b--challenge-viết-test-cho-tool).
 
-
-**Điểm thưởng (bonus point):** team nào làm **CẢ HAI** — dựng được UI **và** tự viết thêm hơn 3 tool mới (ngoài các tool có sẵn, kèm `TOOL.md` + đăng ký trong `tools/__init__.py` + `tools.yaml`) — sẽ được cộng điểm thưởng.
+Tool có sẵn (`send`, `policy`, `papers`, `paper_text`) không tự được bonus.
 
 ## TODO Checklist
 
@@ -66,7 +76,7 @@ Bonus:
 **Testing**
 - [ ] `data/eval_group.json`: case cho model (routing / args / boundary), xem Step 4
 - [ ] `tests/test_tools_todo.py`: unit test cho code của tool, xem Step 4b
-- [ ] `pytest`: 0 failed, 0 skipped
+- [ ] `pytest`: 0 failed; 3 test của tool mới không còn `skipped` (stub của tool có sẵn được phép còn skip)
 
 **Demo & report**
 - [ ] UI chạy được + link dùng thử
@@ -74,8 +84,10 @@ Bonus:
 - [ ] `artifacts/REPORT.md` Phần A trước 16:30, Phần B trước khi nộp
 
 **Bonus (tuỳ chọn)**
-- [ ] `send` có xác nhận trước khi gửi, có transcript chứng minh
+- [ ] `send` gửi thật lên Telegram sau khi user xác nhận, có transcript chứng minh
 - [ ] Small Local Model Challenge (Step 7)
+- [ ] Hơn 3 tool mới (≥ 4), mỗi tool ≥ 3 test
+- [ ] Test challenge: `pytest` 0 failed, 0 skipped toàn suite
 
 ## Folder Map
 
@@ -98,7 +110,7 @@ starter_v0/
     REPORT.md                 # report: Phần A debate poster + Phần B chi tiết
   data/
     eval_base.json            # fixed base eval, do not edit the cases
-    eval_group.json           # team adds at least 5 cases
+    eval_group.json           # team adds 10 cases (5 single + 5 multi turn)
     eval_research_extension.json
   tools/
     README.md                 # tool folder contract
@@ -124,7 +136,7 @@ Core tools:
 - `fetch`: đọc nội dung một URL.
 - `format`: trình bày các item đã có thành markdown digest.
 
-Bonus tools:
+Optional tools (có sẵn trong starter, không tự được bonus):
 
 - `send`: gửi text lên Telegram channel (chỉ gửi khi `confirmed=true`).
 - `policy`: tìm trong company policy markdown nội bộ.
@@ -242,7 +254,7 @@ Use hashes and run file paths from the eval output.
 
 ## Step 4 — Add Team Eval
 
-Add at least 5 cases to `data/eval_group.json`.
+Add exactly 10 cases to `data/eval_group.json`: 5 single turn (`query`) + 5 multi turn (`turns`). At least 1 case must check that the model routes to your new tool.
 
 Each case needs:
 
@@ -291,8 +303,8 @@ Có sẵn:
 Nhiệm vụ:
 
 1. **Bắt buộc:** viết ≥ 3 test cho mỗi tool mới của nhóm (happy path; input xấu từ model như chuỗi rỗng, sai kiểu, ngoài enum; nhánh lỗi trả error dict chứ không raise).
-2. **Challenge:** điền hết các stub `pytest.skip(TODO)` trong `tests/test_tools_todo.py` (clarify, format, send, lookup, fetch, timeline, social_search, policy). Đạt khi `pytest` báo **0 failed, 0 skipped**.
-3. **Challenge+:** nếu test phát hiện bug trong tool có sẵn, ghi lại bug đó, sửa nó, và giữ lại test đã bắt được bug (regression test). Ghi vào REPORT B5. Gợi ý: thử input biên mà model hay gửi, như `limit=0`, `top_k=0`, số dạng chuỗi (`max_results="5"`), `items` thiếu `url`, rồi tự quyết định hành vi hiện tại có đúng mong đợi không.
+2. **Challenge (bonus, xem [RUBRIC.md](RUBRIC.md)):** điền hết các stub `pytest.skip(TODO)` trong `tests/test_tools_todo.py` (clarify, format, send, lookup, fetch, timeline, social_search, policy). Đạt khi `pytest` báo **0 failed, 0 skipped**.
+3. **Challenge+ (bonus, xem [RUBRIC.md](RUBRIC.md)):** nếu test phát hiện bug trong tool có sẵn, ghi lại bug đó, sửa nó, và giữ lại test đã bắt được bug (regression test). Ghi vào REPORT B5. Gợi ý: thử input biên mà model hay gửi, như `limit=0`, `top_k=0`, số dạng chuỗi (`max_results="5"`), `items` thiếu `url`, rồi tự quyết định hành vi hiện tại có đúng mong đợi không.
 
 Nguyên tắc: một test kiểm tra một hành vi, tên test mô tả hành vi đó (`test_send_without_confirmation_does_not_call_network`), và assert cả **request gửi đi** lẫn **kết quả trả về**.
 
@@ -413,20 +425,17 @@ Submit `starter_v0/` with:
 - `artifacts/version_log.csv` with at least `v0`, `v1`, `v2`, `v3`
 - `artifacts/REPORT.md` (Phần A debate poster — xong trước 16:30; Phần B chi tiết — nộp sau)
 - `artifacts/poster.html` hoặc `artifacts/poster.svg` nếu team làm poster để debate (tùy chọn)
-- `data/eval_group.json` with at least 5 team cases
-- `tests/` (unit test cho tool mới; nếu làm challenge thì `test_tools_todo.py` không còn `skip`)
+- `data/eval_group.json` with exactly 10 team cases (5 single + 5 multi turn)
+- `tests/` (unit test cho tool mới, `pytest` 0 failed; nếu làm challenge thì `test_tools_todo.py` không còn `skip`)
+- UI code + dependency đã thêm vào `requirements.txt`; lệnh chạy UI ghi trong REPORT Phần A
 - `runs/*.json`
 - `analysis/*.csv` if you parsed run logs
 - `transcripts/*.transcript.json`
 - code changes if your team added or changed tools/UI
 - nếu làm Small Local Model Challenge: run JSON của model local và prompt/tools riêng cho local (nếu có)
 
-Do not submit `.env` or API keys.
+Do not submit `.env` or API keys. Tên repo, deadline và checklist nộp bài: [SUBMISSION.md](SUBMISSION.md).
 
-## Checkpoint 4h
+## Checkpoints
 
-- 15:00 - Run baseline + build UI
-- 15:30 - Improve prompt/tools for v1 + build at least 1 tool
-- 16:00 - Write team eval cases + improve v2
-- 16:30 - Team showdown (demo sản phẩm; REPORT.md Phần A / poster là tài liệu phụ trợ để team khác hiểu nhanh agent có tool gì, làm được gì)
-- 17:30 - Improve v3 + hoàn thiện report Phần B
+Các mốc 15:00 (baseline + UI) → 15:30 (v1 + tool mới) → 16:00 (eval nhóm + v2) → 16:30 (Team showdown) → 17:30 (v3 + REPORT Phần B) nằm trong [CHECKPOINTS.md](CHECKPOINTS.md). Đây là checkpoint tại lớp, không phải deadline.

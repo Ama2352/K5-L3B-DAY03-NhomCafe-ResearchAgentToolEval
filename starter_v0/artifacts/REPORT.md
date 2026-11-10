@@ -6,9 +6,16 @@
 
 ## Team
 
-- Team:
-- Members:
+- Tên nhóm:
+- Lớp: L3A / L3B
+- Tên repo: `K5-L3A-DAY03-TenNhom-ResearchAgentToolEval` hoặc `K5-L3B-DAY03-TenNhom-ResearchAgentToolEval`
+- URL repo, nhánh nộp, commit chốt:
 - Provider/model:
+- AI/công cụ đã dùng khi làm bài (theo [RULES.md](../../RULES.md)):
+
+| Họ và tên | MSSV | GitHub | Vai trò và công việc | File/commit chính |
+|---|---|---|---|---|
+|  |  |  |  |  |
 
 ---
 
@@ -83,18 +90,30 @@ Use `transcripts/*.transcript.json`.
 |---|---|---|---|---|
 |  |  |  |  |  |
 
+## B5a. Required Evidence — Tool mới, unit test, UI
+
+Phần bắt buộc, xem [RUBRIC.md](../../RUBRIC.md).
+
+| Item | Evidence File | What Worked | Risk / Guardrail |
+|---|---|---|---|
+| Tool mới (`tools/<tên>/`) |  |  |  |
+| Unit test tool mới (≥ 3 test/tool) | `pytest` output (0 failed) |  |  |
+| UI (lệnh chạy + link dùng thử) |  |  |  |
+
+Tool unit tests: số test đã viết, và một ví dụ lỗi mà unit test bắt được nhưng eval không bắt được.
+
 ## B5. Bonus Evidence
 
-Only fill if your team did bonus.
+Only fill if your team did bonus (tối đa 10 điểm, xem [RUBRIC.md](../../RUBRIC.md)). Tool có sẵn (`send`, `policy`, `papers`, `paper_text`) không tự được bonus.
 
 | Bonus | Evidence File | What Worked | Risk / Guardrail |
 |---|---|---|---|
-| send (Telegram) |  |  |  |
-| arXiv/company policy |  |  |  |
-| UI |  |  |  |
-| Tool unit tests (`tests/`) | `pytest` output |  |  |
+| Small Local Model | xem B7 |  |  |
+| Hơn 3 tool mới (≥ 4) |  |  |  |
+| `send` gửi thật lên Telegram sau xác nhận | transcript |  |  |
+| Test challenge (0 skipped / regression test) | `pytest` output |  |  |
 
-Tool unit tests: số test đã viết, số bug tìm được trong tool có sẵn (nếu có), và một ví dụ lỗi mà unit test bắt được nhưng eval không bắt được.
+Test challenge: số bug tìm được trong tool có sẵn (nếu có), cách sửa, và test regression tương ứng.
 
 ## B6. Reflection
 

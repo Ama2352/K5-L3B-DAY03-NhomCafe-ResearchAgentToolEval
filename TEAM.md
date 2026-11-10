@@ -6,8 +6,9 @@
 - Lớp: L3B
 - Repo nhóm: `K5-L3B-DAY03-NhomCafe-ResearchAgentToolEval`
 - URL repo: https://github.com/Ama2352/K5-L3B-DAY03-NhomCafe-ResearchAgentToolEval
-- Nhánh nộp: `main` (đang làm trên `feature/prompt-v1`)
+- Nhánh nộp: `main`; nhánh đang làm phần CP5: `Sang`.
 - Commit chốt: `2c12687` (cập nhật lại khi chốt bài nộp)
+- Commit phần UI và bằng chứng CP5: `c7f23ac`.
 
 ## Thành viên
 
@@ -15,7 +16,7 @@
 | --: | ------ | ---- | ----- | ------ | ------- |
 |   1 | Vũ Ngọc Quỳnh Anh | 2A202603875 | 26ai.anhvnq@vinuni.edu.vn | qavu2407-lang | CP4: 10 eval case nhóm (5 single + 5 multi turn), chạy group eval v1–v3, phân tích B3 |
 |   2 | Nguyễn Thảo Quyên |   2A202603895   |   26ai.quyennt@vinuni.edu.vn    |    100678carwyn   | CP1–CP2: provider DeepSeek, baseline v0, tối ưu prompt (v1) và tools.yaml (v2) |
-|   3 | Hồ Nguyễn Minh Sang |  2A202603905  |   26ai.sanghnm@vinuni.edu.vn    | Ama2352 | CP3: tool mới (citations, source_domains, word_count) + unit test; quản lý repo, merge PR |
+|   3 | Hồ Nguyễn Minh Sang |  2A202603905  |   26ai.sanghnm@vinuni.edu.vn    | Ama2352 | CP3: tool mới + unit test; CP5: UI, transcript, báo cáo; quản lý repo, merge PR |
 
 ## Cá nhân
 
@@ -70,3 +71,30 @@ Sao chép mục dưới đây cho từng thành viên.
 - Commit `5684527` (10 case + run v1/v2 + bảng B3), `8ff7412` (run v3), `011b9ce` (B3 v3 + giải thích G05).
 - Run: `starter_v0/runs/v1_B_group_deepseek_20261110T184513176042.json`, `v2_B_group_deepseek_20261110T190540806261.json`, `v3_B_group_deepseek_20261110T191743257537.json`.
 - Bảng B3 trong `report/team/group_report.md`.
+
+## Hồ Nguyễn Minh Sang — 2A202603905
+
+### Phần việc phụ trách
+
+- CP3: ba tool local `citations`, `source_domains`, `word_count`, đăng ký và unit test.
+- CP5: UI Streamlit, hướng dẫn chạy, link dùng thử, transcript live và phần báo cáo tương ứng.
+- Tích hợp thay đổi CP2 từ main vào nhánh Sang, giữ bằng chứng của các phần.
+
+### Đóng góp cụ thể
+
+- Bổ sung 9 test cho ba tool; giữ contract registry/declaration/TOOL.md đồng bộ.
+- Tạo giao diện chat tối giản, theme sáng đồng nhất, cấu hình provider/model/version,
+  hiển thị hoạt động và lỗi, lưu/tải transcript. Mỗi phiên giữ nguyên prompt/tools và hash.
+- Kiểm tra UI qua Cloudflare Tunnel, thử desktop/mobile; chạy lại CLI trên v3 sau khi merge CP2.
+- Thêm case mẫu `G_CP3_citations_existing_source` để kiểm tra route tool mới trước
+  tích hợp CP4. Sau tích hợp, bộ chính giữ 10 case CP4, gồm G01/G02/GM03 phủ ba tool mới;
+  run 1/1 của case mẫu được giữ làm bằng chứng lịch sử.
+- Có sử dụng Codex hỗ trợ code, test, phân tích log và soạn báo cáo; bằng chứng từ chạy thật.
+
+### Bằng chứng
+
+- Commit `60a1efa` (tool/test), `c7f23ac` (UI/evidence), `966687f` (merge main).
+- Báo cáo cá nhân: [2A202603905_HoNguyenMinhSang.md](report/team/2A202603905_HoNguyenMinhSang.md).
+- Run routing: `starter_v0/runs/v3-cp3-routing_B_group_openrouter_20261110T194332874245.json` (1/1 đạt).
+- Transcript v3: `starter_v0/transcripts/v3_openrouter_20261110T194205268170.transcript.json`
+  và `v3_openrouter_20261110T194257230039.transcript.json`.

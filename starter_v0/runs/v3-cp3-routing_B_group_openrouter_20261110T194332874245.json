@@ -1,0 +1,99 @@
+{
+  "run_id": "v3-cp3-routing_B_group_openrouter_20261110T194332874245",
+  "version": "v3-cp3-routing",
+  "artifact_version": "v3-cp3-routing+pcb7f408bd8ea+te7248b8f4ae5",
+  "prompt_hash": "cb7f408bd8ea06688cb880809c3115a4c5b336ad15f979c9e5bd4a9fe471353e",
+  "tools_hash": "e7248b8f4ae5e48f0b137e97d5bef9c511dc9aada8e9fcd149e0a9f51375e3cf",
+  "phase": "B",
+  "suite": "group",
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "system_prompt": "D:\\Dev\\vinai\\lab3_10-11-2026\\K5-L3B-DAY03-NhomCafe-ResearchAgentToolEval\\starter_v0\\artifacts\\system_prompt.md",
+  "tools": "D:\\Dev\\vinai\\lab3_10-11-2026\\K5-L3B-DAY03-NhomCafe-ResearchAgentToolEval\\starter_v0\\artifacts\\tools.yaml",
+  "eval_cases": "data\\eval_group.json",
+  "dataset_id": "day03_v2_research_group",
+  "dataset_role": "group",
+  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "generated_at": "2026-11-10T19:43:32",
+  "summary": {
+    "total_cases": 1,
+    "measured_cases": 1,
+    "provider_error_cases": 0,
+    "passed_cases": 1,
+    "case_accuracy": 1.0,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 1.0,
+    "multiturn_accuracy": null,
+    "failure_counts": {},
+    "observed_mismatch_counts": {}
+  },
+  "results": [
+    {
+      "id": "G_CP3_citations_existing_source",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Route tới tool mới citations khi đã có tiêu đề và URL; không gọi lookup hoặc fetch thừa."
+      },
+      "input": "Tạo danh sách tài liệu tham khảo đánh số từ nguồn đã có: tiêu đề Example Domain, URL https://example.com/. Không tìm kiếm hoặc đọc lại website.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "citations",
+            "args": {
+              "items": [
+                {
+                  "title": "Example Domain",
+                  "url": "https://example.com/"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "citations",
+            "args": {
+              "items": [
+                {
+                  "title": "Example Domain",
+                  "url": "https://example.com/"
+                }
+              ]
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "citations",
+          "args": {
+            "items": [
+              {
+                "title": "Example Domain",
+                "url": "https://example.com/"
+              }
+            ]
+          },
+          "result": {
+            "tool": "citations",
+            "references": "[1] Example Domain — https://example.com/",
+            "count": 1
+          }
+        }
+      ]
+    }
+  ]
+}
